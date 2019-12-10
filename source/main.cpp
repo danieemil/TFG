@@ -5,54 +5,146 @@
 #include <3ds.h>
 #include <citro2d.h>
 
-int main(int argc, char* argv[])
+
+// Texto a mostrar
+static const char text[] =
+"This text is in the font of the system!\n"
+"Right?\n"
+;
+
+
+// Variables necesarias que se usan para DIBUJAR texto
+C2D_TextBuf b_static;	// Se crea y se define una vez
+C2D_TextBuf b_dynamic;	// Se crea y se define una vez por frame
+C2D_Text texts[1];
+
+
+// Configura las consolas para poder escribir texto
+void defineConsoles()
 {
-	gfxInitDefault();
-	hidInit();
-
-
-	//Creamos las consolas dónde escribiremos el texto
+	//Creamos consolas vacías
 	PrintConsole top, bottom;
 
-	//Console init coge la consola que le pasamos por parámetro y le da los valores
-	//acorde a dónde la queremos GFX_TOP/GFX_DOWN.
+	// Asignamos estas consolas vacías a su pantalla
 	consoleInit(GFX_TOP, &top);
 	consoleInit(GFX_BOTTOM, &bottom);
 
-	//consoleInit(GFX_BOTTOM, NULL) -> Devuelve un PrintConsole* que crea y la setea como actual.
-
-	//The top screen has 30 rows and 50 columns
-	//The bottom screen has 30 rows and 40 columns
-
+	// Seleccionamos la consola por la que queremos que se
+	// imprima el texto
 	consoleSelect(&top);
 
+	// Imprimirmos texto en la fila 15, columna 19 de la consola
 	std::cout << "\x1b[15;19H" << "Hello upper world!" << std::endl;
 
+	//Hacemos lo mismo con la consola de la pantalla de abajo
 	consoleSelect(&bottom);
-
 	std::cout << "\x1b[15;14H" << "Hello lower world!" << std::endl;
+
+}
+
+// En esta función están todos los inicializadores necesarios
+void init()
+{
+	// Inicializador por defecto de los gráficos básicos
+	gfxInitDefault();
+
+	// Inicializador del HID(Input)
+	hidInit();
+
+	// Inicializador de Citro3D(Gráficos especializados del 3D)
+	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
+
+	// Inicializador de Citro2D(Gráficos especializados del 2D)
+	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
+
+	// Setea la GPU para que pueda trabajar con Citro2D
+	C2D_Prepare();
+}
+
+// Libera la memoria de las librerías que se usan en la N3DS
+void deInit()
+{
+	// Limpia y destruye los buffers
+	C2D_TextBufDelete(b_static);
+	C2D_TextBufDelete(b_dynamic);
+
+	// Liberamos la memoria de la librería Citro3D
+	C3D_Fini();
+	
+	// Liberamos la memoria de la librería Citro2D
+	C2D_Fini();
+
+	// Liberamos la memoria del "InputManager"
+	hidExit();
+
+	// Liberamos la memoria que se usa para los gráficos básicos
+	gfxExit();
+}
+
+void defineText()
+{
+	// Creamos el buffer dónde estará el texto con tamaño 4096
+	b_static = C2D_TextBufNew(4096);
+
+	// Ponemos el texto en el buffer y se lo asignamos a la variable "texts" que se puede dibujar
+	C2D_TextParse(texts,b_static,text);
+
+	// Optimiza, no hay más
+	C2D_TextOptimize(texts);
+	
+}
+
+
+void drawText()
+{
+	// Dibujamos el texto que ha sido asignado a "texts"
+	C2D_DrawText(texts,0,0,0,0,1,1);
+}
+
+
+
+int main(int argc, char* argv[])
+{
+	
+	//Inicializamos todo
+	init();
+
+	//Configuramos el "texto"(text.h)
+	defineText();
+
+	//Configuramos las "consolas"(console.h)
+	defineConsoles();
+
+	
 
 	// Main loop
 	while (aptMainLoop())
 	{
+		// Escaneamos las teclas pulsadas(Inputs de la N3DS)
 		hidScanInput();
 
-		// Your code goes here
-		int kDown = hidKeysDown();
+		// Guardamos en 'kDown' todos los inputs pulsados
+		u32 kDown = hidKeysDown();
+		
+		// Si se pulsa 'start' se sale del programa
 		if (kDown & KEY_START)
-			break; // break in order to return to hbmenu
+			break; 
 
 
-		// Flush and swap framebuffers
+		// Ponemos los dos buffers con el mismo contenido
 		gfxFlushBuffers();
+
+		// Intercambiamos los buffers (concepto de doblebuffer)
 		gfxSwapBuffers();
 
-		//Wait for VBlank
+		// Esperamos a que se haya dibujado todo por pantalla
 		gspWaitForVBlank();
 
 	}
 
-	gfxExit();
+	// Deinicializar todo(si no se hace, habrán memory leaks)
+	deInit();
+	
 	return 0;
 }
 
