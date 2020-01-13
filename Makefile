@@ -182,6 +182,11 @@ clean:
 	@echo clean ...
 	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD)
 
+
+citra: all
+	@echo citra ...
+	@/home/tuba/Escritorio/project3ds/citra/build/bin/citra-qt $(TARGET).3dsx &
+	@echo Citra complete!
 #---------------------------------------------------------------------------------
 $(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s
 #---------------------------------------------------------------------------------

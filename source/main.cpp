@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <iostream>
 #include <3ds.h>
 #include "vshader_shbin.h"
@@ -15,8 +14,12 @@
 
 
 
-	-	Al combinar 2D y 3D, a nivel básico, no se puede dibujar bien por pantalla,
-		aunque se dibuje cada uno en una pantalla distinta.
+	-	Para dibujar 2D y 3D por pantalla hay que primero preparar la GPU para dibujar
+		en el modo y luego dibujar. Las preparaciones del modo se borran cada vez
+		que se prepara el otro modo, por lo que se tienen que volver a hacer.
+		3D -> void bindC3D();
+		2D -> void C2D_Prepare();
+		
 	-	PrintConsole no puede estar en la misma pantalla con el 2D y/o 3D a nivel
 		básico.
 
@@ -69,15 +72,41 @@ struct position
 	float z;
 };
 
-// Los vértices de manera muy básica los tomamos como posiciones en el espacio
-static const position vertex_list[] =
+struct color
 {
-	{	0.0f, 220.0f, 0.5f},
-	{-100.0f,  60.0f, 0.5f},
-	{+100.0f,  60.0f, 0.5f},
-	{-100.0f, 180.0f, 0.5f},
-	{+100.0f, 180.0f, 0.5f},
-	{	0.0f,  20.0f, 0.5f},
+	float r;
+	float g;
+	float b;
+	float a;
+};
+
+struct vertex
+{
+	position p;
+	color c;
+};
+
+
+// Los vértices de manera muy básica los tomamos como posiciones en el espacio
+static const vertex vertex_list[] =
+{
+	{{	 0.0f, 220.0f, 0.5f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+	{{-100.0f,  60.0f, 0.5f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+	{{+100.0f,  60.0f, 0.5f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+	{{-100.0f, 180.0f, 0.5f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+	{{+100.0f, 180.0f, 0.5f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+	{{	 0.0f,  20.0f, 0.5f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+};
+
+// Los índices de los vértices definidos arriba
+static const s16 index_list[] =
+{
+	5,
+	4,
+	3,
+	2,
+	1,
+	0,
 };
 
 // Punto de acceso a todos los datos de un shader
@@ -93,12 +122,22 @@ static int uLoc_projection;
 // Matrices de 4x4 (estas matrices las usamos para respresentar las proyecciones en los shaders)
 static C3D_Mtx projection_top, projection_bot;
 
+// Configura el paso de atributos al shader
+static C3D_AttrInfo attrInfo;
+
+// Zona de datos de donde coge los datos de los vértices para pasárselos al shader
+static C3D_BufInfo bufInfo;
 
 // Apunta al principio de donde guardamos los vértices
 static void* vbo_data; 			// Vertex Buffer Object
 
+// Aquí guardamos los índices de los vértices
+static void* index_data;
+
+
 // Número de vértices que tendrá
 #define vboCount (sizeof(vertex_list)/sizeof(vertex_list[0]))
+#define indexCount (sizeof(index_list)/sizeof(index_list[0]))
 
 
 
@@ -111,7 +150,7 @@ void defineConsoles()
 	PrintConsole bottom;
 
 	// Asignamos estas consolas vacías a su pantalla
-	consoleInit(GFX_BOTTOM, &bottom);
+	consoleInit(GFX_TOP, &bottom);
 
 	// Seleccionamos la consola por la que queremos que se
 	// imprima el texto
@@ -134,7 +173,7 @@ void initShaders()
 	shaderProgramInit(&program);
 
 	// Establece dentro del programa de los shaders, qué vertex shader vamos a usar
-	shaderProgramSetVsh(&program, &shader_dvlb->DVLE[0]);
+	shaderProgramSetVsh(&program, shader_dvlb->DVLE);
 
 	// Vinculamos Citro3D para que utilice "program"(los shaders que gestiona)
 	C3D_BindProgram(&program);
@@ -148,19 +187,25 @@ void initShaders()
 	
 	// Posiciones y color
 
-	C3D_AttrInfo* attrInfo = C3D_GetAttrInfo();
 	// Inicializamos el """configurador de atributos"""
-	AttrInfo_Init(attrInfo);
+	AttrInfo_Init(&attrInfo);
 	// En el primer registro de input de la GPU(v0) recibirá 3 Floats = posición 
-	AttrInfo_AddLoader(attrInfo, 0, GPU_FLOAT, 3);
+	AttrInfo_AddLoader(&attrInfo, 0, GPU_FLOAT, 3);
 	// En el segundo registro de input de la GPU(v1) recibirá "algo fijo"
-	AttrInfo_AddFixed(attrInfo, 1);
+	AttrInfo_AddLoader(&attrInfo, 1, GPU_FLOAT, 4);
+	//AttrInfo_AddFixed(attrInfo, 1);
 	// Ese "algo fijo" será el color cuyo rango en los shaders es (0.0 - 1.0)
-	C3D_FixedAttribSet(1,1.0,1.0,1.0,1.0f); //[Blanco]
+	//C3D_FixedAttribSet(1,1.0,1.0,1.0,1.0f); //[Blanco]
 
 
 	// Matrices de proyección
+
+	// Esta función establece lo que se va a ver según los rangos que le pongamos.
+
+	// Un vértice cuyas coordenadas -200<X<200, 0<Y<240, 0<Z<1 se podrá ver
 	Mtx_OrthoTilt(&projection_top,-200.0f,200.0f,0.0f,240.0f,0.0f,1.0f,true);
+	
+	// Un vértice cuyas coordenadas -160<X<160, 0<Y<240, 0<Z<1 se podrá ver
 	Mtx_OrthoTilt(&projection_bot,-160.0f,160.0f,0.0f,240.0f,0.0f,1.0f,true);
 
 	// Reservamos espacio para los vértices y apuntamos al principio ("vbo")
@@ -168,10 +213,13 @@ void initShaders()
 	// Copiamos y pegamos nuestros vértices a donde hemos reservado
 	memcpy(vbo_data, vertex_list, sizeof(vertex_list));
 
+	// Hacemos lo mismo para los índices
+	index_data = linearAlloc(sizeof(index_list));
+	memcpy(index_data, index_list, sizeof(index_list));
 
-	C3D_BufInfo* bufInfo = C3D_GetBufInfo();
-	BufInfo_Init(bufInfo);
-	BufInfo_Add(bufInfo, vbo_data, sizeof(position),1,0x0);
+
+	BufInfo_Init(&bufInfo);
+	BufInfo_Add(&bufInfo, vbo_data, sizeof(vertex),2,0x210);
 
 
 	C3D_TexEnv* env = C3D_GetTexEnv(0);
@@ -179,21 +227,21 @@ void initShaders()
 	C3D_TexEnvSrc(env,C3D_Both,GPU_PRIMARY_COLOR,GPU_PRIMARY_COLOR,GPU_PRIMARY_COLOR);
 	C3D_TexEnvFunc(env,C3D_Both, GPU_REPLACE);
 
-
 }
 
 void init2D()
 {
 	// Inicializador de Citro2D(Gráficos especializados del 2D)
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
-
-	// Setea la GPU para que pueda trabajar con Citro2D
-	C2D_Prepare();
 }
 
 
 void init3D()
 {
+
+	// Inicializador de Citro3D(Gráficos especializados del 3D y renderizado)
+	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
+
 	// Ahora vamos a los shaders
 	initShaders();
 }
@@ -208,12 +256,10 @@ void init()
 	// Inicializador del HID(Input)
 	hidInit();
 
-	// Inicializador de Citro3D(Gráficos especializados del 3D y renderizado)
-	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
-
 	init3D();
 
-	//init2D();
+	init2D();
+	
 
 }
 
@@ -223,8 +269,9 @@ void deInit()
 {
 
 	// Liberamos datos asociados a los shaders
-	// Liberamos el espacio que habíamos reservado para los vértices
+	// Liberamos el espacio que habíamos reservado para los vértices y sus índices
 	linearFree(vbo_data);
+	linearFree(index_data);
 	shaderProgramFree(&program);
 	DVLB_Free(shader_dvlb);
 
@@ -263,6 +310,10 @@ void defineText()
 // Dibujamos en la pantalla que nos pasen por parámetro en 2D
 void sceneRender2D(C3D_RenderTarget* screen)
 {
+	// Habilita el dibujado en 2D e inhabilita el dibujado en 3D
+	C2D_Prepare();
+
+	
 
 	// Esta función devuelve un número entero que representa el color que le pasas por R, G, B, A
 	// En este caso el color es totalmente AZUL y OPACO
@@ -273,7 +324,7 @@ void sceneRender2D(C3D_RenderTarget* screen)
 		
 	// Limpia lo que se ha seteado como "target"(en este caso es la pantalla de arriba)
 	// También dibuja toda la pantalla del color "background_color"
-	C2D_TargetClear(screen, background_color);
+	//C2D_TargetClear(screen, background_color);
 
 	// Esta función hace se pueda dibujar en el "target"
 	C2D_SceneBegin(screen);
@@ -282,18 +333,38 @@ void sceneRender2D(C3D_RenderTarget* screen)
 	C2D_DrawText(texts,0,0,0,0,1,1);
 
 	// Dibuja un rectángulo con arriba a la izquierda con 300 píxeles de ancho y 30 de alto
-	C2D_DrawRectSolid(10,120,0,300,30,red);
+	C2D_DrawRectSolid(10,120,0,300,30,blue);
 
 	// Dibuja un rectángulo con cada borde de un color en específico, lo que crea un degradado
 	C2D_DrawRectangle(10,180,0,300,30,red,blue,blue,red);
 
 	C2D_DrawTriangle(200,100,red,215,80,green,230,100,blue,0);
 
+	C2D_Flush();
+
 }
+
+// Habilita el dibujado en 3D e inhabilita el dibujado en 2D
+void bindC3D()
+{
+	C3D_BindProgram(&program);
+	C3D_SetAttrInfo(&attrInfo);
+	C3D_SetBufInfo(&bufInfo);
+
+	C3D_TexEnv* env = C3D_GetTexEnv(0);
+	C3D_TexEnvInit(env);
+	C3D_TexEnvSrc(env,C3D_Both,GPU_PRIMARY_COLOR,GPU_PRIMARY_COLOR,GPU_PRIMARY_COLOR);
+	C3D_TexEnvFunc(env,C3D_Both, GPU_REPLACE);
+}
+
+
 
 // Dibujamos en la pantalla que nos pasen por parámetro en 3D
 void sceneRender3D(C3D_RenderTarget* screen)
 {
+
+	bindC3D();
+
 	int background_color = C2D_Color32(255,0,0,255);
 
 	//Limpiamos la pantalla de abajo
@@ -302,10 +373,13 @@ void sceneRender3D(C3D_RenderTarget* screen)
 
 	// Le pasamos al vertex shader, la matriz de proyección(4x4) mediante uniforms
 	// Su ubicación dentro del shader la obtenemos con "uLoc_projection"
-	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER,uLoc_projection,screen->screen ? &projection_top : &projection_bot);
+	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER,uLoc_projection,screen->screen ? &projection_bot : &projection_top);
 
 	// Dibujamos el array de vértices almacenado en "vbo"
-	C3D_DrawArrays(GPU_TRIANGLE_STRIP,0,vboCount);
+	//C3D_DrawArrays(GPU_TRIANGLE_STRIP,0,vboCount);
+
+	// Dibujamos el array de vértices teniendo en cuenta sus índices
+	C3D_DrawElements(GPU_TRIANGLES,indexCount,C3D_UNSIGNED_SHORT, index_data);
 }
 
 
@@ -322,12 +396,12 @@ int main(int argc, char* argv[])
 	//defineConsoles();
 
 	// Creamos una "Ventana" para dibujos en 2D y la ubicamos en la pantalla de arriba
-	C3D_RenderTarget* top = C2D_CreateScreenTarget(GFX_TOP,GFX_LEFT);
+	C3D_RenderTarget* top = C3D_RenderTargetCreate(240,400,GPU_RB_RGBA8,GPU_RB_DEPTH24_STENCIL8);
+	C3D_RenderTargetSetOutput(top, GFX_TOP, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
 
 	// Creamos una "Ventana" para dibujos en 3D y la ubicamos en la pantalla de abajo
 	C3D_RenderTarget* bot = C3D_RenderTargetCreate(240,320,GPU_RB_RGBA8,GPU_RB_DEPTH24_STENCIL8);
 	C3D_RenderTargetSetOutput(bot, GFX_BOTTOM, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
-
 
 
 	// Main loop
@@ -348,11 +422,11 @@ int main(int argc, char* argv[])
 
 		//Lo siguiente es todo lo que hay por debajo de esta línea de código hasta C3D_FrameEnd(0):
 
-		// Empezamos pintando en la pantalla superior
-		//sceneRender2D(top);
-
 		// Luego pintamos en la pantalla inferior
 		sceneRender3D(bot);
+
+		// Empezamos pintando en la pantalla superior
+		sceneRender2D(bot);
 
 		// A partir de esta línea acaba lo que se dibujaría en el frame actual y pasa al siguiente
 		C3D_FrameEnd(0);
