@@ -4,6 +4,7 @@
 #include <3ds.h>
 #include "vshader_shbin.h"
 #include <citro2d.h>
+#include "image_bin.h"
 
 
 
@@ -19,7 +20,7 @@
 		que se prepara el otro modo, por lo que se tienen que volver a hacer.
 		3D -> void bindC3D();
 		2D -> void C2D_Prepare();
-		
+
 	-	PrintConsole no puede estar en la misma pantalla con el 2D y/o 3D a nivel
 		básico.
 
@@ -40,14 +41,13 @@ Investigaciones y recursos:
 
 // Texto a mostrar
 static const char text[] =
-"123456789111315171921232527293133\n"
-"Right?\n"
+"Esto es un texto en 2D"
 ;
 
 // Variables necesarias que se usan para DIBUJAR texto
 C2D_TextBuf b_static;	// Se crea y se define una vez
 C2D_TextBuf b_dynamic;	// Se crea y se define una vez por frame
-C2D_Text texts[1];
+C2D_Text texts[2];
 
 
 
@@ -140,8 +140,23 @@ static void* index_data;
 #define indexCount (sizeof(index_list)/sizeof(index_list[0]))
 
 
+/////////////
+// Sprites //
+/////////////
+
+// Hoja que contiene todos los sprites
+static C2D_SpriteSheet all_sprites;
+
+// Sprite de prueba
+static C2D_Sprite test_sprite;
+
+// Filtro para pintar las esquinas del sprite
+static C2D_ImageTint tint;
 
 
+
+// Dependiendo del modo, se muestra lo que he aprendido de las librerías de la n3ds
+static int mode = -1;
 
 // Configura las consolas para poder escribir texto
 void defineConsoles()
@@ -150,7 +165,7 @@ void defineConsoles()
 	PrintConsole bottom;
 
 	// Asignamos estas consolas vacías a su pantalla
-	consoleInit(GFX_TOP, &bottom);
+	consoleInit(GFX_BOTTOM, &bottom);
 
 	// Seleccionamos la consola por la que queremos que se
 	// imprima el texto
@@ -159,6 +174,8 @@ void defineConsoles()
 	// Imprimirmos texto en la fila 15, columna 19 de la consola
 	std::cout << "\x1b[15;19H" << "Hello lower world!" << std::endl;
 	std::cout << "\x1b[17;05H" << "Este vbo tiene "<< vboCount << " vertices" << std::endl;
+
+	consoleClear();
 
 }
 
@@ -233,6 +250,8 @@ void init2D()
 {
 	// Inicializador de Citro2D(Gráficos especializados del 2D)
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
+
+	C2D_Prepare();
 }
 
 
@@ -246,6 +265,44 @@ void init3D()
 	initShaders();
 }
 
+void initText()
+{
+	// Creamos el buffer dónde estará el texto con tamaño 4096
+	b_static = C2D_TextBufNew(4096);
+	b_dynamic = C2D_TextBufNew(4096);
+
+	// Ponemos el texto en el buffer y se lo asignamos a la variable "texts" que se puede dibujar
+	C2D_TextParse(texts,b_static,text);
+
+	// Optimiza, no hay más
+	C2D_TextOptimize(texts);
+	
+}
+
+void initSprites()
+{
+	// Cargamos la hoja con todos los sprites
+	all_sprites = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
+
+	// De la hoja de sprites sacamos el sprite con la imagen de prueba
+	C2D_SpriteFromSheet(&test_sprite,all_sprites,0);
+
+	// Pintamos de colores las esquinas del sprite
+
+	u32 blue = C2D_Color32(0,0,255,255);
+	u32 red = C2D_Color32(255,0,0,255);
+	u32 green = C2D_Color32(0,255,0,255);
+	u32 background_color = C2D_Color32(255,0,0,255);
+
+	tint.corners[0].color = blue;
+	tint.corners[0].blend = 0.75f;
+	tint.corners[1].color = green;
+	tint.corners[1].blend = 0.75f;
+	tint.corners[2].color = red;
+	tint.corners[2].blend = 0.75f;
+	tint.corners[3].color = 0;
+	tint.corners[3].blend = 0.75f;
+}
 
 // En esta función están todos los inicializadores necesarios
 void init()
@@ -260,7 +317,11 @@ void init()
 
 	init2D();
 	
+	//Configuramos el "texto"(text.h)
+	initText();
 
+	//Cargamos los sprites
+	initSprites();
 }
 
 
@@ -280,6 +341,9 @@ void deInit()
 	C2D_TextBufDelete(b_static);
 	C2D_TextBufDelete(b_dynamic);
 
+	// Liberamos la memoria de la hoja de sprites
+	C2D_SpriteSheetFree(all_sprites);
+
 	// Liberamos la memoria de la librería Citro3D
 	C3D_Fini();
 	
@@ -291,29 +355,18 @@ void deInit()
 
 	// Liberamos la memoria que se usa para los gráficos básicos
 	gfxExit();
+
+	// Salimos de la Romfs
+	romfsExit();
 }
 
-void defineText()
-{
-	// Creamos el buffer dónde estará el texto con tamaño 4096
-	b_static = C2D_TextBufNew(4096);
-	b_dynamic = C2D_TextBufNew(4096);
 
-	// Ponemos el texto en el buffer y se lo asignamos a la variable "texts" que se puede dibujar
-	C2D_TextParse(texts,b_static,text);
-
-	// Optimiza, no hay más
-	C2D_TextOptimize(texts);
-	
-}
 
 // Dibujamos en la pantalla que nos pasen por parámetro en 2D
 void sceneRender2D(C3D_RenderTarget* screen)
 {
 	// Habilita el dibujado en 2D e inhabilita el dibujado en 3D
 	C2D_Prepare();
-
-	
 
 	// Esta función devuelve un número entero que representa el color que le pasas por R, G, B, A
 	// En este caso el color es totalmente AZUL y OPACO
@@ -330,7 +383,7 @@ void sceneRender2D(C3D_RenderTarget* screen)
 	C2D_SceneBegin(screen);
 
 	// Dibujamos el texto que ha sido asignado a "texts"
-	C2D_DrawText(texts,0,0,0,0,1,1);
+	C2D_DrawText(texts,0,0,0,0.5,1,1);
 
 	// Dibuja un rectángulo con arriba a la izquierda con 300 píxeles de ancho y 30 de alto
 	C2D_DrawRectSolid(10,120,0,300,30,blue);
@@ -365,10 +418,6 @@ void sceneRender3D(C3D_RenderTarget* screen)
 
 	bindC3D();
 
-	int background_color = C2D_Color32(255,0,0,255);
-
-	//Limpiamos la pantalla de abajo
-	C3D_RenderTargetClear(screen,C3D_CLEAR_ALL, background_color, 0);
 	C3D_FrameDrawOn(screen);
 
 	// Le pasamos al vertex shader, la matriz de proyección(4x4) mediante uniforms
@@ -382,15 +431,36 @@ void sceneRender3D(C3D_RenderTarget* screen)
 	C3D_DrawElements(GPU_TRIANGLES,indexCount,C3D_UNSIGNED_SHORT, index_data);
 }
 
+void sceneRenderSprites(C3D_RenderTarget* screen)
+{
+	C2D_Prepare();
+	C2D_SceneBegin(screen);
+
+	// Dibujando los sprites
+	C2D_DrawSpriteTinted(&test_sprite, &tint);
+}
+
+
+// Dibuja el texto dinámico que explica que se muestra en la pantalla de abajo
+void textIt(C3D_RenderTarget* screen)
+{
+	C2D_Prepare();
+	C2D_SceneBegin(screen);
+	C2D_DrawText(&texts[1],0,25,110,0.5f,0.75f,0.75f);
+	C2D_Flush();
+}
+
+
 
 int main(int argc, char* argv[])
 {
 	
+	// Permitimos acceder a la ROMFS (Read Only Memory File System)
+	// Eso significa que podemos acceder a la carpeta romfs poniendo "romfs:"
+	romfsInit();
+
 	//Inicializamos todo
 	init();
-
-	//Configuramos el "texto"(text.h)
-	defineText();
 
 	//Configuramos las "consolas"(console.h) y escribimos texto por pantalla
 	//defineConsoles();
@@ -417,16 +487,93 @@ int main(int argc, char* argv[])
 		if (kDown & KEY_START)
 			break;
 	
+		if (kDown & KEY_A)
+		{
+			mode = 0;
+		}else
+		if (kDown & KEY_B)
+		{
+			mode = 1;
+		}else
+		if (kDown & KEY_X)
+		{
+			mode = 2;
+		}else
+		if (kDown & KEY_Y)
+		{
+			mode = 3;
+		}
+		
+
 		// Cuando se llama a esta función establecemos que en el frame actual se pintará lo siguiente 
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 
 		//Lo siguiente es todo lo que hay por debajo de esta línea de código hasta C3D_FrameEnd(0):
 
-		// Luego pintamos en la pantalla inferior
-		sceneRender3D(bot);
+		// Limpiamos las dos pantallas antes de dibujar en ellas
+		int background_color = C2D_Color32(255,0,0,255);
 
-		// Empezamos pintando en la pantalla superior
-		sceneRender2D(bot);
+		C3D_FrameDrawOn(top);
+		C3D_RenderTargetClear(top,C3D_CLEAR_ALL, background_color, 0);
+
+		C3D_FrameDrawOn(bot);
+		C3D_RenderTargetClear(bot,C3D_CLEAR_ALL, background_color, 0);
+
+		textIt(top);
+
+
+		switch (mode)
+		{
+		// Solo 2D y texto
+		case 0:
+
+			C2D_TextBufClear(b_dynamic);
+			C2D_TextParse(&texts[1],b_dynamic,"Elementos de texto y figuras en 2D");
+			C2D_TextOptimize(&texts[1]);
+
+			sceneRender2D(bot);
+			break;
+
+		// Solo 3D
+		case 1:
+
+			C2D_TextBufClear(b_dynamic);
+			C2D_TextParse(&texts[1],b_dynamic,"Triangulos basicos con shaders en 3D");
+			C2D_TextOptimize(&texts[1]);
+
+			sceneRender3D(bot);
+			break;
+
+		// 2D y 3D
+		case 2:
+
+			C2D_TextBufClear(b_dynamic);
+			C2D_TextParse(&texts[1],b_dynamic,"Escena que tiene elementos en 2D y 3D");
+			C2D_TextOptimize(&texts[1]);
+
+			sceneRender3D(bot);
+			sceneRender2D(bot);
+			break;
+
+		// Sprites
+		case 3:
+			
+			C2D_TextBufClear(b_dynamic);
+			C2D_TextParse(&texts[1],b_dynamic,"Sprite prueba con esquinas coloreadas");
+			C2D_TextOptimize(&texts[1]);
+
+			sceneRenderSprites(bot);
+			break;
+
+		default:
+			C3D_FrameDrawOn(top);
+			C3D_RenderTargetClear(top,C3D_CLEAR_ALL, background_color, 0);
+
+			sceneRender3D(top);
+			sceneRender2D(top);
+			sceneRenderSprites(bot);
+			break;
+		}
 
 		// A partir de esta línea acaba lo que se dibujaría en el frame actual y pasa al siguiente
 		C3D_FrameEnd(0);
@@ -435,47 +582,8 @@ int main(int argc, char* argv[])
 
 	// Deinicializar todo(si no se hace, habrán memory leaks)
 	deInit();
+	C3D_RenderTargetDelete(top);
+	C3D_RenderTargetDelete(bot);
 	
 	return 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** 
- * @brief Código copiado de https://github.com/xem/3DShomebrew/blob/gh-pages/functions/functions.c
- */ 
-void gfxDrawSprite(gfxScreen_t screen, gfx3dSide_t side, u8* spriteData, u16 width, u16 height, s16 x, s16 y) {
-  //This function includes documantation so you might be able to figure out what the function is doing, you don't need to understand this to use it!
-  if(!spriteData)return; //check if the function has sprite data, if not stop!
-
-  u16 fbWidth, fbHeight; //set variables for width and height
-  u8* fbAdr = gfxGetFramebuffer(screen, side, &fbWidth, &fbHeight); //get framebuffer for the screen and side used.
-
-  if(x + width < 0 || x >= fbWidth)return; //check invalid x cords
-  if(y + height < 0 ||y >= fbHeight)return; //check invalid y cords
-
-  u16 xOffset = 0, yOffset = 0; //set offset for x and y
-  u16 widthDrawn = width, heightDrawn = height; //set width/height vars that for drawing
-
-  if(x < 0) xOffset = -x; //use offset
-  if(y < 0) yOffset = -y; //use offset
-  if(x + width >= fbWidth) widthDrawn = fbWidth - x;
-  if(y + height >= fbHeight) heightDrawn = fbHeight - y;
-  widthDrawn -=xOffset;
-  heightDrawn -=yOffset;
-
-  int j;
-  for(j = yOffset; j < yOffset + heightDrawn; j++) { //for loop for drawing image
-    memcpy(&fbAdr[ ((x + xOffset) + (y + j) * fbWidth) * 3 ], &spriteData[ ((xOffset + j) * width) * 3 ], widthDrawn * 3); //copy imagedata into memory
-  }
 }
