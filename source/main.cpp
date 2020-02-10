@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Debugger.h"
 
 using namespace std;
 
@@ -95,22 +96,13 @@ int main(int argc, char* argv[])
 	game.getWorld()->addEntity(new Entity(Vector2d<float>(),
 	game.getSpriteManager()->createSprite(0)));
 
-	PrintConsole debugger;
-	consoleInit(GFX_TOP, &debugger);
-	consoleSelect(&debugger);
-
-	u8 column = 0; 
-	u8 row = 7;
-
-	string location = "\x1b[" + to_string(row) + ";" + to_string(column) + "H";
+	debug::init(debug::N3DS_screen::N3DS_TOP);
 
 
 	// Creamos una "Ventana" para dibujos en 3D y la ubicamos en la pantalla de abajo
 	C3D_RenderTarget* bot = C3D_RenderTargetCreate(240,320,GPU_RB_RGBA8,GPU_RB_DEPTH24_STENCIL8);
 	C3D_RenderTargetSetOutput(bot, GFX_BOTTOM, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
-
-	cout << location << "Debug screen\n" << endl;
-	cout << to_string(row) << endl;
+	
 
 	// Main loop
 	while (aptMainLoop())
@@ -128,6 +120,17 @@ int main(int argc, char* argv[])
 		
 		if(kDown & KEY_A || kHeld & KEY_A)
 			game.update();
+		
+		if(kDown & KEY_B)
+		{
+			debug::column = 1;
+			debug::print("Debug start");
+			debug::row--;
+			debug::column = 49;
+			debug::print(debug::row);
+
+		}
+			
 		
 
 		// Cuando se llama a esta función establecemos que en el frame actual se pintará lo siguiente 
