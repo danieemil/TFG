@@ -1,7 +1,7 @@
 #ifndef _WORLD_
 #define _WORLD_
 
-#include "Entity.h"
+#include "Combat_Character.h"
 #include <vector>
 
 class World

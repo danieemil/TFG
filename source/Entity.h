@@ -11,7 +11,6 @@ class Entity
 
 public:
     // Constructores
-    Entity();
     Entity(const Entity&);
     Entity(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr);
     Entity(World* w = nullptr, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr);
@@ -19,29 +18,30 @@ public:
     Entity& operator= (const Entity&);
 
     // Métodos
-    void render();
-    void update();
+    virtual void render();
+    virtual void update();
 
     // Setters
-    void setSprite(Sprite* spr);
-    void setPosition(const Vector2d<float>& pos);
-    void setWorld(World* w);
+    virtual void setSprite(Sprite* spr);
+    virtual void setPosition(const Vector2d<float>& pos);
+    virtual void setWorld(World* w);
 
     // Getters
-    Sprite* getSprite() const;
-    const Vector2d<float>& getPosition() const;
-    World* getWorld() const;
+    virtual Sprite* getSprite() const;
+    virtual const Vector2d<float>& getPosition() const;
+    virtual World* getWorld() const;
 
     // Destructor
-    ~Entity();
+    virtual ~Entity();
 
-private:
+protected:
 
     World* world;
 
     Sprite* sprite;
     Vector2d<float> position;
 
+private:
 
 
 };

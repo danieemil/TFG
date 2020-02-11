@@ -6,12 +6,6 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Entity::Entity()
-{
-    world = nullptr;
-    sprite = nullptr;
-}
-
 Entity::Entity(const Entity& e)
 {
     world = nullptr;
@@ -105,6 +99,11 @@ void Entity::setWorld(World* w)
 Sprite* Entity::getSprite() const
 {
     return sprite;
+}
+
+const Vector2d<float>& Entity::getPosition() const
+{
+    return position;
 }
 
 World* Entity::getWorld() const

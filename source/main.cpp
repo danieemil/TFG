@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
 	//Inicializamos todo
 	init();
 
-	game.getWorld()->addEntity(new Entity(Vector2d<float>(),
+	game.getWorld()->addEntity(new Combat_Character(Vector2d<float>(),
 	game.getSpriteManager()->createSprite(0)));
 
 	debug::init(debug::N3DS_screen::N3DS_TOP);
@@ -124,11 +124,7 @@ int main(int argc, char* argv[])
 		if(kDown & KEY_B)
 		{
 			debug::column = 1;
-			debug::print("Debug start");
-			debug::row--;
-			debug::column = 49;
-			debug::print(debug::row);
-
+			debug::print("He pulsado la B " + std::to_string(debug::row) + " veces");
 		}
 			
 		
