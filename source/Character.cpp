@@ -10,12 +10,7 @@ Character::Character(const Character& c) : Entity(c)
 
 }
 
-Character::Character(const Vector2d<float>& pos, Sprite* spr) : Entity(pos, spr)
-{
-
-}
-
-Character::Character(World* w, const Vector2d<float>& pos, Sprite* spr) : Entity(w, pos, spr)
+Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w) : Entity(pos, spr, w)
 {
 
 }

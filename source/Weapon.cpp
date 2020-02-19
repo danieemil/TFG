@@ -13,12 +13,7 @@ Weapon::Weapon(const Weapon& c) : Entity(c)
 
 }
 
-Weapon::Weapon(const Vector2d<float>& pos, Sprite* spr) : Entity(pos, spr)
-{
-
-}
-
-Weapon::Weapon(World* w, const Vector2d<float>& pos, Sprite* spr, Combat_Character* cc) : Entity(w, pos, spr)
+Weapon::Weapon(const Vector2d<float>& pos, Sprite* spr, World* w, Combat_Character* cc) : Entity(pos, spr, w)
 {
     if(cc!=nullptr)
     {

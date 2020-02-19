@@ -1,27 +1,29 @@
-#ifndef _COMBAT_CHARACTER_
-#define _COMBAT_CHARACTER_
+#ifndef _PLAYER_
+#define _PLAYER_
 
-#include "Character.h"
-#include "Weapon.h"
-#include "vector"
+#include "Combat_Character.h"
+#include "InputManager.h"
+#include "Unvisual_Engine.h"
 
 
-class Combat_Character : public Character
+class Player : public Combat_Character
 {
 
 public:
     // Constructores
-    Combat_Character(const Combat_Character&);
-    Combat_Character(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr, Weapon* wp = nullptr);
+    Player(const Player&);
+    Player(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr, Weapon* wp = nullptr);
 
-    Combat_Character& operator= (const Combat_Character&);
+    Player& operator= (const Player&);
 
     // Métodos
         //Entity
-    virtual void render();
+    virtual void render() override;
     virtual void update() override;
         //Character
         //Combat_Character
+        //Player
+    void processInput();
 
     // Setters
         //Entity
@@ -31,6 +33,7 @@ public:
         //Character
         //Combat_Character
     virtual void addWeapon(Weapon* wp);
+        //Player
 
     // Getters
         //Entity
@@ -40,13 +43,12 @@ public:
         //Character
         //Combat_Character
     virtual const std::vector<Weapon*>& getWeapons() const;
+        //Player
 
     // Destructor
-    ~Combat_Character();
+    ~Player();
 
 protected:
-
-    std::vector<Weapon*> weapons;
 
 private:
 

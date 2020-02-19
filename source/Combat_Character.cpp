@@ -11,12 +11,7 @@ Combat_Character::Combat_Character(const Combat_Character& c) : Character(c)
 
 }
 
-Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr) : Character(pos, spr)
-{
-
-}
-
-Combat_Character::Combat_Character(World* w, const Vector2d<float>& pos, Sprite* spr, Weapon* wp) : Character(w, pos, spr)
+Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr, World* w, Weapon* wp) : Character(pos, spr, w)
 {
     if(wp!=nullptr)
     {

@@ -9,8 +9,7 @@ class SpriteManager
 
 public:
     // Constructores
-    SpriteManager();
-    SpriteManager(const char* sprites_path);
+    SpriteManager(const char* sprites_path = nullptr);
     SpriteManager(const SpriteManager&);
 
     SpriteManager& operator= (const SpriteManager&);

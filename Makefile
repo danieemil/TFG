@@ -184,9 +184,14 @@ clean:
 
 
 citra: all
+
 	@echo citra ...
 	@/home/tuba/Escritorio/project3ds/citra/build/bin/citra-qt $(TARGET).3dsx &
 	@echo Citra complete!
+
+3ds: all
+	$(DEVKITPRO)/tools/bin/3dslink $(TARGET).3dsx
+
 #---------------------------------------------------------------------------------
 $(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s
 #---------------------------------------------------------------------------------

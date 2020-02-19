@@ -12,8 +12,7 @@ class Entity
 public:
     // Constructores
     Entity(const Entity&);
-    Entity(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr);
-    Entity(World* w = nullptr, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr);
+    Entity(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr);
 
     Entity& operator= (const Entity&);
 

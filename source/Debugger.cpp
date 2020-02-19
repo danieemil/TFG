@@ -1,93 +1,115 @@
 #include "Debugger.h"
 
 
-namespace debug
+
+
+Debugger::Debugger(N3DS_screen screen)
 {
-    int row;
-    int column;
+    consoleInit((gfxScreen_t)((u8)screen), &console);
+    consoleSelect(&console);
+    
+    row = 1;
+    column = 1;
+}
 
-    namespace
-    {
+void Debugger::setColumn(int l_column)
+{
+    if(l_column>0) column = l_column;
+    else column = 1;
+}
 
-        PrintConsole console;
+void Debugger::setRow(int l_row)
+{
+    if(l_row>0) row = l_row;
+    else row = 1;
+}
 
-        void printLocation()
-        {
-            std::string location = "\x1b["+std::to_string(row)+";"+std::to_string(column)+"H";
+int Debugger::getColumn() const
+{
+    return column;
+}
 
-            std::cout<<location;
-        }
+int Debugger::getRow() const
+{
+    return row;
+}
 
-        void nextLine()
-        {
-            row++;
-        }
-    }
+void Debugger::clear()
+{
+    consoleClear();
+    row = 1;
+    column = 1;
+}
 
-    void init(N3DS_screen screen)
-    {
-        consoleInit((gfxScreen_t)((u8)screen), &console);
-        consoleSelect(&console);
-        
-        row = 1;
-        column = 1;
-    }
+void Debugger::print(int p)
+{
+    printLocation();
+    column += std::to_string(p).length();
+    column++;
+    std::cout<<std::to_string(p);
+}
 
-    void locate(int l_column, int l_row)
-    {
-        if(l_row>0) row = l_row;
-        else row = 1;
-        
-        if(l_column>0) column = l_column;
-        else column = 1;
-    }
+void Debugger::print(u8 u)
+{
+    printLocation();
+    column += std::to_string(u).length();
+    column++;
+    std::cout<<std::to_string(u);
+}
 
-    void clear()
-    {
-        consoleClear();
-        row = 1;
-        column = 1;
-    }
+void Debugger::print(u32 u)
+{
+    printLocation();
+    column += std::to_string(u).length();
+    column++;
+    std::cout<<std::to_string(u);
+}
 
-    void print(int p)
-    {
-        printLocation();
-        std::cout<<std::to_string(p);
-        nextLine();
-    }
+void Debugger::print(float f)
+{
+    printLocation();
+    column += std::to_string(f).length();
+    column++;
+    std::cout<<std::to_string(f);
+}
 
-    void print(u8 u)
-    {
-        printLocation();
-        std::cout<<std::to_string(u);
-        nextLine();
-    }
+void Debugger::print(double d)
+{
+    printLocation();
+    column += std::to_string(d).length();
+    column++;
+    std::cout<<std::to_string(d);
+}
 
-    void print(float f)
-    {
-        printLocation();
-        std::cout<<std::to_string(f);
-        nextLine();
-    }
+void Debugger::print(std::string s)
+{
+    printLocation();
+    column += s.length();
+    column++;
+    std::cout<<s;
+}
 
-    void print(double d)
-    {
-        printLocation();
-        std::cout<<std::to_string(d);
-        nextLine();
-    }
+void Debugger::print(void* v)
+{
+    printLocation();
+    column = column + 10;
+    std::cout<<v;
+}
 
-    void print(std::string s)
-    {
-        printLocation();
-        std::cout<<s;
-        nextLine();
-    }
+void Debugger::nextLine()
+{
+    row++;
+    column = 0;
+}
 
-    void print(void* v)
-    {
-        printLocation();
-        std::cout<<v;
-        nextLine();
-    }
+Debugger::~Debugger()
+{
+    consoleClear();
+}
+
+void Debugger::printLocation()
+{
+    std::string location = "\x1b["+std::to_string(row)+";"+std::to_string(column)+"H";
+
+    std::cout<<location;
 }

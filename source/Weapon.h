@@ -11,9 +11,8 @@ class Weapon : public Entity
 public:
     // Constructores
     Weapon(const Weapon&);
-    Weapon(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr);
-    Weapon(World* w = nullptr, const Vector2d<float>& pos = Vector2d<float>(),
-            Sprite* spr = nullptr, Combat_Character* cc = nullptr);
+    Weapon(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+            World* w = nullptr, Combat_Character* cc = nullptr);
 
     Weapon& operator= (const Weapon&);
 

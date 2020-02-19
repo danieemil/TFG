@@ -1,6 +1,9 @@
 #ifndef _UTILITIES_
 #define _UTILITIES_
 
+#include <math.h>
+
+using namespace std;
 namespace utilities
 {
     // PI DEFINITION

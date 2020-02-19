@@ -12,14 +12,7 @@ Entity::Entity(const Entity& e)
     sprite = nullptr;
 }
 
-Entity::Entity(const Vector2d<float>& pos, Sprite* spr)
-: position(pos)
-{
-    world = nullptr;
-    sprite = spr;
-}
-
-Entity::Entity(World* w, const Vector2d<float>& pos, Sprite* spr)
+Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w)
 : position(pos)
 {
     world = w;
@@ -51,9 +44,6 @@ void Entity::render()
 
 void Entity::update()
 {
-    
-    position.x += 1;
-
     if(sprite!=nullptr)
     {
         sprite->setPosition(position);

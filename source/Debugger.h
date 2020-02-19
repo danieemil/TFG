@@ -4,30 +4,44 @@
 #include "iostream"
 #include "3ds.h"
 
-
-namespace debug
+enum N3DS_screen
 {
-    enum N3DS_screen
-    {
-        N3DS_TOP = 0,
-        N3DS_BOTTOM = 1
-    };
+    N3DS_TOP = 0,
+    N3DS_BOTTOM = 1
+};
 
-    extern int column;
-    extern int row;
+class Debugger
+{
+public:
+    
+    Debugger(N3DS_screen screen);
 
-    void init(N3DS_screen screen);
+    void setColumn(int l_column);
+    void setRow(int l_row);
 
-    void locate(int l_column, int l_row);
+    int getColumn() const;
+    int getRow() const;
 
     void clear();
 
     void print(int p);
     void print(u8 u);
+    void print(u32 u);
     void print(float f);
     void print(double d);
     void print(std::string s);
     void print(void* v);
 
-}
+    void nextLine();
+
+    ~Debugger();
+
+private:
+    PrintConsole console;
+    int column = 0;
+    int row = 0;
+
+    void printLocation();
+
+};
 #endif

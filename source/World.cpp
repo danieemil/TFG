@@ -7,17 +7,18 @@
 
 World::World()
 {
-
+    player = nullptr;
 }
 
 World::World(const World& d)
 {
-
+    player = nullptr;
 }
 
-World::World(const std::vector<Entity*>& v)
+World::World(const std::vector<Entity*>& v, Player* p)
 {
     entities = v;
+    player = p;
 }
 
 World& World::operator= (const World& d)
@@ -36,9 +37,22 @@ void World::addEntity(Entity* e)
 {
     if(e!=nullptr)
     {
+        for(auto entity = entities.begin();entity!=entities.end();entity++)
+        {
+            if(e==(*entity))
+            {
+                return;
+            }
+        }
+
         entities.emplace_back(e);
         e->setWorld(this);
     }
+}
+
+void World::addPlayer(Player* p)
+{
+    player = p;
 }
 
 void World::deleteEntity(Entity* e)
@@ -68,11 +82,26 @@ void World::eraseEntity(Entity* e)
                 entities.erase(entity);
                 break;
             }
+            if(entity==entities.end())
+            {
+                break;
+            }
         }
     }
 }
 
+void World::processInput()
+{
+    player->processInput();
+}
+
 void World::render()
+{
+    renderEntities();
+    renderPlayer();
+}
+
+void World::renderEntities()
 {
     for(auto ent = entities.begin();ent!=entities.end();ent++)
     {
@@ -80,7 +109,21 @@ void World::render()
     }
 }
 
+void World::renderPlayer()
+{
+    if(player!=nullptr)
+    {
+        player->render();
+    }
+}
+
 void World::update()
+{
+    updatePlayer();
+    updateEntities();
+}
+
+void World::updateEntities()
 {
     auto ent = entities.begin();
 
@@ -102,6 +145,13 @@ void World::update()
     }
 }
 
+void World::updatePlayer()
+{
+    if(player!=nullptr)
+    {
+        player->update();
+    }
+}
 
 
 //=========================================
@@ -113,6 +163,15 @@ void World::setEntities(const std::vector<Entity*>& v)
     entities = v;
 }
 
+void World::setPlayer(Player* p)
+{
+    if(player!=nullptr)
+    {
+        delete player;
+    }
+    player = p;
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -121,6 +180,11 @@ void World::setEntities(const std::vector<Entity*>& v)
 const std::vector<Entity*>& World::getEntities() const
 {
     return entities;
+}
+
+Player* World::getPlayer() const
+{
+    return player;
 }
 
 
@@ -134,11 +198,22 @@ World::~World()
 
     while (entity!=entities.end())
     {
-        if((*entity)!=nullptr)
-        {
-            delete (*entity);
-        }
+        Entity* e = (*entity);
 
-        entities.erase(entity);
+        if(e!=nullptr)
+        {
+            unvisual::debugger->print("Borrando entidad: ");
+            unvisual::debugger->print(e);
+            unvisual::debugger->nextLine();
+            delete e;
+        }
+    }
+
+    if(player!=nullptr)
+    {
+        unvisual::debugger->print("Borrando entidad: ");
+        unvisual::debugger->print(player);
+        unvisual::debugger->nextLine();
+        delete player;
     }
 }

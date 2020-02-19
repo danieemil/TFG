@@ -4,16 +4,16 @@
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
-
-SpriteManager::SpriteManager()
-{
-    sprite_collection = NULL;
-    sprites.clear();
-}
-
 SpriteManager::SpriteManager(const char* sprites_path)
 {
-    sprite_collection = C2D_SpriteSheetLoad(sprites_path);
+    if(sprites_path!=nullptr)
+    {
+        sprite_collection = C2D_SpriteSheetLoad(sprites_path);
+    }else
+    {
+        sprite_collection = NULL;
+    }
+    
     sprites.clear();
 }
 

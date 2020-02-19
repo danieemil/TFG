@@ -10,8 +10,7 @@ class Character : public Entity
 public:
     // Constructores
     Character(const Character&);
-    Character(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr);
-    Character(World* w = nullptr, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr);
+    Character(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr);
 
     Character& operator= (const Character&);
 
