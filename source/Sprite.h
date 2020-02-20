@@ -1,12 +1,7 @@
 #ifndef _SPRITE_
 #define _SPRITE_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <citro2d.h>
-#include <3ds.h>
-#include "Utilities.h"
+#include "Unvisual_Engine.h"
 
 
 using namespace utilities;

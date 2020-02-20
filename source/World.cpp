@@ -92,7 +92,10 @@ void World::eraseEntity(Entity* e)
 
 void World::processInput()
 {
-    player->processInput();
+    if(player!=nullptr)
+    {
+        player->processInput();
+    }
 }
 
 void World::render()
@@ -202,7 +205,7 @@ World::~World()
 
         if(e!=nullptr)
         {
-            unvisual::debugger->print("Borrando entidad: ");
+            unvisual::debugger->print("Borrando Entidad: ");
             unvisual::debugger->print(e);
             unvisual::debugger->nextLine();
             delete e;
@@ -211,7 +214,7 @@ World::~World()
 
     if(player!=nullptr)
     {
-        unvisual::debugger->print("Borrando entidad: ");
+        unvisual::debugger->print("Borrando Player: ");
         unvisual::debugger->print(player);
         unvisual::debugger->nextLine();
         delete player;

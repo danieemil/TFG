@@ -1,7 +1,7 @@
 #include "Game.h"
 
 
-using namespace input;
+using namespace unvisual::input;
 
 
 //=========================================
@@ -30,12 +30,18 @@ void Game::deInit()
 
 void Game::render()
 {
-    world->render();
+    if(world!=nullptr)
+    {
+        world->render();
+    }
 }
 
 void Game::update()
 {
-    world->update();
+    if(world!=nullptr)
+    {
+        world->update();
+    }
 }
 
 void Game::loop()
@@ -69,7 +75,11 @@ void Game::processInput()
         unvisual::debugger->nextLine();
     }
 
-    world->processInput();
+    if(world!=nullptr)
+    {
+        world->processInput();
+    }
+    
     
 }
 

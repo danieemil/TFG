@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "World.h"
 
-
+using namespace unvisual;
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
@@ -40,8 +40,6 @@ void Player::update()
 
 void Player::processInput()
 {
-
-    unvisual::debugger->clear();
 
     Vector2d<float> dir = Vector2d<float>(0,0);
 

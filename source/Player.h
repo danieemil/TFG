@@ -2,7 +2,6 @@
 #define _PLAYER_
 
 #include "Combat_Character.h"
-#include "InputManager.h"
 #include "Unvisual_Engine.h"
 
 

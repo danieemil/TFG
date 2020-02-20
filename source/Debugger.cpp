@@ -3,7 +3,7 @@
 
 
 
-Debugger::Debugger(N3DS_screen screen)
+Debugger::Debugger(N3DS_screenV screen)
 {
     consoleInit((gfxScreen_t)((u8)screen), &console);
     consoleSelect(&console);

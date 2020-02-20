@@ -2,7 +2,6 @@
 #define _SPRITEMANAGER_
 
 #include "Sprite.h"
-#include <vector>
 
 class SpriteManager
 {

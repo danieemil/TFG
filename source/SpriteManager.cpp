@@ -1,4 +1,5 @@
 #include "SpriteManager.h"
+#include "Unvisual_Engine.h"
 
 
 //=========================================
@@ -130,12 +131,22 @@ SpriteManager::~SpriteManager()
 
     while (sprite!=sprites.end())
     {
-        if((*sprite)!=nullptr)
+        Sprite* spr = (*sprite);
+
+        if(spr!=nullptr)
         {
-            delete (*sprite);
+            delete spr;
         }
 
-        sprites.erase(sprite);
+        if((*sprite)==spr && sprite!=sprites.end())
+        {
+            sprites.erase(sprite);
+        }
+
+        if((*sprite)==spr && sprite!=sprites.end())
+        {
+            sprites.erase(sprite);
+        }
     }
     
 

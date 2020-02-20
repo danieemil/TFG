@@ -1,20 +1,26 @@
 #ifndef _DEBUGGER_
 #define _DEBUGGER_
 
-#include "iostream"
+#include <iostream>
 #include "3ds.h"
 
-enum N3DS_screen
+enum N3DS_screenV
 {
     N3DS_TOP = 0,
     N3DS_BOTTOM = 1
+};
+
+enum N3DS_screenH
+{
+    N3DS_LEFT = 0,
+    N3DS_RIGHT = 1
 };
 
 class Debugger
 {
 public:
     
-    Debugger(N3DS_screen screen);
+    Debugger(N3DS_screenV screen);
 
     void setColumn(int l_column);
     void setRow(int l_row);

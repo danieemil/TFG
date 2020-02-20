@@ -1,5 +1,6 @@
 #include "Sprite.h"
 #include "SpriteManager.h"
+#include "Unvisual_Engine.h"
 
 
 //=========================================
@@ -131,8 +132,12 @@ Vector2d<float> Sprite::getCenter() const
 
 Sprite::~Sprite()
 {
+    unvisual::debugger->print("Borrando sprite:");
+    unvisual::debugger->print(this);
+    unvisual::debugger->nextLine();
+    
     if(manager!=nullptr)
     {
-
+        manager->eraseSprite(this);
     }
 }
