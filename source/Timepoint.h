@@ -3,7 +3,9 @@
 
 #include "3ds.h"
 
+#define MAX_TIME 18446744073709551615
 #define FREQUENCY 268000000.0f
+
 
 class Timepoint
 {
@@ -14,7 +16,8 @@ public:
     Timepoint(const Timepoint&);
 
     Timepoint& operator= (const Timepoint& t);
-    Timepoint& operator+ (float duration);
+    void operator+ (float duration);
+    void operator+ (u64 t_duration);
     float operator- (const Timepoint& t);
     bool operator<(const Timepoint& t);
     bool operator>(const Timepoint&);

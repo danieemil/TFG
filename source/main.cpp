@@ -40,20 +40,23 @@ int main(int argc, char* argv[])
 	
 	// Delta time
 	float dt = 0.0f;
-	Timepoint* initTimeLoop = new Timepoint();
-	Timepoint* total = new Timepoint();
+	Timepoint initTimeLoop;
+	Timepoint total;
+	Timepoint limit;
 	float seg = 0.0f;
+
+	limit.operator+(10.0f);
 
 	// Main loop
 	while (aptMainLoop() && game->isRunning())
 	{
 		
-		dt = initTimeLoop->getElapsed();
-		initTimeLoop->reset();
+		dt = initTimeLoop.getElapsed();
+		initTimeLoop.reset();
 
 
 
-		seg = total->getElapsed();
+		seg = total.getElapsed();
 		
 		unvisual::debugger->setColumn(1);
 		unvisual::debugger->setRow(10);
@@ -61,7 +64,7 @@ int main(int argc, char* argv[])
 		unvisual::debugger->print(std::to_string(svcGetSystemTick()));
 		unvisual::debugger->nextLine();
 		unvisual::debugger->print("Max :  ");
-		unvisual::debugger->print("18446744073709551615");
+		unvisual::debugger->print(MAX_TIME);
 		unvisual::debugger->nextLine();
 		unvisual::debugger->nextLine();
 		unvisual::debugger->print("Delta Time:");
@@ -70,6 +73,10 @@ int main(int argc, char* argv[])
 		unvisual::debugger->nextLine();
 		unvisual::debugger->print("Time(seg):");
 		unvisual::debugger->print(seg);
+		unvisual::debugger->nextLine();
+		unvisual::debugger->nextLine();
+		unvisual::debugger->print("Left(seg):");
+		unvisual::debugger->print(limit - initTimeLoop);
 
 
 
@@ -81,7 +88,7 @@ int main(int argc, char* argv[])
 
 		game->processInput();
 
-		if(seg > 10.0f)
+		if(limit.getElapsed()!=-1 && !unvisual::clockStopped())
 		{
 			break;
 		}
@@ -98,12 +105,12 @@ int main(int argc, char* argv[])
 		unvisual::drawEnd();
 
 	}
-	unvisual::debugger->clear();
-	unvisual::debugger->nextLine();
+	//unvisual::debugger->clear();
+	//unvisual::debugger->nextLine();
 
 	if(true)
 	{
-		delete game;
+		//delete game;
 		game = nullptr;
 
 		bool yes = true;

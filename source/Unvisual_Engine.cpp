@@ -109,7 +109,25 @@ namespace unvisual
     namespace
     {
         std::vector<Timepoint*> timepoints;
+        u64 pauseAt = 0;
+        u64 resumeAt = 1;
 
+        void fixTimepoints()
+        {
+            u64 dur = resumeAt - pauseAt;
+
+            auto timepoint_it = timepoints.begin();
+
+            while(timepoint_it!=timepoints.end())
+            {
+                Timepoint* t = (*timepoint_it);
+                if(t!=nullptr)
+                {
+                    t->operator+(dur);
+                }
+                timepoint_it++;
+            }
+        }
     }
 
     void addTimepoint(Timepoint* t)
@@ -153,14 +171,46 @@ namespace unvisual
 
     void stopClock()
     {
-
+        if(resumeAt>pauseAt)
+        {
+            pauseAt = svcGetSystemTick();
+        }
     }
 
     void resumeClock()
     {
+        if(resumeAt<pauseAt)
+        {
+            resumeAt = svcGetSystemTick();
 
+            fixTimepoints();
+        }
     }
 
+    float getTimeStopped()
+    {
+        if(resumeAt>pauseAt)
+        {
+            return float((resumeAt - pauseAt)/FREQUENCY);
+        }
+
+        return float((svcGetSystemTick() - pauseAt)/FREQUENCY);
+    }
+
+    bool clockStopped()
+    {
+        return resumeAt<pauseAt;
+    }
+
+    u64 getPausedPoint()
+    {
+        if(clockStopped())
+        {
+            return pauseAt;
+        }
+
+        return svcGetSystemTick();
+    }
     
 
     ////////////////////////////

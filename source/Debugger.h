@@ -33,6 +33,7 @@ public:
     void print(int p);
     void print(u8 u);
     void print(u32 u);
+    void print(u64 u);
     void print(float f);
     void print(double d);
     void print(std::string s);

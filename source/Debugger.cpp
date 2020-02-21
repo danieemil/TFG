@@ -65,6 +65,14 @@ void Debugger::print(u32 u)
     std::cout<<std::to_string(u);
 }
 
+void Debugger::print(u64 u)
+{
+    printLocation();
+    column += std::to_string(u).length();
+    column++;
+    std::cout<<std::to_string(u);
+}
+
 void Debugger::print(float f)
 {
     printLocation();

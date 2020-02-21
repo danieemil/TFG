@@ -60,6 +60,18 @@ void Game::processInput()
 
     if(isPressed(N3DS_buttons::Key_X))
     {
+        if(unvisual::clockStopped())
+        {
+            unvisual::debugger->setRow(20);
+            unvisual::debugger->print(unvisual::getTimeStopped());
+            unvisual::resumeClock();
+        }
+        else
+        {
+            unvisual::debugger->setRow(20);
+            unvisual::debugger->print(unvisual::getTimeStopped());
+            unvisual::stopClock();
+        }
         
     }
 

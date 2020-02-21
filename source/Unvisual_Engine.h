@@ -34,6 +34,9 @@ namespace unvisual
     void clearAllTimepoints();
     void stopClock();
     void resumeClock();
+    float getTimeStopped();
+    bool clockStopped();
+    u64 getPausedPoint();
     
 
 

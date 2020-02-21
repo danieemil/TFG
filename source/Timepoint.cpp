@@ -30,16 +30,24 @@ Timepoint& Timepoint::operator= (const Timepoint& t)
     return *this;
 }
 
-Timepoint& Timepoint::operator+ (float duration)
+void Timepoint::operator+ (float duration)
 {
     point = point + (u64(u64(duration)*u64(FREQUENCY)));
+}
 
-    return *this;
+void Timepoint::operator+ (u64 t_duration)
+{
+    point = point + t_duration;
 }
 
 float Timepoint::operator- (const Timepoint& t)
 {
-    float res = (point - t.point)/FREQUENCY;
+    float res = 0;
+    
+    if(t.point < point)
+    {
+        res = (point - t.point)/FREQUENCY;
+    }
 
     return res;
 }
@@ -69,7 +77,7 @@ bool Timepoint::operator>(const Timepoint& t)
 
 void Timepoint::reset()
 {
-    point = svcGetSystemTick();
+    point = unvisual::getPausedPoint();
 }
 
 
@@ -84,7 +92,15 @@ u64 Timepoint::getPoint() const
 
 float Timepoint::getElapsed()
 {
-    float res = (svcGetSystemTick() - point)/FREQUENCY;
+
+    float res = -1;
+    
+    u64 now = unvisual::getPausedPoint();
+
+    if(now > point)
+    {
+        res = (now - point)/FREQUENCY;
+    }
 
     return res;
 }
