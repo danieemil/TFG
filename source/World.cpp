@@ -5,20 +5,16 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-World::World()
+World::World(const char* tileset_path, Player* p)
 {
-    player = nullptr;
+    player = p;
+    tilemap = new Tilemap(tileset_path);
 }
 
 World::World(const World& d)
 {
     player = nullptr;
-}
-
-World::World(const std::vector<Entity*>& v, Player* p)
-{
-    entities = v;
-    player = p;
+    tilemap = nullptr;
 }
 
 World& World::operator= (const World& d)
@@ -100,8 +96,14 @@ void World::processInput()
 
 void World::render()
 {
+    renderTilemap();
     renderEntities();
     renderPlayer();
+}
+
+void World::renderTilemap()
+{
+    tilemap->render();
 }
 
 void World::renderEntities()
@@ -161,6 +163,12 @@ void World::updatePlayer()
 //=               SETTERS   	    	  =
 //=========================================
 
+void World::setTilemap(const char* tileset_path, const char* tilemap_path)
+{
+    tilemap->setTileset(tileset_path);
+    tilemap->loadTilemap(tilemap_path);
+}
+
 void World::setEntities(const std::vector<Entity*>& v)
 {
     entities = v;
@@ -180,6 +188,11 @@ void World::setPlayer(Player* p)
 //=               GETTERS   	    	  =
 //=========================================
 
+Tilemap* World::getTilemap() const
+{
+    return tilemap;
+}
+
 const std::vector<Entity*>& World::getEntities() const
 {
     return entities;
@@ -197,6 +210,12 @@ Player* World::getPlayer() const
 
 World::~World()
 {
+
+    if(tilemap!=nullptr)
+    {
+        delete tilemap;
+    }
+
     auto entity = entities.begin();
 
     while (entity!=entities.end())

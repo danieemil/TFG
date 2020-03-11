@@ -1,3 +1,2 @@
 --atlas -f rgba8888 -z auto
-test.png
-P.png
+sprites/P.png

@@ -1,0 +1,7 @@
+--atlas -f rgba8888 -z auto
+tileset/tile1.png
+tileset/tile2.png
+tileset/tile3.png
+tileset/tile4.png
+tileset/tile5.png
+tileset/test.png

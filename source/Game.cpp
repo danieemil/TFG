@@ -7,6 +7,7 @@ using namespace unvisual::input;
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
+
 Game::Game(const char* spr_path)
 {
     manager = new SpriteManager(spr_path);
@@ -17,9 +18,13 @@ Game::Game(const char* spr_path)
 //=========================================
 //=               MÉTODOS   	    	  =
 //=========================================
+
 void Game::init(const char* spr_path)
 {
-    manager->setSprites(spr_path);
+    if(spr_path!=nullptr)
+    {
+        manager->setSprites(spr_path);
+    }
     running = true;
 }
 
@@ -104,6 +109,7 @@ bool Game::isRunning()
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
+
 void Game::setWorldEntity(Entity* e)
 {
     world->addEntity(e);
@@ -123,6 +129,7 @@ void Game::setSpriteManager(const char* spr_path)
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
+
 World* Game::getWorld() const
 {
     return world;

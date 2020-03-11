@@ -107,7 +107,7 @@ void Debugger::print(void* v)
 void Debugger::nextLine()
 {
     row++;
-    column = 0;
+    column = 1;
 }
 
 Debugger::~Debugger()

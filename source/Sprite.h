@@ -29,12 +29,14 @@ public:
     void setRotation(float angle);
     void setScale(const Vector2d<float>& scale);
     void setCenter(const Vector2d<float>& center);
+    void setDepth(float depth);
 
     // Getters
     size_t getIndex() const;
     SpriteManager* getManager() const;
     Vector2d<float> getPosition() const;
     Vector2d<float> getCenter() const;
+    Vector2d<size_t> getSize() const;
 
     // Destructor
     ~Sprite();

@@ -144,6 +144,9 @@ namespace unvisual
             Timepoint* timepoint = (*timepoint_it);
             if(timepoint==t)
             {
+                unvisual::debugger->print("Eliminando timepoint: ");
+                unvisual::debugger->print(timepoint);
+                unvisual::debugger->nextLine();
                 timepoints.erase(timepoint_it);
                 break;
             }
@@ -159,7 +162,7 @@ namespace unvisual
         {
             Timepoint* timepoint = (*timepoint_it);
             if(timepoint!=nullptr)
-            {
+            {   
                 delete timepoint;
             }
             if((*timepoint_it)==timepoint && timepoint_it!=timepoints.end())

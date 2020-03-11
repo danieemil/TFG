@@ -37,8 +37,10 @@ SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
 GRAPHICS	:=	gfx
+MAPS		:= 	$(GRAPHICS)/maps
 GFXBUILD	:=	$(BUILD)
 ROMFS		:=	romfs
+MAPSBUILD	:= 	$(ROMFS)/maps
 GFXBUILD	:=	$(ROMFS)/gfx
 
 #---------------------------------------------------------------------------------
@@ -89,6 +91,7 @@ PICAFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.v.pica)))
 SHLISTFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.shlist)))
 GFXFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.t3s)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+TMXFILES	:= 	$(foreach dir,$(MAPS),$(notdir $(wildcard $(dir)/*.tmx)))
 
 #---------------------------------------------------------------------------------
 # use CXX for linking C++ projects, CC for standard C
@@ -158,11 +161,20 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
+#---------------------------------------------------------------------------------
+# Process .tmx files into .mp files(customized)
+#---------------------------------------------------------------------------------
+MPFILES		:=	$(patsubst %.tmx, $(MAPSBUILD)/%.mp, $(TMXFILES))
+
+
 .PHONY: all clean
 
 #---------------------------------------------------------------------------------
-all: $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES)
+all: $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES) $(MAPSBUILD) $(MPFILES)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
+$(MAPSBUILD):
+	@mkdir -p $@
 
 $(BUILD):
 	@mkdir -p $@
@@ -180,7 +192,7 @@ endif
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD)
+	@rm -fr $(BUILD) $(MAPSBUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD)
 
 
 citra: all
@@ -191,6 +203,12 @@ citra: all
 
 3ds: all
 	$(DEVKITPRO)/tools/bin/3dslink $(TARGET).3dsx
+	
+
+#---------------------------------------------------------------------------------
+$(MAPSBUILD)/%.mp	: $(MAPS)/%.tmx
+#---------------------------------------------------------------------------------
+	/home/tuba/Escritorio/testing_cpp/conversor $(CURDIR)/$< $(CURDIR)/$@
 
 #---------------------------------------------------------------------------------
 $(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s

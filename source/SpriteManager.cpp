@@ -7,12 +7,11 @@
 //=========================================
 SpriteManager::SpriteManager(const char* sprites_path)
 {
+    sprite_collection = NULL;
+
     if(sprites_path!=nullptr)
     {
         sprite_collection = C2D_SpriteSheetLoad(sprites_path);
-    }else
-    {
-        sprite_collection = NULL;
     }
     
     sprites.clear();
@@ -47,8 +46,10 @@ Sprite* SpriteManager::createSprite(size_t collection_index)
         if(collection_index < C2D_SpriteSheetCount(sprite_collection)
         && collection_index >= 0)
         {
+            
             spr = new Sprite(this, collection_index);
             sprites.push_back(spr);
+            
         }
     }
 
@@ -101,6 +102,10 @@ void SpriteManager::eraseSprite(Sprite* spr)
 
 void SpriteManager::setSprites(const char* sprites_path)
 {
+    if(sprite_collection!=NULL)
+    {
+        C2D_SpriteSheetFree(sprite_collection);
+    }
     sprite_collection = C2D_SpriteSheetLoad(sprites_path);
 }
 
@@ -142,14 +147,7 @@ SpriteManager::~SpriteManager()
         {
             sprites.erase(sprite);
         }
-
-        if((*sprite)==spr && sprite!=sprites.end())
-        {
-            sprites.erase(sprite);
-        }
     }
-    
-
 
     if(sprite_collection!=NULL)
     {

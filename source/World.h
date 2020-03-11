@@ -2,6 +2,7 @@
 #define _WORLD_
 
 #include "Player.h"
+#include "Tilemap.h"
 #include <vector>
 
 class World
@@ -9,9 +10,8 @@ class World
 
 public:
     // Constructores
-    World();
+    World(const char* tileset_path = nullptr, Player* p = nullptr);
     World(const World&);
-    World(const std::vector<Entity*>& v, Player* p = nullptr);
 
     World& operator= (const World&);
 
@@ -25,6 +25,7 @@ public:
     void processInput();
 
     void render();
+    void renderTilemap();
     void renderEntities();
     void renderPlayer();
 
@@ -33,10 +34,12 @@ public:
     void updatePlayer();
 
     // Setters
+    void setTilemap(const char* tileset_path, const char* tilemap_path);
     void setEntities(const std::vector<Entity*>& v);
     void setPlayer(Player* p);
 
     // Getters
+    Tilemap* getTilemap() const;
     const std::vector<Entity*>& getEntities() const;
     Player* getPlayer() const;
 
@@ -47,6 +50,7 @@ private:
 
     std::vector<Entity*> entities;
     Player* player;
+    Tilemap* tilemap;
 
 };
 

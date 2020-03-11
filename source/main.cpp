@@ -14,28 +14,32 @@ int main(int argc, char* argv[])
 	unvisual::init();
 	unvisual::initDebugger();
 
+	const char* sprites_path = "romfs:/gfx/sprites.t3x";
+	const char* tileset_path = "romfs:/gfx/tileset.t3x";
+	const char* tilemap_path = "romfs:/maps/testMap.mp";
+
 	// Creamos el juego
 	game = new Game();
-	game->setSpriteManager("romfs:/gfx/sprites.t3x");
-	
+	game->setSpriteManager(sprites_path);
 
 	// Creamos el fondo
-	game->getWorld()->addEntity(new Entity(Vector2d<float>(),
-	game->getSpriteManager()->createSprite(0)));
-
+	game->getWorld()->setTilemap(tileset_path, tilemap_path);
+	//game->getWorld()->getTilemap()->setPosition(Vector2d<float>(20,15));
 
 	// Creamos al jugador
-	game->getWorld()->addPlayer(new Player(Vector2d<float>(50,50),
-	game->getSpriteManager()->createSprite(1)));
-
+	Sprite* spr = game->getSpriteManager()->createSprite(0);
+	game->getWorld()->addPlayer(new Player(Vector2d<float>(50,50), spr));
 	
 	// Creamos entidades
 	game->getWorld()->addEntity(new Entity(Vector2d<float>(140, 180),
-	game->getSpriteManager()->createSprite(1)));
+	game->getSpriteManager()->createSprite(0)));
 	
 
+
+	Vector2d<size_t> sc_size = Vector2d<size_t>(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN);
+
 	// Creamos una "Ventana" para dibujos en 3D y la ubicamos en la pantalla de abajo
-	Screen* sc = new Screen(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN, N3DS_screenV::N3DS_BOTTOM);
+	Screen* sc = new Screen(sc_size.x, sc_size.y, N3DS_screenV::N3DS_BOTTOM);
 	sc->setBackground(255,0,0,255);
 	
 	// Delta time
@@ -45,7 +49,7 @@ int main(int argc, char* argv[])
 	Timepoint limit;
 	float seg = 0.0f;
 
-	limit.operator+(10.0f);
+	limit.operator+(100.0f);
 
 	// Main loop
 	while (aptMainLoop() && game->isRunning())
@@ -64,7 +68,7 @@ int main(int argc, char* argv[])
 		unvisual::debugger->print(std::to_string(svcGetSystemTick()));
 		unvisual::debugger->nextLine();
 		unvisual::debugger->print("Max :  ");
-		unvisual::debugger->print(MAX_TIME);
+		unvisual::debugger->print("18446744073709551615");
 		unvisual::debugger->nextLine();
 		unvisual::debugger->nextLine();
 		unvisual::debugger->print("Delta Time:");
@@ -79,13 +83,10 @@ int main(int argc, char* argv[])
 		unvisual::debugger->print(limit - initTimeLoop);
 
 
-
-
 		// Escaneamos las teclas pulsadas(Inputs de la N3DS)
 		IM_scan();
 		
 		
-
 		game->processInput();
 
 		if(limit.getElapsed()!=-1 && !unvisual::clockStopped())
@@ -105,13 +106,22 @@ int main(int argc, char* argv[])
 		unvisual::drawEnd();
 
 	}
-	//unvisual::debugger->clear();
-	//unvisual::debugger->nextLine();
+	unvisual::debugger->clear();
+	unvisual::debugger->nextLine();
 
 	if(true)
 	{
-		//delete game;
-		game = nullptr;
+		if(game!=nullptr)
+		{
+			delete game;
+			game = nullptr;
+		}
+		
+		initTimeLoop.~Timepoint();
+		total.~Timepoint();
+		limit.~Timepoint();
+		
+		unvisual::clearAllTimepoints();
 
 		bool yes = true;
 

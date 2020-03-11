@@ -101,6 +101,11 @@ void Sprite::setCenter(const Vector2d<float>& center)
     C2D_SpriteSetCenter(&sprite, center.x, center.y);
 }
 
+void Sprite::setDepth(float depth)
+{
+    C2D_SpriteSetDepth(&sprite, depth);
+}
+
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
@@ -123,6 +128,11 @@ Vector2d<float> Sprite::getPosition() const
 Vector2d<float> Sprite::getCenter() const
 {
     return Vector2d<float>(sprite.params.center.x, sprite.params.center.y);
+}
+
+Vector2d<size_t> Sprite::getSize() const
+{
+    return Vector2d<size_t>(sprite.params.pos.w, sprite.params.pos.h);
 }
 
 
