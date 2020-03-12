@@ -141,11 +141,7 @@ Vector2d<size_t> Sprite::getSize() const
 //=========================================
 
 Sprite::~Sprite()
-{
-    unvisual::debugger->print("Borrando sprite:");
-    unvisual::debugger->print(this);
-    unvisual::debugger->nextLine();
-    
+{   
     if(manager!=nullptr)
     {
         manager->eraseSprite(this);

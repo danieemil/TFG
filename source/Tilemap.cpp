@@ -80,10 +80,13 @@ void Tilemap::update()
             pos.x = position.x;
             for (int j = 0; j < num_tiles.x; j++)
             {
-                tiles[i][j]->setPosition(pos);
-                pos.x = pos.x + position.x;
+                if(tiles[i][j]!=nullptr)
+                {
+                    tiles[i][j]->setPosition(pos);
+                }
+                pos.x = pos.x + tile_size.x;
             }
-            pos.y = pos.y + position.y;
+            pos.y = pos.y + tile_size.y;
         }
     }
 }
@@ -150,7 +153,7 @@ void Tilemap::destroyTilemap()
                 manager.deleteSprite(tiles[i][j]);
             }
             
-            delete[] tiles[num_tiles.y];
+            delete[] tiles[i];
         }
         delete[] tiles;
     }
@@ -232,6 +235,7 @@ const Vector2d<float>& Tilemap::getPosition() const
 
 Tilemap::~Tilemap()
 {
+    destroyLevel();
     destroyTilemap();
 }
 
