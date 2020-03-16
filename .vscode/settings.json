@@ -68,5 +68,6 @@
         "*.bin": "cpp",
         "map": "cpp",
         "__tree": "cpp"
-    }
+    },
+    "python.pythonPath": "env/bin/python3.6"
 }

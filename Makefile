@@ -166,11 +166,20 @@ endif
 #---------------------------------------------------------------------------------
 MPFILES		:=	$(patsubst %.tmx, $(MAPSBUILD)/%.mp, $(TMXFILES))
 
+#---------------------------------------------------------------------------------
+# Process .tsx files to generate .t3s files and images with Python
+#---------------------------------------------------------------------------------
+TSXFILES = $(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.tsx)))
+TSXFILESDIR = $(foreach dir,$(GRAPHICS), $(wildcard $(dir)/*.tsx))
+TILESETNAMES = $(patsubst %.tsx, %, $(TSXFILES))
+TILESETDIRS = $(addprefix $(GRAPHICS)/, $(TILESETNAMES))
+T3SFILES = $(patsubst %.tsx, %.t3s, $(TSXFILESDIR))
+
 
 .PHONY: all clean
 
 #---------------------------------------------------------------------------------
-all: $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES) $(MAPSBUILD) $(MPFILES)
+all: $(TILESETDIRS) $(T3SFILES) $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES) $(MAPSBUILD) $(MPFILES)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 $(MAPSBUILD):
@@ -192,7 +201,7 @@ endif
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(MAPSBUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD)
+	@rm -fr $(BUILD) $(MAPSBUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD) $(TILESETDIRS) $(T3SFILES)
 
 
 citra: all
@@ -209,6 +218,18 @@ citra: all
 $(MAPSBUILD)/%.mp	: $(MAPS)/%.tmx
 #---------------------------------------------------------------------------------
 	/home/tuba/Escritorio/testing_cpp/conversor $(CURDIR)/$< $(CURDIR)/$@
+
+#---------------------------------------------------------------------------------
+$(TILESETDIRS):
+	@mkdir -p $@
+
+%.t3s: %.tsx
+	. env/bin/activate; python crop_tilesets.py $(CURDIR)/$<
+
+
+
+
+#---------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------
 $(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s
