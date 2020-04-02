@@ -10,15 +10,16 @@ class Player : public Combat_Character
 
 public:
     // Constructores
-    Player(const Player&);
-    Player(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr, Weapon* wp = nullptr);
+    Player(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr, Collider* c = nullptr, Weapon* wp = nullptr);
+    Player(const Player& p);
 
-    Player& operator= (const Player&);
+    Player& operator= (const Player& p);
 
     // Métodos
         //Entity
-    virtual void render() override;
-    virtual void update() override;
+    void render() override;
+    void update() override;
+    void updateFromCollider();
         //Character
         //Combat_Character
         //Player
@@ -26,22 +27,24 @@ public:
 
     // Setters
         //Entity
-    virtual void setSprite(Sprite* spr);
-    virtual void setPosition(const Vector2d<float>& pos);
-    virtual void setWorld(World* w);
+    void setSprite(Sprite* spr);
+    void setPosition(const Vector2d<float>& pos);
+    void setWorld(World* w);
+    void setBody(Collider* c) override;
         //Character
         //Combat_Character
-    virtual void addWeapon(Weapon* wp);
+    void addWeapon(Weapon* wp);
         //Player
 
     // Getters
         //Entity
-    virtual Sprite* getSprite() const;
-    virtual const Vector2d<float>& getPosition() const;
-    virtual World* getWorld() const;
+    Sprite* getSprite() const;
+    const Vector2d<float>& getPosition() const;
+    World* getWorld() const;
+    Collider* getBody() const;
         //Character
         //Combat_Character
-    virtual const std::vector<Weapon*>& getWeapons() const;
+    const std::vector<Weapon*>& getWeapons() const;
         //Player
 
     // Destructor

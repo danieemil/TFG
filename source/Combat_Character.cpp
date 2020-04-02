@@ -6,12 +6,7 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Combat_Character::Combat_Character(const Combat_Character& c) : Character(c)
-{
-
-}
-
-Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr, World* w, Weapon* wp) : Character(pos, spr, w)
+Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Weapon* wp) : Character(pos, spr, w, c)
 {
     if(wp!=nullptr)
     {
@@ -19,9 +14,14 @@ Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr, Worl
     }
 }
 
-Combat_Character& Combat_Character::operator= (const Combat_Character& c)
+Combat_Character::Combat_Character(const Combat_Character& cc) : Character(cc)
 {
-    this->Character::operator=(c);
+
+}
+
+Combat_Character& Combat_Character::operator= (const Combat_Character& cc)
+{
+    Character::operator=(cc);
 
     return *this;
 }
@@ -48,6 +48,11 @@ void Combat_Character::update()
     }
 }
 
+void Combat_Character::updateFromCollider()
+{
+    Character::updateFromCollider();
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -66,6 +71,11 @@ void Combat_Character::setPosition(const Vector2d<float>& pos)
 void Combat_Character::setWorld(World* w)
 {
     Character::setWorld(w);
+}
+
+void Combat_Character::setBody(Collider* c)
+{
+    Character::setBody(c);
 }
 
 void Combat_Character::addWeapon(Weapon* wp)
@@ -93,6 +103,11 @@ const Vector2d<float>& Combat_Character::getPosition() const
 World* Combat_Character::getWorld() const
 {
     return Character::getWorld();
+}
+
+Collider* Combat_Character::getBody() const
+{
+    return Character::getBody();
 }
 
 const std::vector<Weapon*>& Combat_Character::getWeapons() const

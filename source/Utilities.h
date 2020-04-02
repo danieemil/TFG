@@ -16,6 +16,12 @@ namespace utilities
     }
 
     template <class T>
+    inline int sign(T v)
+    {
+        return (v > T(0)) - (v < T(0));
+    }
+
+    template <class T>
     class Vector2d
     {
         public:

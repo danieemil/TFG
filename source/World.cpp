@@ -158,6 +158,34 @@ void World::updatePlayer()
     }
 }
 
+void World::updateCollisions()
+{
+    updatePlayerCollisions();
+    updateEntitiesCollisions();
+}
+
+void World::updateEntitiesCollisions()
+{
+    for (auto it = entities.begin(); it!=entities.end(); it++)
+    {
+        Entity* e = (*it);
+        if(e!=nullptr)
+        {
+            e->updateFromCollider();
+        }
+    }
+    
+}
+
+void World::updatePlayerCollisions()
+{
+    if(player!=nullptr)
+    {
+        player->updateFromCollider();
+    }
+    
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =

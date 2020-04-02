@@ -6,23 +6,23 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Entity::Entity(const Entity& e)
+Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
+: world(w), sprite(spr), position(pos), body(c)
 {
-    world = nullptr;
-    sprite = nullptr;
+
 }
 
-Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w)
-: position(pos)
+Entity::Entity(const Entity& e) :
+world(nullptr), sprite(nullptr), position(e.position), body(nullptr)
 {
-    world = w;
-    sprite = spr;
+    
 }
 
 Entity& Entity::operator= (const Entity& e)
 {
     sprite = nullptr;
     world = nullptr;
+    body = nullptr;
 
     position = e.position;
     
@@ -38,15 +38,24 @@ void Entity::render()
 {
     if(sprite!=nullptr)
     {
+        sprite->setPosition(position);
         sprite->drawSprite();
     }
 }
 
 void Entity::update()
 {
-    if(sprite!=nullptr)
+    if(body!=nullptr)
     {
-        sprite->setPosition(position);
+        body->setPosition(position);
+    }
+}
+
+void Entity::updateFromCollider()
+{
+    if(body!=nullptr)
+    {
+        position = body->getPosition();
     }
 }
 
@@ -74,11 +83,21 @@ void Entity::setPosition(const Vector2d<float>& pos)
 
 void Entity::setWorld(World* w)
 {
-    if(world!=nullptr)
+    if(world!=nullptr && w!=world)
     {
         world->eraseEntity(this);
     }
     world = w;
+}
+
+void Entity::setBody(Collider* c)
+{
+    if(body!=nullptr)
+    {
+        physics::removeCollider(body);
+        delete body;
+    }
+    body = c;
 }
 
 
@@ -101,6 +120,11 @@ World* Entity::getWorld() const
     return world;
 }
 
+Collider* Entity::getBody() const
+{
+    return body;
+}
+
 
 //=========================================
 //=              DESTRUCTOR   	    	  =
@@ -116,5 +140,12 @@ Entity::~Entity()
     if(world!=nullptr)
     {
         world->eraseEntity(this);
+    }
+
+    if(body!=nullptr)
+    {
+        physics::removeCollider(body);
+        delete body;
+        body = nullptr;
     }
 }

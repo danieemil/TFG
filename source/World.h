@@ -33,6 +33,10 @@ public:
     void updateEntities();
     void updatePlayer();
 
+    void updateCollisions();
+    void updateEntitiesCollisions();
+    void updatePlayerCollisions();
+
     // Setters
     void setTilemap(const char* tileset_path, const char* tilemap_path);
     void setEntities(const std::vector<Entity*>& v);

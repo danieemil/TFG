@@ -176,11 +176,20 @@ TILESETDIRS = $(addprefix $(GRAPHICS)/, $(TILESETNAMES))
 T3SFILES = $(patsubst %.tsx, %.t3s, $(TSXFILESDIR))
 
 
-.PHONY: all clean
+.PHONY: all clean cleanall
 
 #---------------------------------------------------------------------------------
-all: $(TILESETDIRS) $(T3SFILES) $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES) $(MAPSBUILD) $(MPFILES)
+
+
+
+
+all: graphics $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
+
+graphics: $(TILESETDIRS) $(T3SFILES) $(MAPSBUILD) $(MPFILES)
+
+
 
 $(MAPSBUILD):
 	@mkdir -p $@
@@ -201,8 +210,11 @@ endif
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(MAPSBUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD) $(TILESETDIRS) $(T3SFILES)
+	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD)
 
+cleanall:
+	@echo clean ...
+	@rm -fr $(BUILD) $(MAPSBUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD) $(TILESETDIRS) $(T3SFILES)
 
 citra: all
 

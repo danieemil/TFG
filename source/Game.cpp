@@ -46,6 +46,8 @@ void Game::update()
     if(world!=nullptr)
     {
         world->update();
+        physics::step();
+        world->updateCollisions();
     }
 }
 

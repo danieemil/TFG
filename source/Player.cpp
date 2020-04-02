@@ -7,19 +7,19 @@ using namespace unvisual;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Player::Player(const Player& c) : Combat_Character(c)
+Player::Player(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Weapon* wp) : Combat_Character(pos, spr, w, c, wp)
+{
+    physics::addDynamic(c);
+}
+
+Player::Player(const Player& p) : Combat_Character(p)
 {
 
 }
 
-Player::Player(const Vector2d<float>& pos, Sprite* spr, World* w, Weapon* wp) : Combat_Character(pos, spr, w, wp)
+Player& Player::operator= (const Player& p)
 {
-    
-}
-
-Player& Player::operator= (const Player& c)
-{
-    this->Combat_Character::operator=(c);
+    this->Combat_Character::operator=(p);
 
     return *this;
 }
@@ -38,12 +38,17 @@ void Player::update()
     Combat_Character::update();
 }
 
+void Player::updateFromCollider()
+{
+    Combat_Character::updateFromCollider();
+}
+
 void Player::processInput()
 {
 
     Vector2d<float> dir = Vector2d<float>(0,0);
 
-    u8 vel = 6;
+    u8 vel = 2;
 
     if( input::isPressed(input::N3DS_buttons::Key_DUp)
     ||
@@ -116,6 +121,17 @@ void Player::setWorld(World* w)
     Combat_Character::setWorld(w);
 }
 
+void Player::setBody(Collider* c)
+{
+    if(body!=nullptr)
+    {
+        physics::removeDynamic(body);
+        delete body;
+    }
+    body = c;
+    physics::addDynamic(body);
+}
+
 void Player::addWeapon(Weapon* wp)
 {
     Combat_Character::addWeapon(wp);
@@ -138,6 +154,11 @@ const Vector2d<float>& Player::getPosition() const
 World* Player::getWorld() const
 {
     return Combat_Character::getWorld();
+}
+
+Collider* Player::getBody() const
+{
+    return Combat_Character::getBody();
 }
 
 const std::vector<Weapon*>& Player::getWeapons() const

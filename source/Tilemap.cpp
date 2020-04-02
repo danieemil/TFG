@@ -1,4 +1,5 @@
 #include "Tilemap.h"
+#include "Physics_Engine.h"
 using namespace std;
 
 
@@ -132,6 +133,8 @@ void Tilemap::generateTiles()
                         {
                             tiles[i][j]->setPosition(p);
                             tiles[i][j]->setDepth(-1);
+
+                            physics::addStatic(new AABB(Bounding_Box(p, tile_size.x, tile_size.y)));
                         }
                         p.x = p.x + tile_size.x;
                     }

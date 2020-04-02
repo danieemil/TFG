@@ -67,7 +67,8 @@
         "queue": "cpp",
         "*.bin": "cpp",
         "map": "cpp",
-        "__tree": "cpp"
+        "__tree": "cpp",
+        "cinttypes": "cpp"
     },
     "python.pythonPath": "env/bin/python3.6"
 }

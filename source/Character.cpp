@@ -5,12 +5,12 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Character::Character(const Character& c) : Entity(c)
+Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c) : Entity(pos, spr, w, c)
 {
 
 }
 
-Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w) : Entity(pos, spr, w)
+Character::Character(const Character& c) : Entity(c)
 {
 
 }
@@ -36,6 +36,11 @@ void Character::update()
     Entity::update();   
 }
 
+void Character::updateFromCollider()
+{
+    Entity::updateFromCollider();
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -56,6 +61,11 @@ void Character::setWorld(World* w)
     Entity::setWorld(w);
 }
 
+void Character::setBody(Collider* c)
+{
+    Entity::setBody(c);
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -74,6 +84,11 @@ const Vector2d<float>& Character::getPosition() const
 World* Character::getWorld() const
 {
     return Entity::getWorld();
+}
+
+Collider* Character::getBody() const
+{
+    return Entity::getBody();
 }
 
 //=========================================
