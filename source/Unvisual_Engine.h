@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <map>
 #include <vector>
-#include "Utilities.h"
 #include "Screen.h"
 #include "Timepoint.h"
 
@@ -22,10 +21,14 @@ namespace unvisual
 
 
     // Renderizado
+
     void drawBegin();
-    void drawOnScreen(Screen* sc);
-    void prepare2D(Screen* sc);
+    void drawOnCurrentScreen();
+    void prepare2D();
     void drawEnd();
+
+    void setCurrentScreen(Screen* sc);
+    Screen* getCurrentScreen();
 
 
     // Tiempo

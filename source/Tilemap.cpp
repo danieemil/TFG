@@ -53,7 +53,7 @@ Tilemap& Tilemap::operator= (const Tilemap& d)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Tilemap::render()
+void Tilemap::render(const Vector2d<float>& view_pos)
 {
     if(tiles!=nullptr)
     {
@@ -63,7 +63,7 @@ void Tilemap::render()
             {
                 if(tiles[i][j]!=nullptr)
                 {
-                    tiles[i][j]->drawSprite();
+                    tiles[i][j]->drawSprite(view_pos);
                 }
             }
         }

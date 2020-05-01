@@ -21,6 +21,19 @@ namespace utilities
         return (v > T(0)) - (v < T(0));
     }
 
+    inline float clamp(float min, float max, float value)
+    {
+        if(value < min)
+        {
+            value = min;
+        }else if(value > max)
+        {
+            value = max;
+        }
+        
+        return value;
+    }
+
     template <class T>
     class Vector2d
     {

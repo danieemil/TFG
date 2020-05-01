@@ -68,7 +68,8 @@
         "*.bin": "cpp",
         "map": "cpp",
         "__tree": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "__functional_03": "cpp"
     },
     "python.pythonPath": "env/bin/python3.6"
 }

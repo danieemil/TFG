@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
 	const char* sprites_path = "romfs:/gfx/sprites.t3x";
 	const char* tileset_path = "romfs:/gfx/TileSet.t3x";
 	const char* tilemap_path = "romfs:/maps/testMap.mp";
+	const char* tilemap_path2 = "romfs:/maps/testMap2.mp";
 
 	// Creamos el juego
 	game = new Game();
@@ -24,8 +25,10 @@ int main(int argc, char* argv[])
 	World* game_world = game->getWorld();
 
 	// Creamos el fondo
-	game_world->setTilemap(tileset_path, tilemap_path);
+	game_world->setTilemap(tileset_path, tilemap_path2);
 	//game_world->getTilemap()->setPosition(Vector2d<float>(20,15));
+
+	auto ms = game_world->getTilemap()->getMapSize();
 
 	// Creamos al jugador
 	Vector2d<float> player_position = Vector2d<float>(50,50);
@@ -34,6 +37,8 @@ int main(int argc, char* argv[])
 	Collider* player_body = new AABB(Bounding_Box(player_position, float(player_size.x), float(player_size.y)));
 	Player* player = new Player(player_position, player_sprite, game_world, player_body);
 	game_world->addPlayer(player);
+
+	const Vector2d<float>* p_position = &player->getPosition();
 	
 	// Creamos entidades
 
@@ -51,6 +56,8 @@ int main(int argc, char* argv[])
 	// Creamos una "Ventana" para dibujos en 3D y la ubicamos en la pantalla de abajo
 	Screen* sc = new Screen(sc_size.x, sc_size.y, N3DS_screenV::N3DS_BOTTOM);
 	sc->setBackground(255,0,0,255);
+	sc->setTargetPosition(p_position);
+	unvisual::setCurrentScreen(sc);
 	
 	// Delta time
 	float dt = 0.0f;
@@ -107,8 +114,8 @@ int main(int argc, char* argv[])
 		game->update();
 
 		unvisual::drawBegin();
-		unvisual::drawOnScreen(sc);
-		unvisual::prepare2D(sc);
+		unvisual::drawOnCurrentScreen();
+		unvisual::prepare2D();
 
 		// Renderizamos el juego entero en la patnalla seleccionada
 		game->render();

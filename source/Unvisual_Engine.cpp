@@ -75,22 +75,35 @@ namespace unvisual
     ///////////////////////////
     //      Renderizado      //
     ///////////////////////////
+
+    namespace
+    {
+        Screen* current_screen = nullptr;
+    }
+
+
     void drawBegin()
     {
         // Cuando se llama a esta función establecemos que en el frame actual se pintará lo siguiente 
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     }
 
-    void drawOnScreen(Screen* sc)
+    void drawOnCurrentScreen()
     {
-        C3D_FrameDrawOn(sc->getTarget());
-		C3D_RenderTargetClear(sc->getTarget(),C3D_CLEAR_ALL, sc->getBackground(), 0);
+        if(current_screen!=nullptr)
+        {
+            C3D_FrameDrawOn(current_screen->getRenderer());
+		    C3D_RenderTargetClear(current_screen->getRenderer(),C3D_CLEAR_ALL, current_screen->getBackground(), 0);
+        }
     }
 
-    void prepare2D(Screen* sc)
+    void prepare2D()
     {
-        C2D_SceneBegin(sc->getTarget());
-        C2D_Prepare();
+        if(current_screen!=nullptr)
+        {
+            C2D_SceneBegin(current_screen->getRenderer());
+            C2D_Prepare();
+        }
     }
 
     void drawEnd()
@@ -101,6 +114,17 @@ namespace unvisual
 		// A partir de esta línea acaba lo que se dibujaría en el frame actual y pasa al siguiente
 		C3D_FrameEnd(0);
     }
+
+    void setCurrentScreen(Screen* sc)
+    {
+        current_screen = sc;
+    }
+
+    Screen* getCurrentScreen()
+    {
+        return current_screen;
+    }
+
 
 
     //////////////////////////

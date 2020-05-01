@@ -8,15 +8,14 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Weapon::Weapon(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Combat_Character* cc) : Entity(pos, spr, w, c)
+Weapon::Weapon(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Combat_Character* cc)
+: Entity(pos, spr, w, c), character(cc)
 {
-    if(cc!=nullptr)
-    {
-        character = cc;
-    }
+
 }
 
-Weapon::Weapon(const Weapon& w) : Entity(w)
+Weapon::Weapon(const Weapon& w)
+: Entity(w), character(w.character)
 {
 
 }
@@ -32,9 +31,9 @@ Weapon& Weapon::operator= (const Weapon& w)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Weapon::render()
+void Weapon::render(const Vector2d<float>& view_pos)
 {
-    Entity::render();
+    Entity::render(view_pos);
 }
 
 void Weapon::update()
@@ -72,6 +71,11 @@ void Weapon::setBody(Collider* c)
     Entity::setBody(c);
 }
 
+void Weapon::setVelocity(const Vector2d<float>& vel)
+{
+    Entity::setVelocity(vel);
+}
+
 void Weapon::setCharacter(Combat_Character* cc)
 {
     if(cc!=nullptr)
@@ -103,6 +107,16 @@ World* Weapon::getWorld() const
 Collider* Weapon::getBody() const
 {
     return Entity::getBody();
+}
+
+const Vector2d<float>& Weapon::getVelocity() const
+{
+    return Entity::getVelocity();
+}
+
+const Vector2d<float>& Weapon::getPrePosition() const
+{
+    return Entity::getPrePosition();
 }
 
 Combat_Character* Weapon::getCharacter() const

@@ -94,31 +94,68 @@ void World::processInput()
     }
 }
 
+//Scroll 2D : Centramos al jugador en medio de la pantalla
+Vector2d<float> World::scroll2D()
+{
+    Vector2d<float> view_pos;
+    const Vector2d<float>* target = nullptr;
+
+    Screen* sc = unvisual::getCurrentScreen();
+    if(sc!=nullptr)
+    {
+        target = sc->getTargetPosition();
+
+        if(target!=nullptr)
+        {
+            Vector2d<float> position = *target;
+            Vector2d<float> sc_size = Vector2d<float>(sc->getWidth(), sc->getHeight());
+            Vector2d<float> half_sc = sc_size/2.0f;
+            Vector2d<float> sc_pos = position - half_sc;
+            if(tilemap!=nullptr)
+            {
+                Vector2d<float> Tpos = tilemap->getPosition();
+                Vector2d<int> auxInt = tilemap->getMapSize();
+                Vector2d<float> Tsize = Vector2d<float>(float(auxInt.x),float(auxInt.y));
+                Vector2d<float> TPSCM = Tpos + Tsize - sc_size;
+
+                sc_pos.x = clamp(Tpos.x, TPSCM.x, sc_pos.x);
+                sc_pos.y = clamp(Tpos.y, TPSCM.y, sc_pos.y);
+            }
+            sc->setPosition(sc_pos);
+            view_pos = sc_pos;
+        }
+        
+    }
+    return view_pos;
+}
+
 void World::render()
 {
-    renderTilemap();
-    renderEntities();
-    renderPlayer();
+    Vector2d<float> view_pos;
+    view_pos = scroll2D();
+    renderTilemap(view_pos);
+    renderEntities(view_pos);
+    renderPlayer(view_pos);
 }
 
-void World::renderTilemap()
+void World::renderTilemap(const Vector2d<float>& view_pos)
 {
-    tilemap->render();
+    tilemap->render(view_pos);
 }
 
-void World::renderEntities()
+void World::renderEntities(const Vector2d<float>& view_pos)
 {
     for(auto ent = entities.begin();ent!=entities.end();ent++)
     {
-        (*ent)->render();
+        (*ent)->render(view_pos);
     }
 }
 
-void World::renderPlayer()
+void World::renderPlayer(const Vector2d<float>& view_pos)
 {
     if(player!=nullptr)
     {
-        player->render();
+        player->render(view_pos);
     }
 }
 

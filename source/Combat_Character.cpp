@@ -6,7 +6,8 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Weapon* wp) : Character(pos, spr, w, c)
+Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Weapon* wp)
+: Character(pos, spr, w, c)
 {
     if(wp!=nullptr)
     {
@@ -14,7 +15,8 @@ Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr, Worl
     }
 }
 
-Combat_Character::Combat_Character(const Combat_Character& cc) : Character(cc)
+Combat_Character::Combat_Character(const Combat_Character& cc)
+: Character(cc)
 {
 
 }
@@ -30,12 +32,12 @@ Combat_Character& Combat_Character::operator= (const Combat_Character& cc)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Combat_Character::render()
+void Combat_Character::render(const Vector2d<float>& view_pos)
 {
-    Character::render();
+    Character::render(view_pos);
     for(auto it = weapons.begin();it!=weapons.end();it++)
     {
-        (*it)->render();
+        (*it)->render(view_pos);
     }
 }
 
@@ -78,6 +80,11 @@ void Combat_Character::setBody(Collider* c)
     Character::setBody(c);
 }
 
+void Combat_Character::setVelocity(const Vector2d<float>& vel)
+{
+    Character::setVelocity(vel);
+}
+
 void Combat_Character::addWeapon(Weapon* wp)
 {
     if(wp!=nullptr)
@@ -108,6 +115,16 @@ World* Combat_Character::getWorld() const
 Collider* Combat_Character::getBody() const
 {
     return Character::getBody();
+}
+
+const Vector2d<float>& Combat_Character::getVelocity() const
+{
+    return Character::getVelocity();
+}
+
+const Vector2d<float>& Combat_Character::getPrePosition() const
+{
+    return Character::getPrePosition();
 }
 
 const std::vector<Weapon*>& Combat_Character::getWeapons() const

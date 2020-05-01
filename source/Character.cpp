@@ -5,12 +5,14 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c) : Entity(pos, spr, w, c)
+Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
+: Entity(pos, spr, w, c)
 {
 
 }
 
-Character::Character(const Character& c) : Entity(c)
+Character::Character(const Character& c)
+: Entity(c)
 {
 
 }
@@ -26,9 +28,9 @@ Character& Character::operator= (const Character& c)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Character::render()
+void Character::render(const Vector2d<float>& view_pos)
 {
-    Entity::render();
+    Entity::render(view_pos);
 }
 
 void Character::update()
@@ -66,6 +68,11 @@ void Character::setBody(Collider* c)
     Entity::setBody(c);
 }
 
+void Character::setVelocity(const Vector2d<float>& vel)
+{
+    Entity::setVelocity(vel);
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -89,6 +96,16 @@ World* Character::getWorld() const
 Collider* Character::getBody() const
 {
     return Entity::getBody();
+}
+
+const Vector2d<float>& Character::getVelocity() const
+{
+    return Entity::getVelocity();
+}
+
+const Vector2d<float>& Character::getPrePosition() const
+{
+    return Entity::getPrePosition();
 }
 
 //=========================================

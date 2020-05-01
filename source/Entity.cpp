@@ -7,13 +7,13 @@
 //=========================================
 
 Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
-: world(w), sprite(spr), position(pos), body(c)
+: world(w), sprite(spr), position(pos), pre_position(pos), body(c), velocity()
 {
 
 }
 
 Entity::Entity(const Entity& e) :
-world(nullptr), sprite(nullptr), position(e.position), body(nullptr)
+world(nullptr), sprite(nullptr), position(e.position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity)
 {
     
 }
@@ -25,6 +25,8 @@ Entity& Entity::operator= (const Entity& e)
     body = nullptr;
 
     position = e.position;
+    pre_position = e.pre_position;
+    velocity = e.velocity;
     
     return *this;
 }
@@ -34,17 +36,20 @@ Entity& Entity::operator= (const Entity& e)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Entity::render()
+void Entity::render(const Vector2d<float>& view_pos)
 {
     if(sprite!=nullptr)
     {
         sprite->setPosition(position);
-        sprite->drawSprite();
+        sprite->drawSprite(view_pos);
     }
 }
 
 void Entity::update()
 {
+    pre_position = position;
+    position = position + velocity;
+
     if(body!=nullptr)
     {
         body->setPosition(position);
@@ -100,6 +105,11 @@ void Entity::setBody(Collider* c)
     body = c;
 }
 
+void Entity::setVelocity(const Vector2d<float>& vel)
+{
+    velocity = vel;
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -123,6 +133,16 @@ World* Entity::getWorld() const
 Collider* Entity::getBody() const
 {
     return body;
+}
+
+const Vector2d<float>& Entity::getVelocity() const
+{
+    return velocity;
+}
+
+const Vector2d<float>& Entity::getPrePosition() const
+{
+    return pre_position;
 }
 
 

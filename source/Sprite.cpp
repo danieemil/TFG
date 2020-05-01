@@ -3,33 +3,33 @@
 #include "Unvisual_Engine.h"
 
 
+using namespace unvisual;
+
+
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Sprite::Sprite()
+Sprite::Sprite(SpriteManager* man, size_t collection_index, const Vector2d<float>& pos)
+: index(collection_index), position(pos), manager(man), sprite()
 {
-    index = -1;
-    manager = nullptr;
+    if(manager!=nullptr)
+    {
+        C2D_SpriteFromSheet(&sprite, manager->getSpriteCollection(), index);
+    }
 }
 
 Sprite::Sprite(const Sprite& spr)
+: index(spr.index), position(spr.position), manager(nullptr), sprite()
+{
+
+}
+
+Sprite& Sprite::operator= (const Sprite& spr)
 {
     index = spr.index;
+    position = spr.position;
     manager = nullptr;
-}
-
-Sprite::Sprite(SpriteManager* man, size_t collection_index)
-{
-
-    index = collection_index;
-    manager = man;
-    C2D_SpriteFromSheet(&sprite, manager->getSpriteCollection(), index);
-}
-
-Sprite& Sprite::operator= (const Sprite& s)
-{
-    index = s.index; 
     
     return *this;
 }
@@ -39,8 +39,12 @@ Sprite& Sprite::operator= (const Sprite& s)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Sprite::drawSprite()
+void Sprite::drawSprite(const Vector2d<float>& view_pos)
 {
+    // Necesario para aplicar scroll 2D personalizado
+    Vector2d<float> p = position - view_pos;
+
+    C2D_SpriteSetPos(&sprite, p.x, p.y);
     C2D_DrawSprite(&sprite);
 }
 
@@ -81,9 +85,9 @@ void Sprite::setRawManager(SpriteManager* man)
     manager = man;
 }
 
-void Sprite::setPosition(const Vector2d<float>& position)
+void Sprite::setPosition(const Vector2d<float>& pos)
 {
-    C2D_SpriteSetPos(&sprite, position.x, position.y);
+    position = pos;
 }
 
 void Sprite::setRotation(float angle)
@@ -120,9 +124,9 @@ SpriteManager* Sprite::getManager() const
     return manager;
 }
 
-Vector2d<float> Sprite::getPosition() const
+const Vector2d<float>& Sprite::getPosition() const
 {
-    return Vector2d<float>(sprite.params.pos.x, sprite.params.pos.y);
+    return position;;
 }
 
 Vector2d<float> Sprite::getCenter() const

@@ -18,7 +18,7 @@ public:
     Tilemap& operator= (const Tilemap&);
 
     // Métodos
-    void render();
+    void render(const Vector2d<float>& view_pos = Vector2d<float>());
     void update();
     void loadTilemap(const char* tilemap);
     void generateTiles();

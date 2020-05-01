@@ -2,6 +2,7 @@
 #define _SCREEN_
 
 #include <citro2d.h>
+#include "Utilities.h"
 #include "Debugger.h"
 
 #define DISPLAY_TRANSFER_FLAGS \
@@ -27,19 +28,26 @@ public:
     // Setters
     void setScreen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch = N3DS_screenH::N3DS_LEFT);
     void setBackground(u8 r, u8 g, u8 b, u8 a);
+    void setPosition(const utilities::Vector2d<float>& pos);
+    void setTargetPosition(const utilities::Vector2d<float>* t_pos);
 
     // Getters
-    C3D_RenderTarget* getTarget() const;
+    C3D_RenderTarget* getRenderer() const;
     int getWidth() const;
     int getHeight() const;
     int getBackground() const;
+    const utilities::Vector2d<float>& getPosition() const;
+    const utilities::Vector2d<float>* getTargetPosition() const;
 
     // Destructor
     ~Screen();
 
 private:
-    C3D_RenderTarget* target;
+    
     int width, height;
+    utilities::Vector2d<float> position;
+    const utilities::Vector2d<float>* target_position;
+    C3D_RenderTarget* renderer;
     int background_color;
 
 };

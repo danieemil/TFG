@@ -24,10 +24,12 @@ public:
 
     void processInput();
 
+    Vector2d<float> scroll2D();
+
     void render();
-    void renderTilemap();
-    void renderEntities();
-    void renderPlayer();
+    void renderTilemap(const Vector2d<float>& view_pos = Vector2d<float>());
+    void renderEntities(const Vector2d<float>& view_pos = Vector2d<float>());
+    void renderPlayer(const Vector2d<float>& view_pos = Vector2d<float>());
 
     void update();
     void updateEntities();
