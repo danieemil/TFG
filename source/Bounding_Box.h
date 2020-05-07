@@ -11,8 +11,9 @@ class Bounding_Box
 
 public:
     // Constructores
-    Bounding_Box(const Vector2d<float>& min_pos, float width, float height);
+    Bounding_Box();
     Bounding_Box(const Vector2d<float>& min_pos, const Vector2d<float>& max_pos);
+    Bounding_Box(const Vector2d<float>& min_pos, float width, float height);
     Bounding_Box(const Bounding_Box&);
 
     Bounding_Box& operator= (const Bounding_Box& bb);

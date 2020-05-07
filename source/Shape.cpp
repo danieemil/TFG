@@ -5,19 +5,22 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Shape::Shape()
+Shape::Shape(const Vector2d<float>& pos)
+: position(pos)
 {
     
 }
 
-Shape::Shape(const Shape& c)
+Shape::Shape(const Shape& s)
+: position(s.position), type(s.type)
 {
-    type = c.type;
+    
 }
 
-Shape& Shape::operator= (const Shape& c)
+Shape& Shape::operator= (const Shape& s)
 {
-    type = c.type;
+    position = s.position;
+    type = s.type;
 
     return *this;
 }
@@ -34,10 +37,19 @@ Shape& Shape::operator= (const Shape& c)
 //=               SETTERS   	    	  =
 //=========================================
 
+void Shape::setPosition(const Vector2d<float>& pos)
+{
+    position = pos;
+}
 
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
+
+const Vector2d<float>& Shape::getPosition() const
+{
+    return position;
+}
 
 const Shape_Type& Shape::getType() const
 {

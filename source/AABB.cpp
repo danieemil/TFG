@@ -5,22 +5,26 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-AABB::AABB(const Bounding_Box& bb) :
-Collider(bb)
+AABB::AABB(const Vector2d<float>& pos, const Vector2d<float>& min_rel, const Vector2d<float>& max_rel)
+: Shape(pos), min(min_rel), max(max_rel), min_pos(pos+min_rel), max_pos(pos+max_rel)
 {
-    type = Collider_Type::AABB;
+    type = Shape_Type::AABB;
 }
 
-AABB::AABB(const AABB& ab) :
-Collider(ab)
+AABB::AABB(const AABB& ab)
+: Shape(ab), min(ab.min), max(ab.max), min_pos(ab.min_pos), max_pos(ab.max_pos)
 {
-    type = Collider_Type::AABB;
+    type = Shape_Type::AABB;
 }
 
 AABB& AABB::operator= (const AABB& ab)
 {
-    Collider::operator=(ab);
-    type = Collider_Type::AABB;
+    Shape::operator=(ab);
+    min = ab.min;
+    max = ab.max;
+    min_pos = ab.min_pos;
+    max_pos = ab.max_pos;
+    type = Shape_Type::AABB;
 
     return *this;
 }
@@ -30,36 +34,15 @@ AABB& AABB::operator= (const AABB& ab)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-bool AABB::detect(Collider* c)
+bool AABB::intersect(Shape* s)
 {
-    if(c!=nullptr)
+    if(s!=nullptr)
     {
-        if(c->getType()==Collider_Type::AABB)
+        if(s->getType()==Shape_Type::AABB)
         {
-            return detect(static_cast<AABB*>(c));
+            return intersect(static_cast<AABB*>(s));
         }
     }
-    return false;
-}
-
-void AABB::intersect(Collider* c)
-{
-    if(c!=nullptr)
-    {
-        if(c->getType()==Collider_Type::AABB)
-        {
-            intersect(static_cast<AABB*>(c));
-        }
-    }
-}
-
-bool AABB::detect(AABB* ab)
-{
-    if(ab!=nullptr)
-    {
-        return bounds.intersects(ab->bounds);
-    }
-    
     return false;
 }
 
@@ -67,17 +50,31 @@ bool AABB::detect(AABB* ab)
 *   (this)  -> collisionable dinámico
 *   (ab)    -> collisionable estático
 */
-void AABB::intersect(AABB* ab)
+bool AABB::intersect(AABB* ab)
 {
-    if(detect(ab))
+    if(ab!=nullptr)
     {
-        Vector2d<float> halfA = bounds.getSize();
-        halfA = halfA/2.0f;
-        Vector2d<float> halfB = ab->bounds.getSize();
-        halfB = halfB/2.0f;
-        
-        Vector2d<float> centerA = bounds.getCenter();
-        Vector2d<float> centerB = ab->bounds.getCenter();
+        // Detectar AABB vs AABB
+        Vector2d<float> sizeA = max_pos - min_pos;
+        Vector2d<float> sizeB = ab->max_pos - ab->min_pos;
+        Vector2d<float> m = ab->min_pos;
+
+        if (m.x > min_pos.x + sizeA.x || min_pos.x > m.x + sizeB.x)
+        {
+            return false;
+        }
+
+        if (m.y > min_pos.y + sizeA.y || min_pos.y > m.y + sizeB.y)
+        {
+            return false;
+        }
+
+        // Corregir AABB(this) para que no colisiones con AABB(ab)
+        Vector2d<float> halfA = sizeA/2.0f;
+        Vector2d<float> halfB = sizeB/2.0f;
+
+        Vector2d<float> centerA = (max_pos + min_pos) / 2.0f;
+        Vector2d<float> centerB = (ab->max_pos + ab->min_pos) / 2.0f;
 
         Vector2d<float> distance = centerB - centerA;
 
@@ -96,9 +93,15 @@ void AABB::intersect(AABB* ab)
         {
             posY = centerB.y + (halfB.y + halfA.y) * float(sign(distance.y))*(-1);
         }
-        
-        setCenter(Vector2d<float>(posX, posY));
+
+        posX = (posX - halfA.x) - min.x;
+        posY = (posY - halfA.y) - min.y;
+
+        setPosition(Vector2d<float>(posX, posY));
+
+        return true;
     }
+    return false;
 }
 
 
@@ -107,19 +110,12 @@ void AABB::intersect(AABB* ab)
 //=               SETTERS   	    	  =
 //=========================================
 
-void AABB::setPosition(const Vector2d<float>& min_pos)
+void AABB::setPosition(const Vector2d<float>& pos)
 {
-    Collider::setPosition(min_pos);
-}
+    Shape::setPosition(pos);
 
-void AABB::setSize(const Vector2d<float>& size)
-{
-    Collider::setSize(size);
-}
-
-void AABB::setCenter(const Vector2d<float>& center)
-{
-    Collider::setCenter(center);
+    min_pos = position + min;
+    max_pos = position + max;
 }
 
 
@@ -129,22 +125,22 @@ void AABB::setCenter(const Vector2d<float>& center)
 
 const Vector2d<float>& AABB::getPosition() const
 {
-    return Collider::getPosition();
+    return Shape::getPosition();
 }
 
-const Vector2d<float>& AABB::getSize() const
+const Vector2d<float>& AABB::getMin() const
 {
-    return Collider::getSize();
+    return min_pos;
 }
 
-Vector2d<float> AABB::getCenter() const
+const Vector2d<float>& AABB::getMax() const
 {
-    return Collider::getCenter();
+    return max_pos;
 }
 
-const Collider_Type& AABB::getType() const
+const Shape_Type& AABB::getType() const
 {
-    return Collider::getType();
+    return Shape::getType();
 }
 
 

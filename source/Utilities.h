@@ -78,12 +78,20 @@ namespace utilities
         }
         Vector2d<T> operator-(const Vector2d<T>& v) const{ return Vector2d<T>(x-v.x, y-v.y); }
         Vector2d<T> operator-(const float& f) const{ return Vector2d<T>(x-f, y-f); }
+        void operator-=(const Vector2d<T>& v){
+            x-=v.x;
+            y-=v.y;
+        }
         Vector2d<T> operator*(const float& f) const{ return Vector2d<T>(f*x, f*y); }
         void operator*=(const float& f){ 
             x = f*x;
             y = f*y;
         }
         Vector2d<T> operator/(const float& f) const{ return Vector2d<T>(x/f, y/f); }
+        void operator/=(const float& f){
+            x = x/f;
+            y = y/f;
+        }
         Vector2d<T> operator=(const Vector2d<T> t){this->x = t.x; this->y = t.y;  return *this;}
         bool operator==(const Vector2d<T> t) const
         {

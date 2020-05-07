@@ -160,7 +160,10 @@ namespace physics
                 Collider* col = (*st);
                 if(c!=col)
                 {
-                    c->intersect(col);
+                    if(c->intersectBounds(col))
+                    {
+                        c->intersectShapes(col);
+                    }
                 }
             }
         }
@@ -176,7 +179,10 @@ namespace physics
                 Collider* col = (*cin);
                 if(c!=col)
                 {
-                    c->intersect(col);
+                    if(c->intersectBounds(col))
+                    {
+                        c->intersectShapes(col);
+                    }
                 }
             }
         }
@@ -192,7 +198,10 @@ namespace physics
                 Collider* col = (*dyn);
                 if(c!=col)
                 {
-                    c->intersect(col);
+                    if(c->intersectBounds(col))
+                    {
+                        c->intersectShapes(col);
+                    }
                 }
             }
         }
@@ -210,14 +219,20 @@ namespace physics
                 for(auto st = statics.begin(); st!=statics.end(); st++)
                 {
                     Collider* col = (*st);
-                    c->intersect(col);
+                    if(c->intersectBounds(col))
+                    {
+                        c->intersectShapes(col);
+                    }
                 }
 
                 // Dinámico vs Cinemáticos
                 for(auto cin = cinematics.begin(); cin!=cinematics.end(); cin++)
                 {
                     Collider* col = (*cin);
-                    c->intersect(col);
+                    if(c->intersectBounds(col))
+                    {
+                        c->intersectShapes(col);
+                    }
                 }
 
                 // Dinámico vs Dinámico ¿Cuál se corrige?(¿Resolución por impulso?, ¿Alternativas?)
@@ -226,7 +241,10 @@ namespace physics
                     Collider* col = (*dyn2);
                     if(c!=col)
                     {
-                        c->intersect(col);
+                        if(c->intersectBounds(col))
+                        {
+                            c->intersectShapes(col);
+                        }
                     }
                 }
             }

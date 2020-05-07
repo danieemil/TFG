@@ -5,6 +5,11 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
+Bounding_Box::Bounding_Box()
+{
+    
+}
+
 Bounding_Box::Bounding_Box(const Vector2d<float>& min_pos, float width, float height) :
 min(min_pos),
 size(width, height)

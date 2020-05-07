@@ -134,7 +134,7 @@ void Tilemap::generateTiles()
                             tiles[i][j]->setPosition(p);
                             tiles[i][j]->setDepth(-1);
 
-                            physics::addStatic(new AABB(Bounding_Box(p, tile_size.x, tile_size.y)));
+                            physics::addStatic(new Collider(new AABB(p, Vector2d<float>(0,0), Vector2d<float>(tile_size.x, tile_size.y))));
                         }
                         p.x = p.x + tile_size.x;
                     }
