@@ -5,21 +5,21 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Shape::Shape(const Vector2d<float>& pos)
+Shape::Shape(Vector2d<float>* pos)
 : position(pos)
 {
     
 }
 
 Shape::Shape(const Shape& s)
-: position(s.position), type(s.type)
+: position(nullptr), type(s.type)
 {
     
 }
 
 Shape& Shape::operator= (const Shape& s)
 {
-    position = s.position;
+    position = nullptr;
     type = s.type;
 
     return *this;
@@ -30,14 +30,20 @@ Shape& Shape::operator= (const Shape& s)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-
+void Shape::changePosition(const Vector2d<float>& pos)
+{
+    if(position!=nullptr)
+    {
+        *position = pos;
+    }
+}
 
 
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
 
-void Shape::setPosition(const Vector2d<float>& pos)
+void Shape::setPosition(Vector2d<float>* pos)
 {
     position = pos;
 }
@@ -46,7 +52,7 @@ void Shape::setPosition(const Vector2d<float>& pos)
 //=               GETTERS   	    	  =
 //=========================================
 
-const Vector2d<float>& Shape::getPosition() const
+Vector2d<float>* Shape::getPosition() const
 {
     return position;
 }

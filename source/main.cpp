@@ -34,8 +34,8 @@ int main(int argc, char* argv[])
 	Vector2d<float> player_position = Vector2d<float>(50,50);
 	Sprite* player_sprite = game->getSpriteManager()->createSprite(0);
 	Vector2d<size_t> player_size = player_sprite->getSize();
-	Collider* player_body = new Collider(new AABB(player_position, Vector2d<float>(0,0), Vector2d<float>(player_size.x, player_size.y/2.0f)));
-	player_body->addShape(new AABB(player_position, Vector2d<float>(0,player_size.y/2.0f), Vector2d<float>(player_size.x/5.0f,player_size.y)));
+	Collider* player_body = new Collider(player_position, new AABB(Vector2d<float>(0,0), Vector2d<float>(player_size.x, player_size.y/2.0f)));
+	player_body->addShape(new AABB(Vector2d<float>(0,player_size.y/2.0f), Vector2d<float>(player_size.x/5.0f,player_size.y)));
 	Player* player = new Player(player_position, player_sprite, game_world, player_body);
 	game_world->addPlayer(player);
 
@@ -46,8 +46,8 @@ int main(int argc, char* argv[])
 	Vector2d<float> entity_position = Vector2d<float>(140, 180);
 	Sprite* entity_sprite = game->getSpriteManager()->createSprite(0);
 	Vector2d<size_t> entity_size = entity_sprite->getSize();
-	Collider* entity_body = new Collider(new AABB(entity_position, Vector2d<float>(0,0), Vector2d<float>(entity_size.x, entity_size.y)));
-	entity_body->addShape(new AABB(entity_position, Vector2d<float>(0,entity_size.y/2.0f), Vector2d<float>(entity_size.x/5.0f,entity_size.y)));
+	Collider* entity_body = new Collider(entity_position, new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x, entity_size.y/2.0f)));
+	entity_body->addShape(new AABB(Vector2d<float>(0,entity_size.y/2.0f), Vector2d<float>(entity_size.x/5.0f,entity_size.y)));
 	Entity* entity = new Entity(entity_position, entity_sprite, game_world, entity_body);
 	game_world->addEntity(entity);
 	physics::addStatic(entity_body);

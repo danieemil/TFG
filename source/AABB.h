@@ -8,20 +8,22 @@ class AABB : public Shape
 
 public:
     // Constructores
-    AABB(const Vector2d<float>& pos, const Vector2d<float>& min_rel, const Vector2d<float>& max_rel);
+    AABB(const Vector2d<float>& min_rel, const Vector2d<float>& max_rel, Vector2d<float>* pos = nullptr);
     AABB(const AABB& ab);
 
     AABB& operator= (const AABB& ab);
 
     // Métodos
-    bool intersect(Shape* s);
+    bool intersect(Shape* s) override;
     bool intersect(AABB* ab);
 
+    void changePosition(const Vector2d<float>& pos) override;
+
     // Setters
-    void setPosition(const Vector2d<float>& pos) override;
+    void setPosition(Vector2d<float>* pos) override;
 
     // Getters
-    const Vector2d<float>& getPosition() const override;
+    Vector2d<float>* getPosition() const override;
     const Vector2d<float>& getMin() const override;
     const Vector2d<float>& getMax() const override;
     const Shape_Type& getType() const override;
@@ -33,7 +35,6 @@ public:
 private:
 
     Vector2d<float> min, max;
-    Vector2d<float> min_pos, max_pos;
 
 };
 

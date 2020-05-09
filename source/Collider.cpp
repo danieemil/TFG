@@ -5,17 +5,13 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Collider::Collider(Shape* s)
+Collider::Collider(const Vector2d<float>& pos, Shape* s)
+: position(pos)
 {
     if(s!=nullptr)
     {
         addShape(s);
     }
-}
-
-Collider::Collider(const std::vector<Shape*>& s)
-{
-    shapes = s;
 }
 
 Collider::Collider(const Collider& c)
@@ -43,6 +39,9 @@ Collider& Collider::operator= (const Collider& c)
         }
     }
 
+    position = c.position;
+    bounds = c.bounds;
+
     return *this;
 }
 
@@ -63,6 +62,7 @@ void Collider::addShape(Shape* s)
             }
         }
         shapes.push_back(s);
+        s->setPosition(&position);
         calculateValues();
     }
 }
@@ -101,8 +101,6 @@ bool Collider::intersectShapes(Collider* c)
         for (auto it = shapes.begin(); it!=shapes.end(); it++)
         {
             Shape* sA = (*it);
-            // Si se mueve una figura, se mueven lo mismo las otras
-            Vector2d<float> prev_pos = sA->getPosition();
 
             for (auto it2 = c->shapes.begin(); it2!=c->shapes.end(); it2++)
             {
@@ -112,17 +110,6 @@ bool Collider::intersectShapes(Collider* c)
                     intersects = true;
                 }
             }
-            Vector2d<float> motion = sA->getPosition() - prev_pos;
-            for(auto it1 = shapes.begin(); it1!=shapes.end();it1++)
-            {
-                Shape* sA2 = (*it1);
-
-                if(sA!=sA2)
-                {
-                    sA2->setPosition(sA2->getPosition() + motion);
-                }
-            }
-
         }
         if(intersects)
         {
@@ -139,17 +126,7 @@ bool Collider::intersectShapes(Collider* c)
 
 void Collider::setPosition(const Vector2d<float>& pos)
 {
-    Vector2d<float> motion = pos - position;
-
-    for (auto it = shapes.begin(); it!=shapes.end(); it++)
-    {
-        Shape* s = (*it);
-
-        if(s!=nullptr)
-        {
-            s->setPosition(s->getPosition() + motion);
-        }
-    }
+    position = pos;
 
     calculateValues();
 }
@@ -199,22 +176,21 @@ void Collider::calculateValues()
 {
     Vector2d<float> min;    // La menor X y la menor Y de todas las figuras
     Vector2d<float> max;    // La mayor X y la mayor Y de todas las figuras
-    Vector2d<float> pos;    // Posición intermedia de todas las figuras
-    size_t number = 0;
+    bool first = true;
 
     for(auto it = shapes.begin(); it!=shapes.end(); it++)
     {
         Shape* s = (*it);
-        auto smin = s->getMin();
-        auto smax = s->getMax();
-        auto spos = s->getPosition();
+        Vector2d<float> smin = s->getMin() + position;
+        Vector2d<float> smax = s->getMax() + position;
 
         if(s!=nullptr)
         {
-            if(number==0)
+            if(first)
             {
                 min = smin;
                 max = smax;
+                first = false;
             }else
             {
                 if(min.x > smin.x) min.x = smin.x;
@@ -222,14 +198,11 @@ void Collider::calculateValues()
                 if(max.x < smax.x) max.x = smax.x;
                 if(max.y < smax.y) max.y = smax.y;
             }
-            pos += spos;
-            number++;
         }
     }
-    if(number>0)
+    if(!first)
     {
         bounds = Bounding_Box(min, max);
-        position = pos / float(number);
     }
 
 }

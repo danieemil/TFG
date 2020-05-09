@@ -11,8 +11,7 @@ class Collider
 
 public:
     // Constructores
-    Collider(Shape* s);
-    Collider(const std::vector<Shape*>& vs);
+    Collider(const Vector2d<float>& pos, Shape* s = nullptr);
     Collider(const Collider& c);
 
     Collider& operator= (const Collider& c);
