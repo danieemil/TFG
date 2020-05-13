@@ -5,14 +5,14 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Shape::Shape(Vector2d<float>* pos)
-: position(pos)
+Shape::Shape(Vector2d<float>* pos, Vector2d<float>* prev)
+: position(pos), previous_position(prev)
 {
     
 }
 
 Shape::Shape(const Shape& s)
-: position(nullptr), type(s.type)
+: position(nullptr), previous_position(nullptr), type(s.type)
 {
     
 }
@@ -20,6 +20,7 @@ Shape::Shape(const Shape& s)
 Shape& Shape::operator= (const Shape& s)
 {
     position = nullptr;
+    previous_position = nullptr;
     type = s.type;
 
     return *this;
@@ -46,6 +47,11 @@ void Shape::changePosition(const Vector2d<float>& pos)
 void Shape::setPosition(Vector2d<float>* pos)
 {
     position = pos;
+}
+
+void Shape::setPreviousPosition(Vector2d<float>* prev)
+{
+    previous_position = prev;
 }
 
 //=========================================

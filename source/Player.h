@@ -11,7 +11,7 @@ class Player : public Combat_Character
 public:
     // Constructores
     Player(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr,
-    Collider* c = nullptr, Weapon* wp = nullptr, const Vector2d<float>& maxvel = Vector2d<float>(2,2));
+    Collider* c = nullptr, Weapon* wp = nullptr, const Vector2d<float>& maxvel = Vector2d<float>(1,1));
     Player(const Player& p);
 
     Player& operator= (const Player& p);

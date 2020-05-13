@@ -1,19 +1,23 @@
-#ifndef _AABB_
-#define _AABB_
+#ifndef _CIRCLE_
+#define _CIRCLE_
 
 #include "Shape.h"
 
-class Circle;
 
-class AABB : public Shape
+
+class AABB;
+
+
+
+class Circle : public Shape
 {
 
 public:
     // Constructores
-    AABB(const Vector2d<float>& min_rel, const Vector2d<float>& max_rel, Vector2d<float>* pos = nullptr, Vector2d<float>* prev = nullptr);
-    AABB(const AABB& ab);
+    Circle(const Vector2d<float>& center_rel, const float& radius_rel, Vector2d<float>* pos = nullptr, Vector2d<float>* prev = nullptr);
+    Circle(const Circle& ab);
 
-    AABB& operator= (const AABB& ab);
+    Circle& operator= (const Circle& ab);
 
     // Métodos
     bool intersect(Shape* s) override;
@@ -34,13 +38,14 @@ public:
     
 
     // Destructor
-    ~AABB();
+    ~Circle();
 
 private:
 
-    Vector2d<float> min, max;
+    Vector2d<float> center;
+    float radius;
 
-    friend class Circle;
+    friend class AABB;
 
 };
 

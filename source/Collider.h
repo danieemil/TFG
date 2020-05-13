@@ -3,6 +3,7 @@
 
 #include "Bounding_Box.h"
 #include "AABB.h"
+#include "Circle.h"
 #include "vector"
 
 
@@ -37,6 +38,7 @@ private:
 
     std::vector<Shape*> shapes;
     Vector2d<float> position;
+    Vector2d<float> previous_position;
     Bounding_Box bounds;
 
     void calculateValues();

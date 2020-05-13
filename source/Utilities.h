@@ -63,10 +63,10 @@ namespace utilities
                 return x * v.y - y * v.x;
         }
 
-        float AngleBetween(const Vector2d<T> &v) const
+        T AngleBetween(const Vector2d<T> &v) const
         {
             //The arc sine of the cross product would give you the angle in radians.
-            float dot = this->CrossProduct(v);
+            T dot = this->CrossProduct(v);
             return asin(dot);
         }
 
@@ -82,12 +82,22 @@ namespace utilities
             x-=v.x;
             y-=v.y;
         }
+        Vector2d<T> operator*(const Vector2d<T>& v) const{ return Vector2d<T>(x*v.x,y*v.y); }
         Vector2d<T> operator*(const float& f) const{ return Vector2d<T>(f*x, f*y); }
+        void operator*=(const Vector2d<T>& v){
+            x = x*v.x;
+            y = y*v.y;
+        }
         void operator*=(const float& f){ 
             x = f*x;
             y = f*y;
         }
+        Vector2d<T> operator/(const Vector2d<T>& v) const{ return Vector2d<T>(x/v.x, y/v.y); }
         Vector2d<T> operator/(const float& f) const{ return Vector2d<T>(x/f, y/f); }
+        void operator/=(const Vector2d<T>& v){
+            x = x/v.x;
+            y = y/v.y;
+        }
         void operator/=(const float& f){
             x = x/f;
             y = y/f;

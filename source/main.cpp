@@ -34,9 +34,13 @@ int main(int argc, char* argv[])
 	Vector2d<float> player_position = Vector2d<float>(50,50);
 	Sprite* player_sprite = game->getSpriteManager()->createSprite(0);
 	Vector2d<size_t> player_size = player_sprite->getSize();
-	Collider* player_body = new Collider(player_position, new AABB(Vector2d<float>(0,0), Vector2d<float>(player_size.x, player_size.y/2.0f)));
-	player_body->addShape(new AABB(Vector2d<float>(0,player_size.y/2.0f), Vector2d<float>(player_size.x/5.0f,player_size.y)));
-	Player* player = new Player(player_position, player_sprite, game_world, player_body);
+	Shape* player_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(player_size.x, player_size.y/2.0f));
+	Shape* player_rect2 = new AABB(Vector2d<float>(0,player_size.y/2.0f), Vector2d<float>(player_size.x/5.0f,player_size.y));
+	Shape* player_circ1 = new Circle(Vector2d<float>(player_size.x/2.0f,player_size.y/4.0f), player_size.x/2.0f);
+	Collider* player_body = new Collider(player_position, player_rect1);
+	//player_body->addShape(player_rect2);
+	Vector2d<float> player_max_vel = Vector2d<float>(2,2);
+	Player* player = new Player(player_position, player_sprite, game_world, player_body, nullptr, player_max_vel);
 	game_world->addPlayer(player);
 
 	const Vector2d<float>* p_position = &player->getPosition();
@@ -46,8 +50,11 @@ int main(int argc, char* argv[])
 	Vector2d<float> entity_position = Vector2d<float>(140, 180);
 	Sprite* entity_sprite = game->getSpriteManager()->createSprite(0);
 	Vector2d<size_t> entity_size = entity_sprite->getSize();
-	Collider* entity_body = new Collider(entity_position, new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x, entity_size.y/2.0f)));
-	entity_body->addShape(new AABB(Vector2d<float>(0,entity_size.y/2.0f), Vector2d<float>(entity_size.x/5.0f,entity_size.y)));
+	Shape* entity_rect2 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x, entity_size.y/2.0f));
+	Shape* entity_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x/5.0f,entity_size.y));
+	Shape* entity_circ1 = new Circle(Vector2d<float>(entity_size.x/2.0f,entity_size.y/4.0f), entity_size.x*8.0f);
+	Collider* entity_body = new Collider(entity_position, entity_circ1);
+	//entity_body->addShape(entity_rect2);
 	Entity* entity = new Entity(entity_position, entity_sprite, game_world, entity_body);
 	game_world->addEntity(entity);
 	physics::addStatic(entity_body);

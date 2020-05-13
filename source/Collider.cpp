@@ -6,7 +6,7 @@
 //=========================================
 
 Collider::Collider(const Vector2d<float>& pos, Shape* s)
-: position(pos)
+: position(pos), previous_position(pos)
 {
     if(s!=nullptr)
     {
@@ -15,6 +15,7 @@ Collider::Collider(const Vector2d<float>& pos, Shape* s)
 }
 
 Collider::Collider(const Collider& c)
+: position(c.position), previous_position(c.previous_position), bounds(c.bounds)
 {
     for (auto it = c.shapes.begin(); it!=c.shapes.end(); it++)
     {
@@ -40,6 +41,7 @@ Collider& Collider::operator= (const Collider& c)
     }
 
     position = c.position;
+    previous_position = c.previous_position;
     bounds = c.bounds;
 
     return *this;
@@ -84,6 +86,7 @@ void Collider::delShape(Shape* s)
     }
 }
 
+// Detecta si los bounds intersectan con los de "c"
 bool Collider::intersectBounds(Collider* c)
 {
     if(c!=nullptr)
@@ -93,6 +96,7 @@ bool Collider::intersectBounds(Collider* c)
     return false;
 }
 
+// Detecta y corrige si las figuras(shapes) intersectan con las de "c".
 bool Collider::intersectShapes(Collider* c)
 {
     bool intersects = false;
@@ -126,6 +130,7 @@ bool Collider::intersectShapes(Collider* c)
 
 void Collider::setPosition(const Vector2d<float>& pos)
 {
+    previous_position = position;
     position = pos;
 
     calculateValues();
@@ -172,6 +177,7 @@ Collider::~Collider()
 //=               PRIVATE   	    	  =
 //=========================================
 
+// Recalcula los datos de la bounding box que contiene a todas las figuras
 void Collider::calculateValues()
 {
     Vector2d<float> min;    // La menor X y la menor Y de todas las figuras

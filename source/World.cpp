@@ -195,6 +195,7 @@ void World::updatePlayer()
     }
 }
 
+// Actualiza la posición de todas las entidades a la corregida por las físicas
 void World::updateCollisions()
 {
     updatePlayerCollisions();
