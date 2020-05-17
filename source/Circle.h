@@ -14,24 +14,21 @@ class Circle : public Shape
 
 public:
     // Constructores
-    Circle(const Vector2d<float>& center_rel, const float& radius_rel, Vector2d<float>* pos = nullptr, Vector2d<float>* prev = nullptr);
+    Circle(const Vector2d<float>& center_rel, const float& radius_rel, Collider* c = nullptr);
     Circle(const Circle& ab);
 
     Circle& operator= (const Circle& ab);
 
     // Métodos
-    bool intersect(Shape* s) override;
-    bool intersect(AABB* ab);
-    bool intersect(Circle* c);
-
-    void changePosition(const Vector2d<float>& pos) override;
+    Intersection* intersect(Shape* s) override;
+    Intersection* intersect(AABB* ab);
+    Intersection* intersect(Circle* c);
 
     // Setters
-    void setPosition(Vector2d<float>* pos) override;
-    void setPreviousPosition(Vector2d<float>* prev) override;
+    void setCollider(Collider* pos) override;
 
     // Getters
-    Vector2d<float>* getPosition() const override;
+    Collider* getCollider() const override;
     Vector2d<float> getMin() const override;
     Vector2d<float> getMax() const override;
     const Shape_Type& getType() const override;

@@ -1,4 +1,5 @@
 #include "Physics_Engine.h"
+#include "Unvisual_Engine.h"
 
 
 namespace physics
@@ -6,11 +7,44 @@ namespace physics
 
     namespace
     {
-        std::vector<Collider*> statics;
-        std::vector<Collider*> cinematics;
+
+        std::size_t sz = 1000;
+
+        std::vector<Collider*> colliders;
         std::vector<Collider*> dynamics;
+        std::vector<Collider*> statics;
+
+        void manifold(Collider* colliderA, Collider* colliderB)
+        {
+            if (colliderA!=nullptr && colliderB!=nullptr)
+            {
+                CollisionFlag flagsA = colliderA->getFlags();
+                CollisionFlag flagsB = colliderB->getFlags();
+            }
+        }
+
+        void (*collision_manager)(Collider* colliderA, Collider* colliderB){manifold};
     }
 
+
+    void addCollider(Collider* c)
+    {
+        if(colliders.size()< sz)
+        {
+            if(c!=nullptr)
+            {
+                for (auto it = colliders.begin(); it!=colliders.end(); it++)
+                {
+                    Collider* col = (*it);
+                    if(c==col)
+                    {
+                        return;
+                    }
+                }
+                colliders.push_back(c);
+            }
+        }
+    }
 
     void addStatic(Collider* c)
     {
@@ -24,23 +58,7 @@ namespace physics
                     return;
                 }
             }
-            statics.emplace_back(c);
-        }
-    }
-
-    void addCinematic(Collider* c)
-    {
-        if(c!=nullptr)
-        {
-            for (auto it = cinematics.begin(); it!=cinematics.end(); it++)
-            {
-                Collider* col = (*it);
-                if(c==col)
-                {
-                    return;
-                }
-            }
-            cinematics.emplace_back(c);
+            statics.push_back(c);
         }
     }
 
@@ -56,8 +74,26 @@ namespace physics
                     return;
                 }
             }
-            dynamics.emplace_back(c);
+            dynamics.push_back(c);
         }
+    }
+
+    // Removes a collider from the vector
+    bool removeCollider(Collider* c)
+    {
+        if(c!=nullptr)
+        {
+            for (auto it = colliders.begin(); it!=colliders.end(); it++)
+            {
+                Collider* col = (*it);
+                if(c==col)
+                {
+                    colliders.erase(it);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     bool removeStatic(Collider* c)
@@ -70,23 +106,6 @@ namespace physics
                 if(c==col)
                 {
                     statics.erase(it);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    bool removeCinematic(Collider* c)
-    {
-        if(c!=nullptr)
-        {
-            for (auto it = cinematics.begin(); it!=cinematics.end(); it++)
-            {
-                Collider* col = (*it);
-                if(c==col)
-                {
-                    cinematics.erase(it);
                     return true;
                 }
             }
@@ -111,143 +130,52 @@ namespace physics
         return false;
     }
 
-    // Removes a collider without knowing in which vector it is.
-    bool removeCollider(Collider* c)
-    {
-        if(c!=nullptr)
-        {
-            for (auto it = statics.begin(); it!=statics.end(); it++)
-            {
-                Collider* col = (*it);
-                if(c==col)
-                {
-                    statics.erase(it);
-                    return true;
-                }
-            }
-            
-            for (auto it = cinematics.begin(); it!=cinematics.end(); it++)
-            {
-                Collider* col = (*it);
-                if(c==col)
-                {
-                    cinematics.erase(it);
-                    return true;
-                }
-            }
-
-            for (auto it = dynamics.begin(); it!=dynamics.end(); it++)
-            {
-                Collider* col = (*it);
-                if(c==col)
-                {
-                    dynamics.erase(it);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    // Dado un collisionable, resuelve las colisiones con el escenerio
-    void collideWithStatics(Collider* c)
-    {
-        // c vs Estáticos
-        if(c!=nullptr)
-        {
-            for(auto st = statics.begin(); st!=statics.end(); st++)
-            {
-                Collider* col = (*st);
-                if(c!=col)
-                {
-                    if(c->intersectBounds(col))
-                    {
-                        c->intersectShapes(col);
-                    }
-                }
-            }
-        }
-    }
-
-    void collideWithCinematics(Collider* c)
-    {
-        // c vs Cinemáticos
-        if(c!=nullptr)
-        {
-            for(auto cin = cinematics.begin(); cin!=cinematics.end(); cin++)
-            {
-                Collider* col = (*cin);
-                if(c!=col)
-                {
-                    if(c->intersectBounds(col))
-                    {
-                        c->intersectShapes(col);
-                    }
-                }
-            }
-        }
-    }
-
-    void collideWithDynamics(Collider* c)
-    {
-        // c vs Dinámicos
-        if(c!=nullptr)
-        {
-            for(auto dyn = dynamics.begin(); dyn!=dynamics.end(); dyn++)
-            {
-                Collider* col = (*dyn);
-                if(c!=col)
-                {
-                    if(c->intersectBounds(col))
-                    {
-                        c->intersectShapes(col);
-                    }
-                }
-            }
-        }
-    }
-
     // En esta función se analizan y resuelven todas las colisiones
     void step()
     {
-        for(auto dyn = dynamics.begin(); dyn!=dynamics.end(); dyn++)
+        // Todos los colliders neutros se comprueban entre sí
+        for(auto it = colliders.begin(); it!=colliders.end(); it++)
         {
-            Collider* c = (*dyn);
-            if(c!=nullptr)
+            Collider* colliderA = (*it);
+
+            for (auto it2 = colliders.begin(); it2!=colliders.end(); it2++)
             {
-                // Dinámico vs Estáticos
-                for(auto st = statics.begin(); st!=statics.end(); st++)
-                {
-                    Collider* col = (*st);
-                    if(c->intersectBounds(col))
-                    {
-                        c->intersectShapes(col);
-                    }
-                }
+                Collider* colliderB = (*it2);
 
-                // Dinámico vs Cinemáticos
-                for(auto cin = cinematics.begin(); cin!=cinematics.end(); cin++)
+                if(colliderA!=colliderB)
                 {
-                    Collider* col = (*cin);
-                    if(c->intersectBounds(col))
-                    {
-                        c->intersectShapes(col);
-                    }
+                    collision_manager(colliderA, colliderB);
                 }
+            }
+        }
 
-                // Dinámico vs Dinámico ¿Cuál se corrige?(¿Resolución por impulso?, ¿Alternativas?)
-                for(auto dyn2 = dynamics.begin(); dyn2!=dynamics.end(); dyn2++)
+        for (auto it = dynamics.begin(); it!=dynamics.end(); it++)
+        {
+            Collider* colliderA = (*it);
+            if (colliderA!=nullptr)
+            {
+                for (auto it2 = statics.begin(); it2!=statics.end(); it2++)
                 {
-                    Collider* col = (*dyn2);
-                    if(c!=col)
+                    Collider* colliderB = (*it2);
+                    if(colliderB!=nullptr)
                     {
-                        if(c->intersectBounds(col))
+                        if(colliderA->intersectBounds(colliderB))
                         {
-                            c->intersectShapes(col);
+                            colliderA->intersectFix(colliderA->intersectShapes(colliderB));
                         }
                     }
                 }
             }
         }
+    }
+
+    void setManager(void (*manager)(Collider* colliderA, Collider* colliderB))
+    {
+        collision_manager = manager;
+    }
+
+    const std::vector<Collider*>& getColliders()
+    {
+        return colliders;
     }
 }

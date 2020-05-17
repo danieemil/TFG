@@ -9,7 +9,10 @@
 Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
 : world(w), sprite(spr), position(pos), pre_position(pos), body(c), velocity()
 {
-
+    if(c!=nullptr)
+    {
+        c->setCreator(this);
+    }
 }
 
 Entity::Entity(const Entity& e) :
@@ -99,10 +102,14 @@ void Entity::setBody(Collider* c)
 {
     if(body!=nullptr)
     {
-        physics::removeCollider(body);
         delete body;
     }
     body = c;
+
+    if(body!=nullptr)
+    {
+        body->setCreator(this);
+    }
 }
 
 void Entity::setVelocity(const Vector2d<float>& vel)
@@ -164,7 +171,6 @@ Entity::~Entity()
 
     if(body!=nullptr)
     {
-        physics::removeCollider(body);
         delete body;
         body = nullptr;
     }

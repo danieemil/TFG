@@ -1,13 +1,14 @@
 #include "AABB.h"
 #include "Circle.h"
+#include "Collider.h"
 
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-AABB::AABB(const Vector2d<float>& min_rel, const Vector2d<float>& max_rel, Vector2d<float>* pos, Vector2d<float>* prev)
-: Shape(pos, prev), min(min_rel), max(max_rel)
+AABB::AABB(const Vector2d<float>& min_rel, const Vector2d<float>& max_rel, Collider* c)
+: Shape(c), min(min_rel), max(max_rel)
 {
     type = Shape_Type::AABB;
 }
@@ -33,8 +34,12 @@ AABB& AABB::operator= (const AABB& ab)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-bool AABB::intersect(Shape* s)
+Intersection* AABB::intersect(Shape* s)
 {
+    intersection.intersects = false;
+    intersection.A = collider;
+    intersection.B = s->getCollider();
+    
     if(s!=nullptr)
     {
         if(s->getType()==Shape_Type::AABB)
@@ -47,28 +52,28 @@ bool AABB::intersect(Shape* s)
         }
         
     }
-    return false;
+    return nullptr;
 }
 
 /*
 *   (this)  -> collisionable dinámico
 *   (ab)    -> collisionable estático
 */
-bool AABB::intersect(AABB* ab)
+Intersection* AABB::intersect(AABB* ab)
 {
-    if(position!=nullptr)
+    if(collider!=nullptr)
     {
         if(ab!=nullptr)
         {
-            Vector2d<float>* ab_position = ab->position;
-            if(ab_position!=nullptr)
+            Collider* ab_collider = ab->collider;
+            if(ab_collider!=nullptr)
             {
                 // Detectar AABB vs AABB
-                Vector2d<float> pos = *position;
+                Vector2d<float> pos = collider->getPosition();
                 Vector2d<float> max_pos = pos + max;
                 Vector2d<float> min_pos = pos + min;
 
-                Vector2d<float> ab_pos = *ab_position;
+                Vector2d<float> ab_pos = ab_collider->getPosition();
                 Vector2d<float> ab_max_pos = ab_pos + ab->max;
                 Vector2d<float> ab_min_pos = ab_pos + ab->min;
 
@@ -78,13 +83,15 @@ bool AABB::intersect(AABB* ab)
 
                 if (m.x > min_pos.x + sizeA.x || min_pos.x > m.x + sizeB.x)
                 {
-                    return false;
+                    return nullptr;
                 }
 
                 if (m.y > min_pos.y + sizeA.y || min_pos.y > m.y + sizeB.y)
                 {
-                    return false;
+                    return nullptr;
                 }
+
+                
 
                 // Corregir AABB(this) para que no colisiones con AABB(ab)
                 Vector2d<float> halfA = sizeA/2.0f;
@@ -114,30 +121,34 @@ bool AABB::intersect(AABB* ab)
                 posX = (posX - halfA.x) - min.x;
                 posY = (posY - halfA.y) - min.y;
 
-                changePosition(Vector2d<float>(posX, posY));
+                intersection.fixed_position = Vector2d<float>(posX, posY);
+                intersection.intersects = true;
+                intersection.position = pos;
+                intersection.A = collider;
+                intersection.B = ab_collider;
 
-                return true;
+                return &intersection;
             }
         }
     }
-    return false;
+    return nullptr;
 }
 
 /*
 *   (this)  -> collisionable dinámico
 *   (c)     -> collisionable estático
 */
-bool AABB::intersect(Circle* c)
+Intersection* AABB::intersect(Circle* c)
 {
-    if(position!=nullptr)
+    if(collider!=nullptr)
     {
         if(c!=nullptr)
         {
-            Vector2d<float>* c_position = c->position;
-            if(c_position!=nullptr)
+            Collider* c_collider = c->getCollider();
+            if(c_collider!=nullptr)
             {
                 // Detectar AABB vs Circle
-                Vector2d<float> pos = *position;
+                Vector2d<float> pos = collider->getPosition();
                 Vector2d<float> min_pos = min + pos;
                 Vector2d<float> max_pos = max + pos;
 
@@ -145,7 +156,7 @@ bool AABB::intersect(Circle* c)
                 Vector2d<float> half = size/2.0f;
                 Vector2d<float> center = min_pos + half;
 
-                Vector2d<float> c_pos = *c_position;
+                Vector2d<float> c_pos = c_collider->getPosition();
                 Vector2d<float> c_center = c->center + c_pos;
 
                 float c_radius = c->radius;
@@ -164,6 +175,7 @@ bool AABB::intersect(Circle* c)
 
                 if(d < c_radius)
                 {
+
                     // Corregir AABB
                     Vector2d<float> dir = Vector2d<float>(sign(distance.x), sign(distance.y));
                     Vector2d<float> norm = distance;
@@ -174,42 +186,35 @@ bool AABB::intersect(Circle* c)
                     
                     norm.Normalize();
                     
-                    Vector2d<float>* prev = previous_position;
-                    if(previous_position!=nullptr)
-                    {
-                        Vector2d<float> vel = pos - *prev;
-                    }
+                    Vector2d<float> prev = collider->getPreviousPosition();
+                    Vector2d<float> vel = pos - prev;
                     
 
                     Vector2d<float> center_fixed = c_center + (norm * c_radius) + (dir * half);
                     
-                    changePosition(center_fixed - half - min);
+                    intersection.fixed_position = center_fixed - half - min;
+                    intersection.intersects = true;
+                    intersection.A = collider;
+                    intersection.B = c_collider;
+                    intersection.position = pos;
+
+                    return &intersection;
                 }
 
             }
         }
     }
-    return false;
-}
 
-void AABB::changePosition(const Vector2d<float>& pos)
-{
-    Shape::changePosition(pos);
+    return nullptr;
 }
-
 
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
 
-void AABB::setPosition(Vector2d<float>* pos)
+void AABB::setCollider(Collider* c)
 {
-    Shape::setPosition(pos);
-}
-
-void AABB::setPreviousPosition(Vector2d<float>* prev)
-{
-    Shape::setPreviousPosition(prev);
+    Shape::setCollider(c);
 }
 
 
@@ -217,9 +222,9 @@ void AABB::setPreviousPosition(Vector2d<float>* prev)
 //=               GETTERS   	    	  =
 //=========================================
 
-Vector2d<float>* AABB::getPosition() const
+Collider* AABB::getCollider() const
 {
-    return Shape::getPosition();
+    return Shape::getCollider();
 }
 
 Vector2d<float> AABB::getMin() const

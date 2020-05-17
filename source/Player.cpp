@@ -10,7 +10,7 @@ using namespace unvisual;
 Player::Player(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Weapon* wp, const Vector2d<float>& maxvel)
 : Combat_Character(pos, spr, w, c, wp), max_velocity(maxvel)
 {
-    physics::addDynamic(c);
+
 }
 
 Player::Player(const Player& p)
@@ -125,11 +125,9 @@ void Player::setBody(Collider* c)
 {
     if(body!=nullptr)
     {
-        physics::removeDynamic(body);
         delete body;
     }
     body = c;
-    physics::addDynamic(body);
 }
 
 void Player::setVelocity(const Vector2d<float>& vel)

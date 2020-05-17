@@ -10,24 +10,21 @@ class AABB : public Shape
 
 public:
     // Constructores
-    AABB(const Vector2d<float>& min_rel, const Vector2d<float>& max_rel, Vector2d<float>* pos = nullptr, Vector2d<float>* prev = nullptr);
+    AABB(const Vector2d<float>& min_rel, const Vector2d<float>& max_rel, Collider* c = nullptr);
     AABB(const AABB& ab);
 
     AABB& operator= (const AABB& ab);
 
     // Métodos
-    bool intersect(Shape* s) override;
-    bool intersect(AABB* ab);
-    bool intersect(Circle* c);
-
-    void changePosition(const Vector2d<float>& pos) override;
+    Intersection* intersect(Shape* s) override;
+    Intersection* intersect(AABB* ab);
+    Intersection* intersect(Circle* c);
 
     // Setters
-    void setPosition(Vector2d<float>* pos) override;
-    void setPreviousPosition(Vector2d<float>* prev) override;
+    void setCollider(Collider* c) override;
 
     // Getters
-    Vector2d<float>* getPosition() const override;
+    Collider* getCollider() const override;
     Vector2d<float> getMin() const override;
     Vector2d<float> getMax() const override;
     const Shape_Type& getType() const override;

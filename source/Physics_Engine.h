@@ -11,21 +11,19 @@
 namespace physics
 {
 
+    void addCollider(Collider* c);
     void addStatic(Collider* c);
-    void addCinematic(Collider* c);
     void addDynamic(Collider* c);
 
+    bool removeCollider(Collider* c);
     bool removeStatic(Collider* c);
-    bool removeCinematic(Collider* c);
     bool removeDynamic(Collider* c);
 
-    bool removeCollider(Collider* c);
-
-    void collideWithStatics(Collider* c);
-    void collideWithCinematics(Collider* c);
-    void collideWithDynamics(Collider* c);
-
     void step();
+
+    void setManager(void (*manager)(Collider* colliderA, Collider* colliderB));
+
+    const std::vector<Collider*>& getColliders();
 }
 
 #endif

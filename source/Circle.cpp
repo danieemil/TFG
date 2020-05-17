@@ -1,13 +1,14 @@
 #include "Circle.h"
 #include "AABB.h"
+#include "Collider.h"
 
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Circle::Circle(const Vector2d<float>& center_rel, const float& radius_rel, Vector2d<float>* pos, Vector2d<float>* prev)
-: Shape(pos, prev), center(center_rel), radius(radius_rel)
+Circle::Circle(const Vector2d<float>& center_rel, const float& radius_rel, Collider* c)
+: Shape(c), center(center_rel), radius(radius_rel)
 {
     type = Shape_Type::Circle;
 }
@@ -33,8 +34,12 @@ Circle& Circle::operator= (const Circle& ab)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-bool Circle::intersect(Shape* s)
+Intersection* Circle::intersect(Shape* s)
 {
+    intersection.intersects = false;
+    intersection.A = collider;
+    intersection.B = s->getCollider();
+
     if(s!=nullptr)
     {
         if(s->getType()==Shape_Type::AABB)
@@ -47,31 +52,34 @@ bool Circle::intersect(Shape* s)
         }
         
     }
-    return false;
+    return nullptr;
 }
 
 /*
 *   (this)  -> collisionable dinámico
 *   (ab)     -> collisionable estático
 */
-bool Circle::intersect(AABB* ab)
+Intersection* Circle::intersect(AABB* ab)
 {
-    if(position!=nullptr)
+    if(collider!=nullptr)
     {
         if(ab!=nullptr)
         {
-            Vector2d<float>* ab_pos = ab->position;
-            if(ab_pos!=nullptr)
+            Collider* ab_collider = ab->collider;
+            if(ab_collider!=nullptr)
             {
                 // Detectar Circle vs AABB
-                Vector2d<float> ab_min = ab->min + *ab_pos;
-                Vector2d<float> ab_max = ab->max + *ab_pos;
+                Vector2d<float> ab_pos = ab_collider->getPosition();
+                Vector2d<float> ab_min = ab->min + ab_pos;
+                Vector2d<float> ab_max = ab->max + ab_pos;
 
                 Vector2d<float> ab_size = ab_max - ab_min;
                 Vector2d<float> ab_half = ab_size/2.0f;
 
                 Vector2d<float> ab_center = ab_min + ab_half;
-                Vector2d<float> center_pos = center + *position;
+                
+                Vector2d<float> position = collider->getPosition();
+                Vector2d<float> center_pos = center + position;
 
                 Vector2d<float> distance = center_pos - ab_center;
 
@@ -83,6 +91,7 @@ bool Circle::intersect(AABB* ab)
 
                 if((near - center_pos).Length() < radius)
                 {
+
                     //Corregir Circle
 
                     Vector2d<float> dir = Vector2d<float>(sign(distance.x), sign(distance.y));
@@ -104,34 +113,40 @@ bool Circle::intersect(AABB* ab)
                         center_fixed.x = center_pos.x;
                     }
                     
-                    center_fixed = center_fixed - center;
-                    
-                    changePosition(center_fixed);
+                    intersection.fixed_position = center_fixed - center;
+                    intersection.intersects = true;
+                    intersection.A = collider;
+                    intersection.B = ab_collider;
+                    intersection.position = position;
 
-                    return true;
+
+                    return &intersection;
 
                 }
             }
         }
     }
-    return false;
+    return nullptr;
 }
 
 /*
 *   (this)  -> collisionable dinámico
 *   (c)     -> collisionable estático
 */
-bool Circle::intersect(Circle* c)
+Intersection* Circle::intersect(Circle* c)
 {
-    if(position!=nullptr)
+    if(collider!=nullptr)
     {
         if(c!=nullptr)
         {
-            if(c->position!=nullptr)
+            Collider* c_collider = c->getCollider();
+            if(c_collider!=nullptr)
             {
                 // Detectar Circle vs Circle
-                Vector2d<float> center_pos = center + *position;
-                Vector2d<float> c_center = c->center + *(c->position);
+                Vector2d<float> position = collider->getPosition();
+                Vector2d<float> c_position = c_collider->getPosition();
+                Vector2d<float> center_pos = center + position;
+                Vector2d<float> c_center = c->center + c_position;
 
                 float radius_sum = radius + c->radius;
 
@@ -139,49 +154,43 @@ bool Circle::intersect(Circle* c)
 
                 if((distance).Length() < radius_sum)
                 {
+
                     // Corregir Circle
                     Vector2d<float> norm = distance;
                     norm.Normalize();
 
                     Vector2d<float> fixPos = (c_center + (norm*radius_sum)) - center;
 
-                    changePosition(fixPos);
-                    return true;
+                    intersection.fixed_position = fixPos;
+                    intersection.intersects = true;
+                    intersection.A = collider;
+                    intersection.B = c_collider;
+                    intersection.position = position;
+
+                    return &intersection;
                 }
             }
         }
     }
-    return false;
+    return nullptr;
 }
-
-void Circle::changePosition(const Vector2d<float>& pos)
-{
-    Shape::changePosition(pos);
-}
-
 
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
 
-void Circle::setPosition(Vector2d<float>* pos)
+void Circle::setCollider(Collider* c)
 {
-    Shape::setPosition(pos);
+    Shape::setCollider(c);
 }
-
-void Circle::setPreviousPosition(Vector2d<float>* prev)
-{
-    Shape::setPreviousPosition(prev);
-}
-
 
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
 
-Vector2d<float>* Circle::getPosition() const
+Collider* Circle::getCollider() const
 {
-    return Shape::getPosition();
+    return Shape::getCollider();
 }
 
 Vector2d<float> Circle::getMin() const

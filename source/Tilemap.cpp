@@ -63,7 +63,7 @@ void Tilemap::render(const Vector2d<float>& view_pos)
             {
                 if(tiles[i][j]!=nullptr)
                 {
-                    tiles[i][j]->drawSprite(view_pos);
+                    tiles[i][j]->render(view_pos);
                 }
             }
         }
@@ -120,21 +120,23 @@ void Tilemap::generateTiles()
                 p.x = position.x;
                 p.y = position.y;
 
-                tiles = new Sprite**[num_tiles.y];
+                tiles = new Tile**[num_tiles.y];
                 for (int i = 0; i < num_tiles.y; i++)
                 {
                     p.x = position.x;
-                    tiles[i] = new Sprite*[num_tiles.x];
+                    tiles[i] = new Tile*[num_tiles.x];
                     for (int j = 0; j < num_tiles.x; j++)
                     {
                         int sprite_id = level[i][j] - 1;
-                        tiles[i][j] = manager.createSprite(sprite_id);
-                        if(tiles[i][j]!=nullptr)
+                        Sprite* sp = manager.createSprite(sprite_id);
+                        if(sp!=nullptr)
                         {
-                            tiles[i][j]->setPosition(p);
-                            tiles[i][j]->setDepth(-1);
 
-                            physics::addStatic(new Collider(p,new AABB(Vector2d<float>(0,0), Vector2d<float>(tile_size.x, tile_size.y))));
+                            Shape* s = new AABB(Vector2d<float>(0,0), Vector2d<float>(tile_size.x, tile_size.y));
+                            Collider* c = new Collider(p,s,CollisionFlag::none, CollisionType::col_static);
+
+                            tiles[i][j] = new Tile(p,sp,nullptr,c);
+                            
                         }
                         p.x = p.x + tile_size.x;
                     }
@@ -153,7 +155,7 @@ void Tilemap::destroyTilemap()
         {
             for (int j = 0; j < num_tiles.x; j++)
             {
-                manager.deleteSprite(tiles[i][j]);
+                delete tiles[i][j];
             }
             
             delete[] tiles[i];

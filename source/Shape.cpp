@@ -1,26 +1,53 @@
 #include "Shape.h"
-
+#include "Collider.h"
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Shape::Shape(Vector2d<float>* pos, Vector2d<float>* prev)
-: position(pos), previous_position(prev)
+Intersection::Intersection()
+{
+    intersects = false;
+    A = nullptr;
+    B = nullptr;
+}
+
+Intersection::Intersection(const Intersection& i)
+{
+    intersects = i.intersects;
+    A = i.A;
+    B = i.B;
+    position = i.position;
+    fixed_position = i.fixed_position;
+}
+
+Intersection& Intersection::operator=(const Intersection& i)
+{
+    intersects = i.intersects;
+    A = i.A;
+    B = i.B;
+    position = i.position;
+    fixed_position = i.fixed_position;
+
+    return *this;
+}
+
+
+Shape::Shape(Collider* c)
+: collider(c)
 {
     
 }
 
 Shape::Shape(const Shape& s)
-: position(nullptr), previous_position(nullptr), type(s.type)
+: collider(nullptr), type(s.type)
 {
     
 }
 
 Shape& Shape::operator= (const Shape& s)
 {
-    position = nullptr;
-    previous_position = nullptr;
+    collider = nullptr;
     type = s.type;
 
     return *this;
@@ -31,36 +58,24 @@ Shape& Shape::operator= (const Shape& s)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Shape::changePosition(const Vector2d<float>& pos)
-{
-    if(position!=nullptr)
-    {
-        *position = pos;
-    }
-}
 
 
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
 
-void Shape::setPosition(Vector2d<float>* pos)
+void Shape::setCollider(Collider* c)
 {
-    position = pos;
-}
-
-void Shape::setPreviousPosition(Vector2d<float>* prev)
-{
-    previous_position = prev;
+    collider = c;
 }
 
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
 
-Vector2d<float>* Shape::getPosition() const
+Collider* Shape::getCollider() const
 {
-    return position;
+    return collider;
 }
 
 const Shape_Type& Shape::getType() const
@@ -72,6 +87,11 @@ const Shape_Type& Shape::getType() const
 //=========================================
 //=              DESTRUCTOR   	    	  =
 //=========================================
+
+Intersection::~Intersection()
+{
+    
+}
 
 Shape::~Shape()
 {

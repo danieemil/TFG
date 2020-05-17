@@ -2,6 +2,7 @@
 #define _TILEMAP_
 
 #include "SpriteManager.h"
+#include "Tile.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -41,7 +42,7 @@ public:
 private:
 
     SpriteManager manager;
-    Sprite*** tiles;
+    Tile*** tiles;
     int** level;
 
     Vector2d<int> tile_size;

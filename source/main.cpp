@@ -34,10 +34,10 @@ int main(int argc, char* argv[])
 	Vector2d<float> player_position = Vector2d<float>(50,50);
 	Sprite* player_sprite = game->getSpriteManager()->createSprite(0);
 	Vector2d<size_t> player_size = player_sprite->getSize();
-	Shape* player_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(player_size.x, player_size.y/2.0f));
+	Shape* player_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(player_size.x, player_size.y));
 	Shape* player_rect2 = new AABB(Vector2d<float>(0,player_size.y/2.0f), Vector2d<float>(player_size.x/5.0f,player_size.y));
 	Shape* player_circ1 = new Circle(Vector2d<float>(player_size.x/2.0f,player_size.y/4.0f), player_size.x/2.0f);
-	Collider* player_body = new Collider(player_position, player_rect1);
+	Collider* player_body = new Collider(player_position, player_rect1, CollisionFlag::player, CollisionType::col_dynamic);
 	//player_body->addShape(player_rect2);
 	Vector2d<float> player_max_vel = Vector2d<float>(2,2);
 	Player* player = new Player(player_position, player_sprite, game_world, player_body, nullptr, player_max_vel);
@@ -53,11 +53,10 @@ int main(int argc, char* argv[])
 	Shape* entity_rect2 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x, entity_size.y/2.0f));
 	Shape* entity_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x/5.0f,entity_size.y));
 	Shape* entity_circ1 = new Circle(Vector2d<float>(entity_size.x/2.0f,entity_size.y/4.0f), entity_size.x*8.0f);
-	Collider* entity_body = new Collider(entity_position, entity_circ1);
+	Collider* entity_body = new Collider(entity_position, entity_circ1, CollisionFlag::enemy, CollisionType::col_static);
 	//entity_body->addShape(entity_rect2);
 	Entity* entity = new Entity(entity_position, entity_sprite, game_world, entity_body);
 	game_world->addEntity(entity);
-	physics::addStatic(entity_body);
 
 
 	Vector2d<size_t> sc_size = Vector2d<size_t>(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN);
@@ -67,6 +66,31 @@ int main(int argc, char* argv[])
 	sc->setBackground(255,0,0,255);
 	sc->setTargetPosition(p_position);
 	unvisual::setCurrentScreen(sc);
+
+	auto vec = physics::getColliders();
+
+	int number = 0;
+	int numberL = 25;
+
+	//unvisual::debugger->print((int)vec.size());
+	for (auto it = vec.begin(); it!=vec.end(); it++)
+	{
+		Collider* ccc = (*it);
+		//unvisual::debugger->print((int)ccc->getFlags());
+		number++;
+
+		if(number==numberL)
+		{
+			unvisual::debugger->nextLine();
+			number = 0;
+		}
+
+	}
+	while (false)
+	{
+
+	}
+	
 	
 	// Delta time
 	float dt = 0.0f;

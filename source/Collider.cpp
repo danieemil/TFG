@@ -1,21 +1,40 @@
 #include "Collider.h"
+#include "Physics_Engine.h"
 
+
+using namespace physics;
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Collider::Collider(const Vector2d<float>& pos, Shape* s)
-: position(pos), previous_position(pos)
+Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f, const CollisionType& t, void* c)
+: position(pos), previous_position(pos), flags(f), type(t), creator(c)
 {
     if(s!=nullptr)
     {
         addShape(s);
     }
+
+    if(flags != CollisionFlag::none)
+    {
+        addCollider(this);
+    }
+    
+    if (type == CollisionType::col_static)
+    {
+        addStatic(this);
+    }
+    else if (type == CollisionType::col_dynamic)
+    {
+        addDynamic(this);
+    }
+    
+
 }
 
 Collider::Collider(const Collider& c)
-: position(c.position), previous_position(c.previous_position), bounds(c.bounds)
+: position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr)
 {
     for (auto it = c.shapes.begin(); it!=c.shapes.end(); it++)
     {
@@ -26,6 +45,21 @@ Collider::Collider(const Collider& c)
             addShape(s);
         }
     }
+
+    if(flags != CollisionFlag::none)
+    {
+        addCollider(this);
+    }
+    
+    if (type == CollisionType::col_static)
+    {
+        addStatic(this);
+    }
+    else if (type == CollisionType::col_dynamic)
+    {
+        addDynamic(this);
+    }
+
 }
 
 Collider& Collider::operator= (const Collider& c)
@@ -43,6 +77,9 @@ Collider& Collider::operator= (const Collider& c)
     position = c.position;
     previous_position = c.previous_position;
     bounds = c.bounds;
+
+    setFlags(c.flags);
+    setType(c.type);
 
     return *this;
 }
@@ -64,7 +101,7 @@ void Collider::addShape(Shape* s)
             }
         }
         shapes.push_back(s);
-        s->setPosition(&position);
+        s->setCollider(this);
         calculateValues();
     }
 }
@@ -97,9 +134,8 @@ bool Collider::intersectBounds(Collider* c)
 }
 
 // Detecta y corrige si las figuras(shapes) intersectan con las de "c".
-bool Collider::intersectShapes(Collider* c)
+Intersection* Collider::intersectShapes(Collider* c)
 {
-    bool intersects = false;
     if (c!=nullptr)
     {
         for (auto it = shapes.begin(); it!=shapes.end(); it++)
@@ -109,18 +145,25 @@ bool Collider::intersectShapes(Collider* c)
             for (auto it2 = c->shapes.begin(); it2!=c->shapes.end(); it2++)
             {
                 Shape* sB = (*it2);
-                if(sA->intersect(sB))
+
+                Intersection* inter = sA->intersect(sB);
+
+                if(inter!=nullptr)
                 {
-                    intersects = true;
+                    return inter;
                 }
             }
         }
-        if(intersects)
-        {
-            calculateValues();
-        }
     }
-    return intersects;
+    return nullptr;
+}
+
+void Collider::intersectFix(Intersection* inter)
+{
+    if(inter!=nullptr && inter->intersects)
+    {
+        position = inter->fixed_position;
+    }
 }
 
 
@@ -136,6 +179,52 @@ void Collider::setPosition(const Vector2d<float>& pos)
     calculateValues();
 }
 
+void Collider::setFlags(const CollisionFlag& f)
+{
+
+    if(flags != CollisionFlag::none)
+    {
+        removeCollider(this);
+    }
+
+    flags = f;
+
+    if(flags != CollisionFlag::none)
+    {
+        addCollider(this);
+    }
+
+}
+
+void Collider::setType(const CollisionType& t)
+{
+
+    if (type == CollisionType::col_static)
+    {
+        removeStatic(this);
+    }
+    else if (type == CollisionType::col_dynamic)
+    {
+        removeDynamic(this);
+    }
+
+    type = t;
+
+    if (type == CollisionType::col_static)
+    {
+        addStatic(this);
+    }
+    else if (type == CollisionType::col_dynamic)
+    {
+        addDynamic(this);
+    }
+}
+
+void Collider::setCreator(void* c)
+{
+    creator = c;
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -146,9 +235,29 @@ const Vector2d<float>& Collider::getPosition() const
     return position;
 }
 
+const Vector2d<float>& Collider::getPreviousPosition() const
+{
+    return previous_position;
+}
+
 const Bounding_Box& Collider::getBounds() const
 {
     return bounds;
+}
+
+const CollisionFlag& Collider::getFlags() const
+{
+    return flags;
+}
+
+const CollisionType& Collider::getType() const
+{
+    return type;
+}
+
+void* Collider::getCreator() const
+{
+    return creator;
 }
 
 
@@ -169,6 +278,20 @@ Collider::~Collider()
             delete s;
         }
         shapes.erase(it);
+    }
+
+    if(flags != CollisionFlag::none)
+    {
+        removeCollider(this);
+    }
+    
+    if (type == CollisionType::col_static)
+    {
+        removeStatic(this);
+    }
+    else if (type == CollisionType::col_dynamic)
+    {
+        removeDynamic(this);
     }
 }
 
