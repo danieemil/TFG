@@ -1,7 +1,8 @@
 #include "AABB.h"
 #include "Circle.h"
+#include "Convex.h"
 #include "Collider.h"
-
+#include "Unvisual_Engine.h"
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
@@ -50,7 +51,10 @@ Intersection* AABB::intersect(Shape* s)
         {
             return intersect(static_cast<Circle*>(s));
         }
-        
+        if (s->getType()==Shape_Type::Convex)
+        {
+            return intersect(static_cast<Convex*>(s));
+        }
     }
     return nullptr;
 }
@@ -93,7 +97,7 @@ Intersection* AABB::intersect(AABB* ab)
 
                 
 
-                // Corregir AABB(this) para que no colisiones con AABB(ab)
+                // Corregir AABB(this) para que no colisione con AABB(ab)
                 Vector2d<float> halfA = sizeA/2.0f;
                 Vector2d<float> halfB = sizeB/2.0f;
 
@@ -208,6 +212,69 @@ Intersection* AABB::intersect(Circle* c)
     return nullptr;
 }
 
+Intersection* AABB::intersect(Convex* c)
+{
+    if(collider!=nullptr)
+    {
+        if(c!=nullptr)
+        {
+            Collider* c_collider = c->collider;
+            if(c_collider!=nullptr)
+            {
+                // Detectar AABB vs Convex
+                Vector2d<float> pos = collider->getPosition();
+
+                std::vector<Vector2d<float>> c_vertices = c->vertices;
+                std::vector<Vector2d<float>> vertices = getVertices();
+                Vector2d<float> c_pos = c_collider->getPosition();
+
+                auto deb = unvisual::debugger;
+
+                // Calcular posición csoluta de cada uno de los vértices
+                std::vector<Vector2d<float>> vertices_pos;
+                for (auto &&vertex : vertices)
+                {
+                    vertices_pos.push_back(vertex + pos);
+                }
+
+                std::vector<Vector2d<float>> c_vertices_pos;
+                for (auto &&c_vertex : c_vertices)
+                {
+                    c_vertices_pos.push_back(c_vertex + c_pos);
+                }
+
+                float overlap = INFINITY;
+
+                if(c->overlapping(vertices_pos,c_vertices_pos, overlap) && c->overlapping(c_vertices_pos, vertices_pos, overlap))
+                {
+                    // Corregir Convex
+
+                    Vector2d<float> center = (min + max)/2.0f;
+                    Vector2d<float> center_pos = center + pos;
+                    Vector2d<float> c_center_pos = c->center + c_pos;
+
+                    Vector2d<float> d = c_center_pos - center_pos;
+                    d.Normalize();
+
+                    Vector2d<float> fix_pos = center_pos - (d * overlap) - center;
+                    
+
+                    intersection.fixed_position = collider->getPreviousPosition();
+                    intersection.intersects = true;
+                    intersection.position = pos;
+                    intersection.A = collider;
+                    intersection.B = c_collider;
+
+                    return &intersection;
+                }
+
+                return nullptr;
+            }
+        }
+    }
+    return nullptr;
+}
+
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
@@ -240,6 +307,18 @@ Vector2d<float> AABB::getMax() const
 const Shape_Type& AABB::getType() const
 {
     return Shape::getType();
+}
+
+std::vector<Vector2d<float>> AABB::getVertices()
+{
+    std::vector<Vector2d<float>> v;
+
+    v.push_back(min);
+    v.push_back(Vector2d<float>(max.x, min.y));
+    v.push_back(max);
+    v.push_back(Vector2d<float>(min.x, max.y));
+
+    return v;
 }
 
 

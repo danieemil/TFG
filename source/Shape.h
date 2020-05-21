@@ -42,6 +42,7 @@ enum class Shape_Type
 {
     AABB,
     Circle,
+    Convex,
 };
 
 

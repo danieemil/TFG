@@ -44,6 +44,10 @@ namespace utilities
         Vector2d<T>(T px, T py) : x(px), y(py) {};
         Vector2d<T>(const Vector2d<T>& v) : x(v.x), y(v.y) {};
         Vector2d<T>() : x(0), y(0){};
+
+        Vector2d<T> Normal(){
+            return Vector2d<T>(y, -x);
+        }
         
         void Normalize(){ 
             float l = sqrt(x * x + y * y);
@@ -54,6 +58,11 @@ namespace utilities
         float Length() const
         {
             return sqrt((x * x) + (y * y));
+        }
+
+        float DotProduct(const Vector2d<T> & v) const
+        {
+            return x * v.x + y * v.y;
         }
         
         // The sign of the 2D cross product tells you whether the second vector is on the left or right

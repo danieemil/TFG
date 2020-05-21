@@ -1,24 +1,21 @@
-#ifndef _CIRCLE_
-#define _CIRCLE_
+#ifndef _CONVEX_
+#define _CONVEX_
 
 #include "Shape.h"
+#include "vector"
 
-
-
+class Circle;
 class AABB;
-class Convex;
 
-
-
-class Circle : public Shape
+class Convex : public Shape
 {
 
 public:
     // Constructores
-    Circle(const Vector2d<float>& center_rel, const float& radius_rel, Collider* c = nullptr);
-    Circle(const Circle& ab);
+    Convex(const std::vector<Vector2d<float>>& v, Collider* c = nullptr);
+    Convex(const Convex& ab);
 
-    Circle& operator= (const Circle& ab);
+    Convex& operator= (const Convex& ab);
 
     // Métodos
     Intersection* intersect(Shape* s) override;
@@ -27,7 +24,7 @@ public:
     Intersection* intersect(Convex* c);
 
     // Setters
-    void setCollider(Collider* pos) override;
+    void setCollider(Collider* c) override;
 
     // Getters
     Collider* getCollider() const override;
@@ -37,15 +34,19 @@ public:
     
 
     // Destructor
-    ~Circle();
+    ~Convex();
 
 private:
 
+    std::vector<Vector2d<float>> vertices;
     Vector2d<float> center;
-    float radius;
 
+
+    bool overlapping(std::vector<Vector2d<float>> a, std::vector<Vector2d<float>> b, float& overlap);
+    void calculateCenter();
+
+    friend class Circle;
     friend class AABB;
-    friend class Convex;
 
 };
 

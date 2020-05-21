@@ -41,6 +41,8 @@ public:
 
     void nextLine();
 
+    void stop();
+
     ~Debugger();
 
 private:

@@ -132,7 +132,24 @@ void Tilemap::generateTiles()
                         if(sp!=nullptr)
                         {
 
-                            Shape* s = new AABB(Vector2d<float>(0,0), Vector2d<float>(tile_size.x, tile_size.y));
+                            Shape* s = nullptr;
+
+                            std::vector<Vector2d<float>> v2 = 
+                            {
+                                Vector2d<float>(0,0),
+                                Vector2d<float>((float)sp->getSize().x - 3, 0),
+                                Vector2d<float>(0,(float)sp->getSize().y - 3)
+                            };
+
+                            if(sprite_id == 2)
+                            {
+                                s = new Convex(v2);
+                            }
+                            else
+                            {
+                                s = new AABB(Vector2d<float>(0,0), Vector2d<float>(tile_size.x, tile_size.y));
+                            }
+                            
                             Collider* c = new Collider(p,s,CollisionFlag::none, CollisionType::col_static);
 
                             tiles[i][j] = new Tile(p,sp,nullptr,c);

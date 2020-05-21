@@ -2,8 +2,10 @@
 #define _AABB_
 
 #include "Shape.h"
+#include "vector"
 
 class Circle;
+class Convex;
 
 class AABB : public Shape
 {
@@ -19,6 +21,7 @@ public:
     Intersection* intersect(Shape* s) override;
     Intersection* intersect(AABB* ab);
     Intersection* intersect(Circle* c);
+    Intersection* intersect(Convex* c);
 
     // Setters
     void setCollider(Collider* c) override;
@@ -28,6 +31,8 @@ public:
     Vector2d<float> getMin() const override;
     Vector2d<float> getMax() const override;
     const Shape_Type& getType() const override;
+
+    std::vector<Vector2d<float>> getVertices();
     
 
     // Destructor
@@ -38,6 +43,7 @@ private:
     Vector2d<float> min, max;
 
     friend class Circle;
+    friend class Convex;
 
 };
 

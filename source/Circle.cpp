@@ -1,5 +1,6 @@
 #include "Circle.h"
 #include "AABB.h"
+#include "Convex.h"
 #include "Collider.h"
 
 
@@ -46,9 +47,13 @@ Intersection* Circle::intersect(Shape* s)
         {
             return intersect(static_cast<AABB*>(s));
         }
-        else if(s->getType()==Shape_Type::Circle)
+        if(s->getType()==Shape_Type::Circle)
         {
             return intersect(static_cast<Circle*>(s));
+        }
+        if (s->getType()==Shape_Type::Convex)
+        {
+            return intersect(static_cast<Convex*>(s));
         }
         
     }
@@ -169,6 +174,38 @@ Intersection* Circle::intersect(Circle* c)
 
                     return &intersection;
                 }
+            }
+        }
+    }
+    return nullptr;
+}
+
+/*
+*   (this)  -> collisionable dinámico
+*   (c)     -> collisionable estático
+*/
+Intersection* Circle::intersect(Convex* c)
+{
+    if(collider!=nullptr)
+    {
+        if(c!=nullptr)
+        {
+            Collider* c_collider = c->getCollider();
+            if(c_collider!=nullptr)
+            {
+                // Detectar Circle vs Convex
+                Vector2d<float> pos = collider->getPosition();
+
+
+
+                Vector2d<float> c_pos = c_collider->getPosition();
+
+
+                // Corregir Circle
+
+                
+
+                return nullptr;
             }
         }
     }

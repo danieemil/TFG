@@ -121,3 +121,9 @@ void Debugger::printLocation()
 
     std::cout<<location;
 }
+
+void Debugger::stop()
+{
+    while (true){}
+    
+}
