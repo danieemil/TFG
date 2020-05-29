@@ -20,6 +20,7 @@ public:
 
     // Métodos
     bool intersects(const Bounding_Box& bb);
+    bool intersects(const Vector2d<float>& a, const Vector2d<float>& b);
 
     // Setters
     void setPosition(const Vector2d<float>& min_pos);
@@ -40,5 +41,7 @@ private:
     Vector2d<float> size;
 
 };
+
+Vector2d<float> segmentsIntersection(const Vector2d<float>& a, const Vector2d<float>& b, const Vector2d<float> c, const Vector2d<float> d, bool& intersects);
 
 #endif

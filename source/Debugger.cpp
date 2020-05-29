@@ -1,5 +1,6 @@
 #include "Debugger.h"
 
+using namespace utilities;
 
 
 
@@ -102,6 +103,12 @@ void Debugger::print(void* v)
     printLocation();
     column = column + 10;
     std::cout<<v;
+}
+
+void Debugger::print(const Vector2d<float>& v)
+{
+    print(v.x);
+    print(v.y);
 }
 
 void Debugger::nextLine()

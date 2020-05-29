@@ -33,14 +33,14 @@ Intersection& Intersection::operator=(const Intersection& i)
 }
 
 
-Shape::Shape(Collider* c)
-: collider(c)
+Shape::Shape(Collider* c, float a)
+: collider(c), angle(a)
 {
     
 }
 
 Shape::Shape(const Shape& s)
-: collider(nullptr), type(s.type)
+: collider(nullptr), type(s.type), intersection(s.intersection), angle(s.angle)
 {
     
 }
@@ -49,6 +49,8 @@ Shape& Shape::operator= (const Shape& s)
 {
     collider = nullptr;
     type = s.type;
+    intersection = s.intersection;
+    angle = s.angle;
 
     return *this;
 }
@@ -69,6 +71,11 @@ void Shape::setCollider(Collider* c)
     collider = c;
 }
 
+void Shape::setLocalRotation(float a)
+{
+    angle = a;
+}
+
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
@@ -81,6 +88,16 @@ Collider* Shape::getCollider() const
 const Shape_Type& Shape::getType() const
 {
     return type;
+}
+
+float Shape::getLocalRotation() const
+{
+    return angle;
+}
+
+const Vector2d<float>& Shape::getCenter() const
+{
+    return center;
 }
 
 

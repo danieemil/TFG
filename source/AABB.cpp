@@ -11,13 +11,17 @@
 AABB::AABB(const Vector2d<float>& min_rel, const Vector2d<float>& max_rel, Collider* c)
 : Shape(c), min(min_rel), max(max_rel)
 {
+    model_center = (min + max)/2.0f;
     type = Shape_Type::AABB;
+    setGlobalRotation();
 }
 
 AABB::AABB(const AABB& ab)
 : Shape(ab), min(ab.min), max(ab.max)
 {
+    model_center = ab.model_center;
     type = Shape_Type::AABB;
+    setGlobalRotation();
 }
 
 AABB& AABB::operator= (const AABB& ab)
@@ -25,7 +29,9 @@ AABB& AABB::operator= (const AABB& ab)
     Shape::operator=(ab);
     min = ab.min;
     max = ab.max;
+    model_center = ab.model_center;
     type = Shape_Type::AABB;
+    setGlobalRotation();
 
     return *this;
 }
@@ -54,6 +60,58 @@ Intersection* AABB::intersect(Shape* s)
         if (s->getType()==Shape_Type::Convex)
         {
             return intersect(static_cast<Convex*>(s));
+        }
+    }
+    return nullptr;
+}
+
+// Devuelve el punto más cercano al inicio
+Intersection* AABB::intersect(const Vector2d<float>& a, const Vector2d<float>& b)
+{
+    if(collider!=nullptr)
+    {
+        intersection.intersects = false;
+        intersection.A = collider;
+
+        bool inters;
+        int intersections = 0;
+
+        Vector2d<float> pos = b;
+        float dist = (b - a).Length();
+
+        Vector2d<float> p;
+
+        Vector2d<float> position = collider->getPosition();
+
+        auto vertices = getVertices();
+        size_t s_vertices = vertices.size();
+
+        for (size_t c = 0; c < s_vertices; c++)
+        {
+            size_t d = (c + 1) % s_vertices;
+
+            p = segmentsIntersection(a, b, vertices[c] + position, vertices[d] + position, inters);
+            if(inters)
+            {
+                intersections++;
+                intersection.intersects = true;
+                float dif = (p - a).Length();
+                if(dif < dist)
+                {
+                    dist = dif;
+                    pos = p;
+                }
+                intersection.position = pos;
+                if(intersections==2)
+                {
+                    return &intersection;
+                }
+            }
+        }
+
+        if(intersection.intersects)
+        {
+            return &intersection;
         }
     }
     return nullptr;
@@ -156,16 +214,15 @@ Intersection* AABB::intersect(Circle* c)
                 Vector2d<float> min_pos = min + pos;
                 Vector2d<float> max_pos = max + pos;
 
-                Vector2d<float> size = max_pos - min_pos;
-                Vector2d<float> half = size/2.0f;
-                Vector2d<float> center = min_pos + half;
+                Vector2d<float> half = (max_pos - min_pos)/2.0f;
+                Vector2d<float> center_pos = min_pos + half;
 
                 Vector2d<float> c_pos = c_collider->getPosition();
                 Vector2d<float> c_center = c->center + c_pos;
 
                 float c_radius = c->radius;
 
-                Vector2d<float> distance = center - c_center;
+                Vector2d<float> distance = center_pos - c_center;
 
                 float nearDX = clamp(-half.x, half.x, distance.x);
                 float nearDY = clamp(-half.y, half.y, distance.y);
@@ -224,7 +281,7 @@ Intersection* AABB::intersect(Convex* c)
                 // Detectar AABB vs Convex
                 Vector2d<float> pos = collider->getPosition();
 
-                std::vector<Vector2d<float>> c_vertices = c->vertices;
+                std::vector<Vector2d<float>> c_vertices = c->rotated_vertices;
                 std::vector<Vector2d<float>> vertices = getVertices();
                 Vector2d<float> c_pos = c_collider->getPosition();
 
@@ -249,17 +306,15 @@ Intersection* AABB::intersect(Convex* c)
                 {
                     // Corregir Convex
 
-                    Vector2d<float> center = (min + max)/2.0f;
                     Vector2d<float> center_pos = center + pos;
                     Vector2d<float> c_center_pos = c->center + c_pos;
 
-                    Vector2d<float> d = c_center_pos - center_pos;
+                    Vector2d<float> d = center_pos - c_center_pos;
                     d.Normalize();
 
-                    Vector2d<float> fix_pos = center_pos - (d * overlap) - center;
-                    
+                    Vector2d<float> fix_pos = center_pos + (d * overlap) - center;
 
-                    intersection.fixed_position = collider->getPreviousPosition();
+                    intersection.fixed_position = fix_pos;
                     intersection.intersects = true;
                     intersection.position = pos;
                     intersection.A = collider;
@@ -282,6 +337,37 @@ Intersection* AABB::intersect(Convex* c)
 void AABB::setCollider(Collider* c)
 {
     Shape::setCollider(c);
+}
+
+// Solo se rota el centro y no los demás vértices
+void AABB::setGlobalRotation()
+{
+    if(collider!=nullptr)
+    {
+        Vector2d<float> half = (max - min)/2.0f;
+
+        float angl = collider->getRotation();
+        Vector2d<float> cent = collider->getRotationCenter();
+        Vector2d<float> dist = model_center - cent;
+
+        float s = sin(angl);
+        float c = cos(angl);
+
+        center.x = dist.x * c - dist.y * s;
+        center.y = dist.x * s + dist.y * c;
+
+        center += cent;
+
+        min = center - half;
+        max = center + half;
+    }
+
+}
+
+// AABB no permite rotaciones locales
+void AABB::setLocalRotation(float a)
+{
+    
 }
 
 
@@ -307,6 +393,16 @@ Vector2d<float> AABB::getMax() const
 const Shape_Type& AABB::getType() const
 {
     return Shape::getType();
+}
+
+float AABB::getLocalRotation() const
+{
+    return Shape::getLocalRotation();
+}
+
+const Vector2d<float>& AABB::getCenter() const
+{
+    return Shape::getCenter();
 }
 
 std::vector<Vector2d<float>> AABB::getVertices()

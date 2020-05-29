@@ -34,6 +34,11 @@ namespace utilities
         return value;
     }
 
+    inline float toRadians(float angle)
+    {
+        return angle * PI_F / 180.0f;
+    }
+
     template <class T>
     class Vector2d
     {
@@ -69,7 +74,7 @@ namespace utilities
         // side of the first vector (the direction of the first vector being front)
         T CrossProduct(const Vector2d<T> &v) const
         {
-                return x * v.y - y * v.x;
+                return v.x * y - x * v.y;
         }
 
         T AngleBetween(const Vector2d<T> &v) const

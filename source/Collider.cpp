@@ -8,8 +8,8 @@ using namespace physics;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f, const CollisionType& t, void* c)
-: position(pos), previous_position(pos), flags(f), type(t), creator(c)
+Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f, const CollisionType& t, void* c, float a, const Vector2d<float>& rot_cent)
+: position(pos), previous_position(pos), flags(f), type(t), creator(c), angle(a), rotation_center(rot_cent)
 {
     if(s!=nullptr)
     {
@@ -34,7 +34,7 @@ Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f,
 }
 
 Collider::Collider(const Collider& c)
-: position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr)
+: position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr), angle(c.angle), rotation_center(c.rotation_center)
 {
     for (auto it = c.shapes.begin(); it!=c.shapes.end(); it++)
     {
@@ -77,6 +77,8 @@ Collider& Collider::operator= (const Collider& c)
     position = c.position;
     previous_position = c.previous_position;
     bounds = c.bounds;
+    angle = c.angle;
+    rotation_center = c.rotation_center;
 
     setFlags(c.flags);
     setType(c.type);
@@ -166,6 +168,33 @@ void Collider::intersectFix(Intersection* inter)
     }
 }
 
+Intersection* Collider::intersectSegment(const Vector2d<float>& a, const Vector2d<float>& b)
+{
+    if(bounds.intersects(Bounding_Box(Vector2d<float>(std::min(a.x,b.x),std::min(a.y,b.y)),Vector2d<float>(std::max(a.x,b.x),std::max(a.y,b.y)))))
+    {
+        if(bounds.intersects(a, b))
+        {
+            Intersection* i = nullptr;
+
+            for (auto &&shape : shapes)
+            {
+                i = shape->intersect(a, b);
+
+                if(i!=nullptr)
+                {
+                    return i;
+                }
+            }
+        }
+    }
+    return nullptr;
+}
+
+bool Collider::isStatic() const
+{
+    return (type == CollisionType::col_static);
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -225,6 +254,36 @@ void Collider::setCreator(void* c)
     creator = c;
 }
 
+void Collider::setGlobalRotation(float a)
+{
+    angle = a;
+    for (auto &&shape : shapes)
+    {
+        if (shape!=nullptr)
+        {
+            shape->setGlobalRotation();
+        }
+    }
+    calculateValues();
+}
+
+void Collider::setLocalsRotation(float a)
+{
+    for (auto &&shape : shapes)
+    {
+        if (shape!=nullptr)
+        {
+            shape->setLocalRotation(a);
+        }
+    }
+    calculateValues();
+}
+
+void Collider::setRotationCenter(const Vector2d<float>& rot_cent)
+{
+    rotation_center = rot_cent;
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -258,6 +317,16 @@ const CollisionType& Collider::getType() const
 void* Collider::getCreator() const
 {
     return creator;
+}
+
+float Collider::getRotation() const
+{
+    return angle;
+}
+
+const Vector2d<float>& Collider::getRotationCenter() const
+{
+    return rotation_center;
 }
 
 

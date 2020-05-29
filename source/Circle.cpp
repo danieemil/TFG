@@ -9,22 +9,25 @@
 //=========================================
 
 Circle::Circle(const Vector2d<float>& center_rel, const float& radius_rel, Collider* c)
-: Shape(c), center(center_rel), radius(radius_rel)
+: Shape(c), model_center(center_rel), radius(radius_rel)
 {
+    center = model_center;
     type = Shape_Type::Circle;
 }
 
-Circle::Circle(const Circle& ab)
-: Shape(ab), center(ab.center), radius(ab.radius)
+Circle::Circle(const Circle& c)
+: Shape(c), model_center(c.model_center), radius(c.radius)
 {
+    center = c.center;
     type = Shape_Type::Circle;
 }
 
-Circle& Circle::operator= (const Circle& ab)
+Circle& Circle::operator= (const Circle& c)
 {
-    Shape::operator=(ab);
-    center = ab.center;
-    radius = ab.radius;
+    Shape::operator=(c);
+    model_center = c.model_center;
+    center = c.center;
+    radius = c.radius;
     type = Shape_Type::Circle;
 
     return *this;
@@ -56,6 +59,66 @@ Intersection* Circle::intersect(Shape* s)
             return intersect(static_cast<Convex*>(s));
         }
         
+    }
+    return nullptr;
+}
+
+Intersection* Circle::intersect(const Vector2d<float>& a, const Vector2d<float>& b)
+{
+    if(collider!=nullptr)
+    {
+        intersection.intersects = false;
+        intersection.A = collider;
+
+        Vector2d<float> position = collider->getPosition();
+
+        Vector2d<float> center_pos = center + position;
+
+        // Comprobamos si algún punto está dentro del círculo
+        Vector2d<float> distA = center_pos - a;
+        float dA = distA.Length();
+
+        Vector2d<float> distB = center_pos - b;
+        float dB = distB.Length();
+
+        if(dA < radius)
+        {
+            intersection.intersects = true;
+            intersection.position = a;
+            return &intersection;
+        }
+        else if (dB < radius)
+        {
+            intersection.intersects = true;
+            intersection.position = b;
+            return &intersection;
+        }
+        
+
+
+        // Comprobamos si la recta colisiona con el círculo
+        Vector2d<float> a_b = b - a;
+        Vector2d<float> a_c = center_pos - a;
+        float dist_ab = a_b.Length();
+        Vector2d<float> dir_ab = a_b;
+        dir_ab.Normalize();
+
+        float dist_ap = a_b.DotProduct(a_c)/(dist_ab * dist_ab);
+
+        if(dist_ap >= 0 && dist_ap <= dist_ab)
+        {
+            Vector2d<float> p = a + (dir_ab*dist_ap);
+
+            Vector2d<float> dist = p - center_pos;
+            float d = dist.Length();
+
+            if(d < radius)
+            {
+                intersection.intersects = true;
+                intersection.position = p;
+                return &intersection;
+            }
+        }
     }
     return nullptr;
 }
@@ -221,6 +284,29 @@ void Circle::setCollider(Collider* c)
     Shape::setCollider(c);
 }
 
+void Circle::setGlobalRotation()
+{
+    if(collider!=nullptr)
+    {
+        float angl = collider->getRotation();
+        Vector2d<float> cent = collider->getRotationCenter();
+        Vector2d<float> dist = model_center - cent;
+
+        float s = sin(angl);
+        float c = cos(angl);
+
+        center.x = dist.x * c - dist.x * s;
+        center.y = dist.y * s + dist.y * c;
+
+        center += cent;
+    }
+}
+
+void Circle::setLocalRotation(float a)
+{
+    Shape::setLocalRotation(a);
+}
+
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
@@ -243,6 +329,16 @@ Vector2d<float> Circle::getMax() const
 const Shape_Type& Circle::getType() const
 {
     return Shape::getType();
+}
+
+float Circle::getLocalRotation() const
+{
+    return Shape::getLocalRotation();
+}
+
+const Vector2d<float>& Circle::getCenter() const
+{
+    return Shape::getCenter();
 }
 
 

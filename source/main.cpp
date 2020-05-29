@@ -31,14 +31,36 @@ int main(int argc, char* argv[])
 	auto ms = game_world->getTilemap()->getMapSize();
 
 	// Creamos al jugador
+
 	Vector2d<float> player_position = Vector2d<float>(50,50);
+
 	Sprite* player_sprite = game->getSpriteManager()->createSprite(0);
 	Vector2d<size_t> player_size = player_sprite->getSize();
+
+	// Vértices del jugador
+	std::vector<Vector2d<float>> v_player =
+	{
+		Vector2d<float>(0,0),
+		Vector2d<float>((float)player_size.x,0),
+		Vector2d<float>((float)player_size.x,(float)player_size.y/2.5f),
+		//Vector2d<float>((float)player_size.x/5.0f,(float)player_size.y/2.5f),
+		Vector2d<float>((float)player_size.x/5.0f,(float)player_size.y),
+		Vector2d<float>(0,(float)player_size.y)
+	};
+
+	// Colisiones
 	Shape* player_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(player_size.x, player_size.y));
 	Shape* player_rect2 = new AABB(Vector2d<float>(0,player_size.y/2.0f), Vector2d<float>(player_size.x/5.0f,player_size.y));
 	Shape* player_circ1 = new Circle(Vector2d<float>(player_size.x/2.0f,player_size.y/4.0f), player_size.x/2.0f);
-	Collider* player_body = new Collider(player_position, player_rect1, CollisionFlag::player, CollisionType::col_dynamic);
+	Shape* player_conv1 = new Convex(v_player);
+	Collider* player_body = new Collider(player_position, player_conv1, CollisionFlag::player, CollisionType::col_dynamic);
 	//player_body->addShape(player_rect2);
+	float rotation = 45;
+	player_sprite->setRotation(rotation);
+	player_body->setGlobalRotation(rotation);
+
+	
+	
 	Vector2d<float> player_max_vel = Vector2d<float>(2,2);
 	Player* player = new Player(player_position, player_sprite, game_world, player_body, nullptr, player_max_vel);
 	game_world->addPlayer(player);

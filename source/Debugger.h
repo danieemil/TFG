@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "3ds.h"
+#include "Utilities.h"
 
 enum N3DS_screenV
 {
@@ -38,6 +39,7 @@ public:
     void print(double d);
     void print(std::string s);
     void print(void* v);
+    void print(const utilities::Vector2d<float>& v);
 
     void nextLine();
 

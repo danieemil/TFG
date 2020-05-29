@@ -64,6 +64,37 @@ bool Bounding_Box::intersects(const Bounding_Box& bb)
 
 }
 
+bool Bounding_Box::intersects(const Vector2d<float>& a, const Vector2d<float>& b)
+{
+
+    // True=El segmento AB itersecta con alguna parte del contorno(Arriba, derecha, abajo, izquierda)
+
+    bool intersection = false;
+
+    Vector2d<float> ard = Vector2d<float>(min.x + size.x, min.y);
+    Vector2d<float> abd = min + size;
+    Vector2d<float> abi = Vector2d<float>(min.x, min.y + size.y);
+
+
+    // Comprobar arriba
+    segmentsIntersection(a,b,min, ard, intersection);
+    if(intersection) return true;
+
+    // Comprobar derecha
+    segmentsIntersection(a,b,ard,abd, intersection);
+    if(intersection) return true;
+
+    // Comprobar abajo
+    segmentsIntersection(a,b,abd,abi, intersection);
+    if(intersection) return true;
+
+    // Comprobar izquierda
+    segmentsIntersection(a,b,abi,min, intersection);
+    if(intersection) return true;
+
+    return false;
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -101,7 +132,7 @@ const Vector2d<float>& Bounding_Box::getSize() const
 
 Vector2d<float> Bounding_Box::getCenter() const
 {
-    return Vector2d<float>(min.x + size.x/2.0f, min.y + size.y/2.0f);
+    return min + (size/2.0f);
 }
 
 
@@ -112,4 +143,33 @@ Vector2d<float> Bounding_Box::getCenter() const
 Bounding_Box::~Bounding_Box()
 {
     
+}
+
+
+
+
+// Comprueba en qué punto intersectan AB y CD. Además detecta si ese punto está en ambos segmentos
+Vector2d<float> segmentsIntersection(const Vector2d<float>& a, const Vector2d<float>& b, const Vector2d<float> c, const Vector2d<float> d, bool& between)
+{
+    between = false;
+    Vector2d<float> point;
+
+    Vector2d<float> ab = b - a;
+    Vector2d<float> cd = d - c;
+    Vector2d<float> ca = a - c;
+
+    float ab_cd = ab.CrossProduct(cd);
+
+    float pAB = ca.CrossProduct(cd) / ab_cd;
+    float pCD = ca.CrossProduct(ab) / ab_cd;
+
+    point = a + (ab * pAB);
+
+    if (pAB >= 0.0f && pAB <= 1.0f && pCD >= 0.0f && pCD <= 1.0f)
+    {
+        between = true;
+    }
+
+    return point;
+
 }

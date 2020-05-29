@@ -133,12 +133,12 @@ namespace physics
     // En esta función se analizan y resuelven todas las colisiones
     void step()
     {
-        // Todos los colliders neutros se comprueban entre sí
+        // Todos los colliders neutros se comprueban entre sí SOLO UNA VEZ
         for(auto it = colliders.begin(); it!=colliders.end(); it++)
         {
             Collider* colliderA = (*it);
 
-            for (auto it2 = colliders.begin(); it2!=colliders.end(); it2++)
+            for (auto it2 = it+1; it2!=colliders.end(); it2++)
             {
                 Collider* colliderB = (*it2);
 
@@ -167,6 +167,97 @@ namespace physics
                 }
             }
         }
+    }
+
+    std::vector<Intersection*> rayTestStatics(const Vector2d<float>& a, const Vector2d<float>& b)
+    {
+        std::vector<Intersection*> intersections;
+
+        Intersection* i = nullptr;
+
+        for (auto &&c_static : statics)
+        {
+            i = c_static->intersectSegment(a, b);
+            if (i!=nullptr)
+            {
+                intersections.push_back(i);
+            }
+        }
+
+        return intersections;
+    }
+    
+    // Mayor coste computacional de los estáticos
+    Intersection* rayTestFirstStatic(const Vector2d<float>& a, const Vector2d<float>& b)
+    {
+
+        Intersection* i = nullptr;
+
+        float dist = (b - a).Length();
+
+        for (auto &&c_static : statics)
+        {
+            Intersection* i2 = c_static->intersectSegment(a, b);
+            if (i2!=nullptr)
+            {
+                float dist2 = (i2->position - a).Length();
+                if (dist2 < dist)
+                {
+                    dist = dist2;
+                    i = i2;
+                }
+            }
+        }
+
+        return i;
+    }
+    
+    // Menor coste computacional de los estáticos
+    bool rayTestStatic(const Vector2d<float>& a, const Vector2d<float>& b)
+    {
+        for (auto &&c_static : statics)
+        {
+            if (c_static->intersectSegment(a, b)!=nullptr)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Costoso dependiendo de las flags activas que se pasen por parámetro
+    std::vector<Intersection*> rayTestFlag(const Vector2d<float>& a, const Vector2d<float>& b, const CollisionFlag& f)
+    {
+        std::vector<Intersection*> intersections;
+
+        for (auto &&col : colliders)
+        {
+            if((col->getFlags() & f) != CollisionFlag::none)
+            {
+                Intersection* i = col->intersectSegment(a, b);
+                if(i!=nullptr)
+                {
+                    intersections.push_back(i);
+                }
+            }
+        }
+        return intersections;
+    }
+    
+    std::vector<Intersection*> rayTestAll(const Vector2d<float>& a, const Vector2d<float>& b)
+    {
+        std::vector<Intersection*> intersections = rayTestStatics(a, b);
+
+        for (auto &&col : colliders)
+        {
+            Intersection* i = col->intersectSegment(a, b);
+            if (i!=nullptr)
+            {
+                intersections.push_back(i);
+            }
+        }
+
+        return intersections;
     }
 
     void setManager(void (*manager)(Collider* colliderA, Collider* colliderB))

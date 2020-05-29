@@ -2,6 +2,7 @@
 #include "AABB.h"
 #include "Circle.h"
 #include "Collider.h"
+#include "Unvisual_Engine.h"
 
 
 //=========================================
@@ -11,27 +12,35 @@
 Convex::Convex(const std::vector<Vector2d<float>>& v, Collider* c)
 : Shape(c)
 {
-    vertices = v;
+    model_vertices = v;
+    rotated_vertices = model_vertices;
     type = Shape_Type::Convex;
+    angle = 0;
 
-    calculateCenter();
+    calculateRotation();
 
 }
 
 Convex::Convex(const Convex& c)
 : Shape(c)
 {
-    vertices = c.vertices;
+    model_vertices = c.model_vertices;
+    rotated_vertices = c.rotated_vertices;
     type = Shape_Type::Convex;
-    calculateCenter();
+    angle = c.angle;
+
+    calculateRotation();
 }
 
 Convex& Convex::operator= (const Convex& c)
 {
     Shape::operator=(c);
-    vertices = c.vertices;
+    model_vertices = c.model_vertices;
+    rotated_vertices = c.rotated_vertices;
     type = Shape_Type::Convex;
-    calculateCenter();
+    angle = c.angle;
+
+    calculateRotation();
 
     return *this;
 }
@@ -65,6 +74,56 @@ Intersection* Convex::intersect(Shape* s)
     return nullptr;
 }
 
+Intersection* Convex::intersect(const Vector2d<float>& a, const Vector2d<float>& b)
+{
+    if(collider!=nullptr)
+    {
+        intersection.intersects = false;
+        intersection.A = collider;
+
+        bool inters;
+        int intersections = 0;
+
+        Vector2d<float> pos = b;
+        float dist = (b - a).Length();
+
+        Vector2d<float> p;
+
+        Vector2d<float> position = collider->getPosition();
+
+        size_t s_vertices = rotated_vertices.size();
+
+        for (size_t c = 0; c < s_vertices; c++)
+        {
+            size_t d = (c + 1) % s_vertices;
+
+            p = segmentsIntersection(a, b, rotated_vertices[c] + position, rotated_vertices[d] + position, inters);
+            if(inters)
+            {
+                intersections++;
+                intersection.intersects = true;
+                float dif = (p - a).Length();
+                if(dif < dist)
+                {
+                    dist = dif;
+                    pos = p;
+                }
+                intersection.position = pos;
+                if(intersections==2)
+                {
+                    return &intersection;
+                }
+            }
+        }
+
+        if(intersection.intersects)
+        {
+            return &intersection;
+        }
+    }
+    return nullptr;
+}
+
 /*
 *   (this)  -> collisionable dinámico
 *   (ab)    -> collisionable estático
@@ -86,7 +145,7 @@ Intersection* Convex::intersect(AABB* ab)
 
                 // Calcular posición absoluta de cada uno de los vértices
                 std::vector<Vector2d<float>> vertices_pos;
-                for (auto &&vertex : vertices)
+                for (auto &&vertex : rotated_vertices)
                 {
                     vertices_pos.push_back(vertex + pos);
                 }
@@ -106,10 +165,10 @@ Intersection* Convex::intersect(AABB* ab)
                     Vector2d<float> center_pos = center + pos;
                     Vector2d<float> c_center_pos = ((ab->max + ab->min)/2.0f) + c_pos;
 
-                    Vector2d<float> d = c_center_pos - center_pos;
+                    Vector2d<float> d = center_pos - c_center_pos;
                     d.Normalize();
 
-                    Vector2d<float> fix_pos = (center_pos - (d * overlap)) - center;
+                    Vector2d<float> fix_pos = center_pos + (d * overlap) - center;
 
 
                     intersection.fixed_position = fix_pos;
@@ -143,15 +202,91 @@ Intersection* Convex::intersect(Circle* c)
             {
                 // Detectar Convex vs Circle
                 Vector2d<float> pos = collider->getPosition();
-
-
+                Vector2d<float> center_pos = center + pos;
 
                 Vector2d<float> c_pos = c_collider->getPosition();
+                Vector2d<float> c_center_pos = c->center + c_pos;
+                float c_radius = c->radius;
+
+                // Calcular posición absoluta de cada uno de los vértices
+                std::vector<Vector2d<float>> vertices_pos;
+                for (auto &&vertex : rotated_vertices)
+                {
+                    vertices_pos.push_back(vertex + pos);
+                }
+
+                float overlap = -INFINITY;
+                Vector2d<float> dir_overlap;
+
+                // Comprobamos si algún punto está dentro del círculo
+                for(auto &&vertex : vertices_pos)
+                {
+                    Vector2d<float> dist = c_center_pos - vertex;
+                    float d = dist.Length();
+
+                    if(d < c_radius)
+                    {
+                        std::max(c_radius - d, overlap);
+                    }
+                }
+
+                // Comprobamos si alguna recta colisiona con el círculo
+                for (size_t a = 0; a < vertices_pos.size(); a++)
+                {
+                    size_t b = (a + 1) % vertices_pos.size();
+
+                    Vector2d<float> a_b = vertices_pos[b] - vertices_pos[a];
+                    Vector2d<float> a_c = c_center_pos - vertices_pos[a];
+                    float dist_ab = a_b.Length();
+                    Vector2d<float> dir_ab = a_b;
+                    dir_ab.Normalize();
+
+                    float dist_ap = a_b.DotProduct(a_c)/pow(dist_ab,2);
+
+                    if(dist_ap >= 0 && dist_ap <= dist_ab)
+                    {
+                        Vector2d<float> p = vertices_pos[a] + (dir_ab*dist_ap);
+
+                        Vector2d<float> dist = p - c_center_pos;
+                        float d = dist.Length();
+
+                        if(d < c_radius)
+                        {
+                            float dif = c_radius - d;
+                            if(dif > overlap)
+                            {
+                                overlap = dif;
+                                dir_overlap = dist;
+                                dir_overlap.Normalize();
+                            }
+                        }
+                    }
+                }
+
+                if(overlap != -INFINITY)
+                {
+                    // Corregir Convex
+
+                    Vector2d<float> dir = center_pos - c_center_pos;
+                    dir.Normalize();
+
+                    if(!(dir_overlap==Vector2d<float>()))
+                    {
+                        dir = dir_overlap;
+                    }
+
+                    Vector2d<float> fix_pos = center_pos + (dir * overlap) - center;
 
 
-                // Corregir Convex
+                    intersection.fixed_position = fix_pos;
+                    intersection.intersects = true;
+                    intersection.position = pos;
+                    intersection.A = collider;
+                    intersection.B = c_collider;
 
-                
+                    return &intersection;
+
+                }
 
                 return nullptr;
             }
@@ -176,12 +311,12 @@ Intersection* Convex::intersect(Convex* c)
                 // Detectar Convex vs Convex
                 Vector2d<float> pos = collider->getPosition();
 
-                std::vector<Vector2d<float>> c_vertices = c->vertices;
+                std::vector<Vector2d<float>> c_vertices = c->rotated_vertices;
                 Vector2d<float> c_pos = c_collider->getPosition();
 
                 // Calcular posición absoluta de cada uno de los vértices
                 std::vector<Vector2d<float>> vertices_pos;
-                for (auto &&vertex : vertices)
+                for (auto &&vertex : rotated_vertices)
                 {
                     vertices_pos.push_back(vertex + pos);
                 }
@@ -202,8 +337,9 @@ Intersection* Convex::intersect(Convex* c)
                     Vector2d<float> c_center_pos = c->center + c_pos;
 
                     Vector2d<float> d = c_center_pos - center_pos;
+                    d.Normalize();
 
-                    Vector2d<float> fix_pos = (center_pos - ((d * overlap)/d.Length())) - center;
+                    Vector2d<float> fix_pos = center_pos - (d * overlap) - center;
 
 
                     intersection.fixed_position = fix_pos;
@@ -220,6 +356,7 @@ Intersection* Convex::intersect(Convex* c)
     return nullptr;
 }
 
+
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
@@ -227,6 +364,18 @@ Intersection* Convex::intersect(Convex* c)
 void Convex::setCollider(Collider* c)
 {
     Shape::setCollider(c);
+}
+
+void Convex::setGlobalRotation()
+{
+    calculateRotation();
+}
+
+void Convex::setLocalRotation(float a)
+{
+    angle = a;
+    calculateRotation();
+
 }
 
 
@@ -243,7 +392,7 @@ Vector2d<float> Convex::getMin() const
 {
     Vector2d<float> min = Vector2d<float>(INFINITY,INFINITY);
 
-    for(auto&& vertex : vertices)
+    for(auto&& vertex : rotated_vertices)
     {
         min.x = std::min(min.x, vertex.x);
         min.y = std::min(min.y, vertex.y);
@@ -256,7 +405,7 @@ Vector2d<float> Convex::getMax() const
 {
     Vector2d<float> max = Vector2d<float>(-INFINITY,-INFINITY);
 
-    for(auto&& vertex : vertices)
+    for(auto&& vertex : rotated_vertices)
     {
         max.x = std::max(max.x, vertex.x);
         max.y = std::max(max.y, vertex.y);
@@ -268,6 +417,16 @@ Vector2d<float> Convex::getMax() const
 const Shape_Type& Convex::getType() const
 {
     return Shape::getType();
+}
+
+float Convex::getLocalRotation() const
+{
+    return Shape::getLocalRotation();
+}
+
+const Vector2d<float>& Convex::getCenter() const
+{
+    return Shape::getCenter();
 }
 
 
@@ -295,6 +454,7 @@ bool Convex::overlapping(std::vector<Vector2d<float>> v_a, std::vector<Vector2d<
         int b = (a+1) % v_a_size;
 
         Vector2d<float> n_proj = (v_a[b] - v_a[a]).Normal();
+        n_proj.Normalize();
 
         float min_r1 = INFINITY;
         float max_r1 = -INFINITY;
@@ -317,7 +477,7 @@ bool Convex::overlapping(std::vector<Vector2d<float>> v_a, std::vector<Vector2d<
             max_r2 = std::max(max_r2, q);
         }
 
-        overlap = std::min((std::min(max_r1, max_r2) - std::max(min_r1, min_r2)),overlap);
+        overlap = std::min(std::min(max_r1, max_r2) - std::max(min_r1, min_r2),overlap);
 
         if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
         {
@@ -327,12 +487,106 @@ bool Convex::overlapping(std::vector<Vector2d<float>> v_a, std::vector<Vector2d<
     return true;
 }
 
+// No se usa
+bool Convex::circleOverlapping(std::vector<Vector2d<float>> v_a, std::vector<Vector2d<float>> v_b, float& overlap)
+{
+    int v_a_size = (int)v_a.size();
+    int v_b_size = (int)v_b.size();
+
+    for(int a = 0; a < v_a_size; a++)
+    {
+        int b = (a+1) % v_a_size;
+
+        Vector2d<float> n_proj = (v_a[b] - v_a[a]).Normal();
+        n_proj.Normalize();
+
+        float min_r1 = INFINITY;
+        float max_r1 = -INFINITY;
+
+        for(int p = 0; p < v_a_size; p++)
+        {
+            float q = v_a[p].DotProduct(n_proj);
+            min_r1 = std::min(min_r1, q);
+            max_r1 = std::max(max_r1, q);
+        }
+
+
+        float min_r2 = INFINITY;
+        float max_r2 = -INFINITY;
+
+        for(int p = 0; p < v_b_size; p++)
+        {
+            float q = v_b[p].DotProduct(n_proj);
+            min_r2 = std::min(min_r2, q);
+            max_r2 = std::max(max_r2, q);
+        }
+
+        overlap = std::min(std::min(max_r1, max_r2) - std::max(min_r1, min_r2),overlap);
+
+        if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
+        {
+            return false;
+        }
+        a++;
+    }
+    return true;
+}
+
 void Convex::calculateCenter()
 {
-    for (auto &&vertex : vertices)
+    for (auto &&vertex : rotated_vertices)
     {
-        center+=vertex;
+        center += vertex;
     }
     
-    center/=vertices.size();
+    center /= rotated_vertices.size();
+}
+
+void Convex::calculateRotation()
+{
+
+    if(collider!=nullptr)
+    {
+        float d = collider->getRotation();
+
+        Vector2d<float> cent = collider->getRotationCenter();
+
+        float s = sin(d);
+        float c = cos(d);
+
+        for (size_t v = 0; v!=model_vertices.size(); v++)
+        {
+
+            Vector2d<float> vertex = model_vertices[v];
+
+            Vector2d<float> c_dist = vertex - cent;
+
+            Vector2d<float> n_vertex;
+            n_vertex.x = c_dist.x * c - c_dist.y * s;
+            n_vertex.y = c_dist.x * s + c_dist.y * c;
+
+            rotated_vertices[v] = n_vertex + cent;
+        }
+    }
+    
+    calculateCenter();
+
+    return;
+
+    float s = sin(angle);
+    float c = cos(angle);
+
+    for (size_t v = 0; v!=rotated_vertices.size(); v++)
+    {
+
+        Vector2d<float> vertex = rotated_vertices[v];
+
+        Vector2d<float> c_dist = vertex - center;
+
+        Vector2d<float> n_vertex;
+        n_vertex.x = c_dist.x * c - c_dist.y * s;
+        n_vertex.y = c_dist.x * s + c_dist.y * c;
+
+        rotated_vertices[v] = n_vertex + center;
+    }
 }
