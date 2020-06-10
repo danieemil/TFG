@@ -11,7 +11,10 @@ class Combat_Character : public Character
 
 public:
     // Constructores
-    Combat_Character(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr, Collider* c = nullptr, Weapon* wp = nullptr);
+    Combat_Character(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr,
+        Collider* c = nullptr, const Vector2d<float>& max_vel = Vector2d<float>(0.0f,0.0f),
+        const Vector2d<float>& accel = Vector2d<float>(0.0f,0.0f),
+        const Vector2d<float>& decel = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr);
     Combat_Character(const Combat_Character& cc);
 
     Combat_Character& operator= (const Combat_Character& cc);
@@ -43,6 +46,7 @@ public:
     virtual Collider* getBody() const;
     virtual const Vector2d<float>& getVelocity() const;
     virtual const Vector2d<float>& getPrePosition() const;
+    virtual const Class_Id& getClassId() const;
         //Character
         //Combat_Character
     virtual const std::vector<Weapon*>& getWeapons() const;

@@ -141,7 +141,7 @@ Intersection* Convex::intersect(AABB* ab)
                 Vector2d<float> pos = collider->getPosition();
 
                 std::vector<Vector2d<float>> ab_vertices = ab->getVertices();
-                Vector2d<float> c_pos = ab_collider->getPosition();
+                Vector2d<float> ab_pos = ab_collider->getPosition();
 
                 // Calcular posición absoluta de cada uno de los vértices
                 std::vector<Vector2d<float>> vertices_pos;
@@ -151,25 +151,33 @@ Intersection* Convex::intersect(AABB* ab)
                 }
 
                 std::vector<Vector2d<float>> ab_vertices_pos;
-                for (auto &&c_vertex : ab_vertices)
+                for (auto &&ab_vertex : ab_vertices)
                 {
-                    ab_vertices_pos.push_back(c_vertex + c_pos);
+                    ab_vertices_pos.push_back(ab_vertex + ab_pos);
                 }
 
                 float overlap = INFINITY;
+                Vector2d<float> overlap_dir;
 
-                if(overlapping(vertices_pos,ab_vertices_pos, overlap) && overlapping(ab_vertices_pos, vertices_pos, overlap))
+                if(overlapping(vertices_pos,ab_vertices_pos, overlap, overlap_dir) &&
+                    overlapping(ab_vertices_pos, vertices_pos, overlap, overlap_dir))
                 {
                     // Corregir Convex
 
                     Vector2d<float> center_pos = center + pos;
-                    Vector2d<float> c_center_pos = ((ab->max + ab->min)/2.0f) + c_pos;
+                    Vector2d<float> ab_center_pos = ((ab->max + ab->min)/2.0f) +ab_pos;
 
-                    Vector2d<float> d = center_pos - c_center_pos;
-                    d.Normalize();
+                    Vector2d<float> d = center_pos - ab_center_pos;
+                    
+                    float sX = sign(d.x);
+                    float sY = sign(d.y);
+                    if(!sX) sign(overlap_dir.x);
+                    if(!sY) sign(overlap_dir.y);
 
-                    Vector2d<float> fix_pos = center_pos + (d * overlap) - center;
+                    overlap_dir.x = abs(overlap_dir.x) * sX;
+                    overlap_dir.y = abs(overlap_dir.y) * sY;
 
+                    Vector2d<float> fix_pos = center_pos + (overlap_dir * overlap) - center;
 
                     intersection.fixed_position = fix_pos;
                     intersection.intersects = true;
@@ -328,18 +336,36 @@ Intersection* Convex::intersect(Convex* c)
                 }
 
                 float overlap = INFINITY;
+                float overlap1 = overlap;
+                float overlap2 = overlap;
+                Vector2d<float> overlap_dir;
+                Vector2d<float> overlap_dir1;
+                Vector2d<float> overlap_dir2;
 
-                if(overlapping(vertices_pos,c_vertices_pos, overlap) && overlapping(c_vertices_pos, vertices_pos, overlap))
+                if(overlapping(vertices_pos,c_vertices_pos, overlap1, overlap_dir1)&&
+                    overlapping(c_vertices_pos, vertices_pos, overlap2, overlap_dir2))
                 {
                     // Corregir Convex
 
+                    overlap = overlap2;
+                    overlap_dir = overlap_dir2;
+
+                    if(overlap1<=overlap2)
+                    {
+                        overlap = overlap1;
+                        overlap_dir = overlap_dir1 * (-1);
+                    }
+
                     Vector2d<float> center_pos = center + pos;
+                    Vector2d<float> center_prev = center + collider->getPreviousPosition();
                     Vector2d<float> c_center_pos = c->center + c_pos;
 
-                    Vector2d<float> d = c_center_pos - center_pos;
-                    d.Normalize();
+                    Vector2d<float> d = center_prev - center_pos;
 
-                    Vector2d<float> fix_pos = center_pos - (d * overlap) - center;
+                    //overlap_dir.x = abs(overlap_dir.x) * sign(d.x);
+                    //overlap_dir.y = abs(overlap_dir.y) * sign(d.y);
+
+                    Vector2d<float> fix_pos = center_pos - (overlap_dir * overlap) - center;
 
 
                     intersection.fixed_position = fix_pos;
@@ -444,10 +470,13 @@ Convex::~Convex()
 //=                PRIVATE   	    	  =
 //=========================================
 
-bool Convex::overlapping(std::vector<Vector2d<float>> v_a, std::vector<Vector2d<float>> v_b, float& overlap)
+bool Convex::overlapping(std::vector<Vector2d<float>> v_a, std::vector<Vector2d<float>> v_b, float& overlap, Vector2d<float>& overlap_dir)
 {
     int v_a_size = (int)v_a.size();
     int v_b_size = (int)v_b.size();
+
+    float prev_overlap, cur_overlap;
+    float near = INFINITY;
 
     for(int a = 0; a < v_a_size; a++)
     {
@@ -477,7 +506,30 @@ bool Convex::overlapping(std::vector<Vector2d<float>> v_a, std::vector<Vector2d<
             max_r2 = std::max(max_r2, q);
         }
 
-        overlap = std::min(std::min(max_r1, max_r2) - std::max(min_r1, min_r2),overlap);
+        cur_overlap = std::min(max_r1, max_r2) - std::max(min_r1, min_r2);
+
+        prev_overlap = std::min(cur_overlap,overlap);
+
+        if(prev_overlap <= overlap)
+        {
+            if(cur_overlap == overlap)
+            {
+                // Cuál de las dos proyecciones está más cerca
+                float near2 = (v_a[b] - v_b[0]).Length() + (v_a[a] - v_b[0]).Length();
+
+                if(near>near2)
+                {
+                    near = near2;
+                    overlap_dir = n_proj;
+                }
+            }else if(cur_overlap < overlap)
+            {
+                near = (v_a[b] - v_b[0]).Length() + (v_a[a] - v_b[0]).Length();
+                overlap_dir = n_proj;
+                overlap = prev_overlap;
+            }
+            
+        }
 
         if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
         {

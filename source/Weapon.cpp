@@ -11,7 +11,7 @@
 Weapon::Weapon(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Combat_Character* cc)
 : Entity(pos, spr, w, c), character(cc)
 {
-
+    id = Class_Id::e_weapon;
 }
 
 Weapon::Weapon(const Weapon& w)
@@ -122,6 +122,11 @@ const Vector2d<float>& Weapon::getPrePosition() const
 Combat_Character* Weapon::getCharacter() const
 {
     return character;
+}
+
+const Class_Id& Weapon::getClassId() const
+{
+    return Entity::getClassId();
 }
 
 //=========================================

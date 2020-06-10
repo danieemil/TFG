@@ -26,8 +26,7 @@ namespace unvisual
         // Inicializador de Citro2D(Gráficos especializados del 2D)
         C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
 
-        // Inicializador de los inputs
-        hidInit();
+        input::IM_init();
     }
 
     void deInit()
@@ -42,8 +41,7 @@ namespace unvisual
         // Quitamos los puntos en el tiempo
         clearAllTimepoints();
 
-        // Liberamos la memoria de los inputs
-        hidExit();
+        input::IM_deInit();
 
         // Liberamos la memoria de la librería Citro3D
         C3D_Fini();
@@ -271,6 +269,12 @@ namespace unvisual
             };
         }
 
+        void IM_init()
+        {
+            // Inicializador de los inputs
+            hidInit();
+        }
+
         void IM_scan()
         {
             hidScanInput();
@@ -305,6 +309,12 @@ namespace unvisual
         {
             hidTouchRead(&t_position);
             return Vector2d<u16>(t_position.px,t_position.py);
+        }
+
+        void IM_deInit()
+        {
+            // Liberamos la memoria de los inputs
+            hidExit();
         }
     }
 }

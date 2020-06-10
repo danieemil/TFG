@@ -12,6 +12,8 @@ Tile::Tile(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
     {
         spr->setDepth(-1);
     }
+
+    id = Class_Id::e_tile;
 }
 
 Tile::Tile(const Tile& c)
@@ -109,6 +111,11 @@ const Vector2d<float>& Tile::getVelocity() const
 const Vector2d<float>& Tile::getPrePosition() const
 {
     return Entity::getPrePosition();
+}
+
+const Class_Id& Tile::getClassId() const
+{
+    return Entity::getClassId();
 }
 
 //=========================================

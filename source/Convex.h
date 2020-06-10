@@ -46,7 +46,7 @@ private:
     std::vector<Vector2d<float>> model_vertices;
     std::vector<Vector2d<float>> rotated_vertices;
 
-    bool overlapping(std::vector<Vector2d<float>> a, std::vector<Vector2d<float>> b, float& overlap);
+    bool overlapping(std::vector<Vector2d<float>> a, std::vector<Vector2d<float>> b, float& overlap, Vector2d<float>& overlap_dir);
     bool circleOverlapping(std::vector<Vector2d<float>> a, std::vector<Vector2d<float>> b, float& overlap);
     void calculateCenter();
     void calculateRotation();

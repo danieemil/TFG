@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 #include <map>
 #include <vector>
 #include "Collider.h"
@@ -10,6 +11,9 @@
 
 namespace physics
 {
+    // Inicializar
+    void init();
+
     // Añadir colisiones
     void addCollider(Collider* c);
     void addStatic(Collider* c);
@@ -34,6 +38,10 @@ namespace physics
     void setManager(void (*manager)(Collider* colliderA, Collider* colliderB));
 
     const std::vector<Collider*>& getColliders();
+
+    Shape* getSpriteShape(std::string tileset_path, int sprite_id);
+
+    void deInit();
 }
 
 #endif

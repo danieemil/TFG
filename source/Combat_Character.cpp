@@ -6,8 +6,9 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Weapon* wp)
-: Character(pos, spr, w, c)
+Combat_Character::Combat_Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
+    const Vector2d<float>& max_vel, const Vector2d<float>& accel, const Vector2d<float>& decel, Weapon* wp)
+: Character(pos, spr, w, c, max_vel, accel, decel)
 {
     if(wp!=nullptr)
     {
@@ -125,6 +126,11 @@ const Vector2d<float>& Combat_Character::getVelocity() const
 const Vector2d<float>& Combat_Character::getPrePosition() const
 {
     return Character::getPrePosition();
+}
+
+const Class_Id& Combat_Character::getClassId() const
+{
+    return Character::getClassId();
 }
 
 const std::vector<Weapon*>& Combat_Character::getWeapons() const

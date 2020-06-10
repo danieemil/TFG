@@ -5,6 +5,19 @@
 #include "Physics_Engine.h"
 
 
+// Clases que pueden ser instanciadas.
+// Se usan en las físicas
+enum class Class_Id
+{
+    e_none = -1,
+    e_tile,
+    e_player,
+    e_weapon,
+    e_enemy,
+
+};
+
+
 class World;
 
 class Entity
@@ -36,6 +49,7 @@ public:
     virtual Collider* getBody() const;
     virtual const Vector2d<float>& getVelocity() const;
     virtual const Vector2d<float>& getPrePosition() const;
+    virtual const Class_Id& getClassId() const;
 
     // Destructor
     virtual ~Entity();
@@ -48,6 +62,8 @@ protected:
     Vector2d<float> pre_position;
     Collider* body;
     Vector2d<float> velocity;
+    Class_Id id;
+
 
 private:
 

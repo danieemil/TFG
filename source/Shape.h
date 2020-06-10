@@ -54,6 +54,7 @@ public:
     // Constructores
     Shape(Collider* c = nullptr, float a = 0.0f);
     Shape(const Shape& s);
+    Shape(const Shape* s);
 
     Shape& operator= (const Shape& s);
 

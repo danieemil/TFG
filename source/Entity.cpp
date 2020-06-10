@@ -7,7 +7,7 @@
 //=========================================
 
 Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
-: world(w), sprite(spr), position(pos), pre_position(pos), body(c), velocity()
+: world(w), sprite(spr), position(pos), pre_position(pos), body(c), velocity(), id(Class_Id::e_none)
 {
     if(c!=nullptr)
     {
@@ -16,7 +16,7 @@ Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
 }
 
 Entity::Entity(const Entity& e) :
-world(nullptr), sprite(nullptr), position(e.position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity)
+world(nullptr), sprite(nullptr), position(e.position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity), id(e.id)
 {
     
 }
@@ -30,6 +30,7 @@ Entity& Entity::operator= (const Entity& e)
     position = e.position;
     pre_position = e.pre_position;
     velocity = e.velocity;
+    id = e.id;
     
     return *this;
 }
@@ -150,6 +151,11 @@ const Vector2d<float>& Entity::getVelocity() const
 const Vector2d<float>& Entity::getPrePosition() const
 {
     return pre_position;
+}
+
+const Class_Id& Entity::getClassId() const
+{
+    return id;
 }
 
 

@@ -11,7 +11,9 @@ class Player : public Combat_Character
 public:
     // Constructores
     Player(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr,
-    Collider* c = nullptr, Weapon* wp = nullptr, const Vector2d<float>& maxvel = Vector2d<float>(1,1));
+        Collider* c = nullptr, const Vector2d<float>& max_vel = Vector2d<float>(0.0f,0.0f),
+        const Vector2d<float>& accel = Vector2d<float>(0.0f,0.0f),
+        const Vector2d<float>& decel = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr);
     Player(const Player& p);
 
     Player& operator= (const Player& p);
@@ -46,6 +48,7 @@ public:
     Collider* getBody() const;
     const Vector2d<float>& getVelocity() const;
     const Vector2d<float>& getPrePosition() const;
+    const Class_Id& getClassId() const;
         //Character
         //Combat_Character
     const std::vector<Weapon*>& getWeapons() const;
@@ -58,7 +61,10 @@ protected:
 
 private:
 
-    Vector2d<float> max_velocity;
+    // En qué dirección se está apuntando según las teclas pulsadas
+    // X: +1=derecha,   0=No,   -1=izquierda
+    // Y: +1=abajo,     0=No,   -1=arriba
+    Vector2d<float> heading; 
 
 };
 

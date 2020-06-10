@@ -51,7 +51,7 @@ namespace utilities
         Vector2d<T>() : x(0), y(0){};
 
         Vector2d<T> Normal(){
-            return Vector2d<T>(y, -x);
+            return Vector2d<T>(-y, x);
         }
         
         void Normalize(){ 

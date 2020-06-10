@@ -7,14 +7,15 @@ using namespace unvisual;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Player::Player(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Weapon* wp, const Vector2d<float>& maxvel)
-: Combat_Character(pos, spr, w, c, wp), max_velocity(maxvel)
+Player::Player(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
+    const Vector2d<float>& max_vel, const Vector2d<float>& accel, const Vector2d<float>& decel, Weapon* wp)
+: Combat_Character(pos, spr, w, c, max_vel, accel, decel, wp)
 {
-
+    id = Class_Id::e_player;
 }
 
 Player::Player(const Player& p)
-: Combat_Character(p), max_velocity(p.max_velocity)
+: Combat_Character(p)
 {
 
 }
@@ -22,8 +23,6 @@ Player::Player(const Player& p)
 Player& Player::operator= (const Player& p)
 {
     Combat_Character::operator=(p);
-
-    max_velocity = p.max_velocity;
 
     return *this;
 }
@@ -50,8 +49,8 @@ void Player::updateFromCollider()
 void Player::processInput()
 {
 
-    velocity.x = 0;
-    velocity.y = 0;
+    heading = Vector2d<float>();
+    velocity = Vector2d<float>();
 
     if( input::isPressed(input::N3DS_buttons::Key_DUp)
     ||
@@ -60,7 +59,8 @@ void Player::processInput()
         unvisual::debugger->setRow(1);
         unvisual::debugger->setColumn(1);
         unvisual::debugger->print("Up");
-        velocity.y = velocity.y - max_velocity.y;
+        velocity.y = velocity.y - acceleration.y;
+        heading.y += -1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DRight)
     ||
@@ -69,7 +69,8 @@ void Player::processInput()
         unvisual::debugger->setRow(2);
         unvisual::debugger->setColumn(1);
         unvisual::debugger->print("Right");
-        velocity.x = velocity.x + max_velocity.x;
+        velocity.x = velocity.x + acceleration.x;
+        heading.x += 1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DDown)
     ||
@@ -78,7 +79,8 @@ void Player::processInput()
         unvisual::debugger->setRow(3);
         unvisual::debugger->setColumn(1);
         unvisual::debugger->print("Down");
-        velocity.y = velocity.y + max_velocity.y;
+        velocity.y = velocity.y + acceleration.y;
+        heading.y += 1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DLeft)
     ||
@@ -87,7 +89,8 @@ void Player::processInput()
         unvisual::debugger->setRow(4);
         unvisual::debugger->setColumn(1);
         unvisual::debugger->print("Left");
-        velocity.x = velocity.x - max_velocity.x;
+        velocity.x = velocity.x - acceleration.x;
+        heading.x += -1.0f;
     }
 
     unvisual::debugger->setRow(6);
@@ -97,6 +100,10 @@ void Player::processInput()
     unvisual::debugger->print("X = " + std::to_string(position.x));
     unvisual::debugger->nextLine();
     unvisual::debugger->print("Y = " + std::to_string(position.y));
+    unvisual::debugger->nextLine();
+    unvisual::debugger->print("Vel_X = " + std::to_string(velocity.x));
+    unvisual::debugger->nextLine();
+    unvisual::debugger->print("Vel_Y = " + std::to_string(velocity.y));
     unvisual::debugger->nextLine();
 
 }
@@ -177,6 +184,11 @@ const Vector2d<float>& Player::getPrePosition() const
 const std::vector<Weapon*>& Player::getWeapons() const
 {
     return Combat_Character::getWeapons();
+}
+
+const Class_Id& Player::getClassId() const
+{
+    return Combat_Character::getClassId();
 }
 
 //=========================================

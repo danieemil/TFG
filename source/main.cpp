@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Colliders_data.h"
 
 using namespace std;
 using namespace unvisual::input;
@@ -12,6 +13,7 @@ int main(int argc, char* argv[])
 	//Inicializamos todo
 	unvisual::init();
 	unvisual::initDebugger();
+	physics::init();
 
 	const char* sprites_path = "romfs:/gfx/sprites.t3x";
 	const char* tileset_path = "romfs:/gfx/TileSet.t3x";
@@ -37,32 +39,20 @@ int main(int argc, char* argv[])
 	Sprite* player_sprite = game->getSpriteManager()->createSprite(0);
 	Vector2d<size_t> player_size = player_sprite->getSize();
 
-	// Vértices del jugador
-	std::vector<Vector2d<float>> v_player =
-	{
-		Vector2d<float>(0,0),
-		Vector2d<float>((float)player_size.x,0),
-		Vector2d<float>((float)player_size.x,(float)player_size.y/2.5f),
-		//Vector2d<float>((float)player_size.x/5.0f,(float)player_size.y/2.5f),
-		Vector2d<float>((float)player_size.x/5.0f,(float)player_size.y),
-		Vector2d<float>(0,(float)player_size.y)
-	};
-
 	// Colisiones
-	Shape* player_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(player_size.x, player_size.y));
-	Shape* player_rect2 = new AABB(Vector2d<float>(0,player_size.y/2.0f), Vector2d<float>(player_size.x/5.0f,player_size.y));
-	Shape* player_circ1 = new Circle(Vector2d<float>(player_size.x/2.0f,player_size.y/4.0f), player_size.x/2.0f);
-	Shape* player_conv1 = new Convex(v_player);
-	Collider* player_body = new Collider(player_position, player_conv1, CollisionFlag::player, CollisionType::col_dynamic);
-	//player_body->addShape(player_rect2);
-	float rotation = 45;
+
+	Shape* player_shape = physics::getSpriteShape(player_sprite->getManager()->getPath(), player_sprite->getIndex());
+	Collider* player_body = new Collider(player_position, player_shape, CollisionFlag::player, CollisionType::col_dynamic);
+	float rotation = 0;
 	player_sprite->setRotation(rotation);
 	player_body->setGlobalRotation(rotation);
 
 	
 	
 	Vector2d<float> player_max_vel = Vector2d<float>(2,2);
-	Player* player = new Player(player_position, player_sprite, game_world, player_body, nullptr, player_max_vel);
+	Vector2d<float> player_accel = Vector2d<float>(2, 2);
+	Vector2d<float> player_decel = Vector2d<float>(2.0f,2.0f);
+	Player* player = new Player(player_position, player_sprite, game_world, player_body, player_max_vel, player_accel, player_decel);
 	game_world->addPlayer(player);
 
 	const Vector2d<float>* p_position = &player->getPosition();
@@ -223,5 +213,6 @@ int main(int argc, char* argv[])
 	
 	// Deinicializar todo(si no se hace, habrán memory leaks)
 	unvisual::deInit();
+	physics::deInit();
 
 }

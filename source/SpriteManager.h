@@ -25,6 +25,7 @@ public:
     // Getters
     C2D_SpriteSheet getSpriteCollection() const;
     const std::vector<Sprite*>& getSprites() const;
+    std::string getPath() const;
 
     // Destructor
     ~SpriteManager();
@@ -33,6 +34,7 @@ private:
 
     C2D_SpriteSheet sprite_collection;
     std::vector<Sprite*> sprites;
+    std::string path;
 
 };
 

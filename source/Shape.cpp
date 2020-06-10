@@ -40,7 +40,13 @@ Shape::Shape(Collider* c, float a)
 }
 
 Shape::Shape(const Shape& s)
-: collider(nullptr), type(s.type), intersection(s.intersection), angle(s.angle)
+: collider(nullptr), type(s.type), intersection(s.intersection), angle(s.angle), center(s.center)
+{
+    
+}
+
+Shape::Shape(const Shape* s)
+: collider(nullptr), type(s->type), intersection(s->intersection), angle(s->angle), center(s->center)
 {
     
 }
@@ -51,6 +57,7 @@ Shape& Shape::operator= (const Shape& s)
     type = s.type;
     intersection = s.intersection;
     angle = s.angle;
+    center = s.center;
 
     return *this;
 }

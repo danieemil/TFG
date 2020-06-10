@@ -301,8 +301,10 @@ Intersection* AABB::intersect(Convex* c)
                 }
 
                 float overlap = INFINITY;
+                Vector2d<float> overlap_dir;
 
-                if(c->overlapping(vertices_pos,c_vertices_pos, overlap) && c->overlapping(c_vertices_pos, vertices_pos, overlap))
+                if(c->overlapping(vertices_pos,c_vertices_pos, overlap, overlap_dir)&&
+                    c->overlapping(c_vertices_pos, vertices_pos, overlap, overlap_dir))
                 {
                     // Corregir Convex
 

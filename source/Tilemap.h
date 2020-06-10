@@ -25,6 +25,7 @@ public:
     void generateTiles();
     void destroyTilemap();
     void destroyLevel();
+    void destroyPhysics();
 
     // Setters
     void setTileset(const char* spr_sheet);
@@ -44,6 +45,7 @@ private:
     SpriteManager manager;
     Tile*** tiles;
     int** level;
+    std::vector<Collider*> colliders;
 
     Vector2d<int> tile_size;
     Vector2d<int> map_size;

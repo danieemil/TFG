@@ -96,6 +96,7 @@ void Tilemap::loadTilemap(const char* tilemap)
 {
     destroyLevel();
     destroyTilemap();
+    destroyPhysics();
 
     readBin(tilemap);
 
@@ -111,6 +112,8 @@ void Tilemap::generateTiles()
         {
             if(num_tiles.x > 0 && num_tiles.y > 0)
             {
+
+                auto deb = unvisual::debugger;
 
                 map_size.x = num_tiles.x * tile_size.x;
                 map_size.y = num_tiles.y * tile_size.y;
@@ -129,76 +132,10 @@ void Tilemap::generateTiles()
                     {
                         int sprite_id = level[i][j] - 1;
                         Sprite* sp = manager.createSprite(sprite_id);
+                        tiles[i][j] = nullptr;
                         if(sp!=nullptr)
                         {
-
-                            Shape* s = nullptr;
-
-                            std::vector<Vector2d<float>> v;
-
-                            float sX = (float)sp->getSize().x - 3;
-                            float sY = (float)sp->getSize().y - 3;
-
-                            std::vector<Vector2d<float>> v1 = 
-                            {
-                                Vector2d<float>(sX,0),
-                                Vector2d<float>(0,sY),
-                                Vector2d<float>(sX,sY)
-                            };
-
-                            std::vector<Vector2d<float>> v2 = 
-                            {
-                                Vector2d<float>(0,0),
-                                Vector2d<float>(sX,0),
-                                Vector2d<float>(0,sY)
-                            };
-
-                            std::vector<Vector2d<float>> v3 = 
-                            {
-                                Vector2d<float>(0,0),
-                                Vector2d<float>(sX,0),
-                                Vector2d<float>(sX,sY)
-                            };
-
-                            std::vector<Vector2d<float>> v4 = 
-                            {
-                                Vector2d<float>(0,0),
-                                Vector2d<float>(0,sY),
-                                Vector2d<float>(sX,sY)
-                            };
-
-                            if(sprite_id == 1)
-                            {
-                                v = v1;
-                            }
-                            else if(sprite_id == 2)
-                            {
-                                v = v2;
-                            }
-                            else if(sprite_id == 3)
-                            {
-                                v = v3;
-                            }
-                            else if(sprite_id == 4)
-                            {
-                                v = v4;
-                            }
-                            
-
-                            if(sprite_id == 0)
-                            {
-                                s = new AABB(Vector2d<float>(0,0), Vector2d<float>(tile_size.x, tile_size.y));
-                            }
-                            else if(sprite_id != -1)
-                            {
-                                s = new Convex(v);
-                            }
-                            
-                            
-                            Collider* c = new Collider(p,s,CollisionFlag::none, CollisionType::col_static);
-
-                            tiles[i][j] = new Tile(p,sp,nullptr,c);
-                            
+                            tiles[i][j] = new Tile(p,sp);   
                         }
                         p.x = p.x + tile_size.x;
                     }
@@ -239,6 +176,19 @@ void Tilemap::destroyLevel()
         delete[] level;
     }
     level = nullptr;
+}
+
+void Tilemap::destroyPhysics()
+{
+    for (auto &&collider : colliders)
+    {
+        if(collider!=nullptr)
+        {
+            delete collider;
+            collider = nullptr;
+        }
+    }
+    colliders.clear();
 }
 
 
@@ -304,6 +254,7 @@ Tilemap::~Tilemap()
 {
     destroyLevel();
     destroyTilemap();
+    destroyPhysics();
 }
 
 
@@ -312,6 +263,8 @@ Tilemap::~Tilemap()
 //=========================================
 void Tilemap::readBin(const char* file_path)
 {
+    // Tiles
+
     ifstream in(file_path, std::ios::binary | std::ios::ate);
     in.seekg(0, std::ios::beg);
 
@@ -334,5 +287,67 @@ void Tilemap::readBin(const char* file_path)
         {
             file2mem(in, &level[i][j]);
         }
+    }
+
+    auto deb = unvisual::debugger;
+
+    // Físicas
+    int c_number = 0;
+    Vector2d<float> position, center, max, min;
+    float radius = 0.0f;
+
+    // Rectángulos
+    file2mem(in, &c_number);
+
+    for (int i = 0; i < c_number; i++)
+    {
+        file2mem(in, &position.x);
+        file2mem(in, &position.y);
+
+        file2mem(in, &min.x);
+        file2mem(in, &min.y);
+
+        file2mem(in, &max.x);
+        file2mem(in, &max.y);
+
+        colliders.push_back(new Collider(position, new AABB(min,max), CollisionFlag::none, CollisionType::col_static));
+    }
+
+    // Círculos
+    file2mem(in, &c_number);
+
+    for (int i = 0; i < c_number; i++)
+    {
+        file2mem(in, &position.x);
+        file2mem(in, &position.y);
+
+        file2mem(in, &center.x);
+        file2mem(in, &center.y);
+
+        file2mem(in, &radius);
+
+        colliders.push_back(new Collider(position, new Circle(center,radius), CollisionFlag::none, CollisionType::col_static));
+    }
+
+    // Convexos
+    file2mem(in, &c_number);
+    for (int i = 0; i < c_number; i++)
+    {
+        file2mem(in, &position.x);
+        file2mem(in, &position.y);
+
+        int s_number = 0;
+        file2mem(in, &s_number);
+
+        std::vector<Vector2d<float>> vertices;
+        Vector2d<float> vertex;
+        for (int j = 0; j < s_number; j++)
+        {
+            file2mem(in, &vertex.x);
+            file2mem(in, &vertex.y);
+            vertices.push_back(vertex);
+        }
+        
+        colliders.push_back(new Collider(position, new Convex(vertices), CollisionFlag::none, CollisionType::col_static));
     }
 }

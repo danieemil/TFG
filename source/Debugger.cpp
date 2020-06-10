@@ -1,7 +1,10 @@
+#include "Unvisual_Engine.h"
 #include "Debugger.h"
 
-using namespace utilities;
 
+
+using namespace utilities;
+using namespace unvisual::input;
 
 
 Debugger::Debugger(N3DS_screenV screen)
@@ -129,8 +132,14 @@ void Debugger::printLocation()
     std::cout<<location;
 }
 
-void Debugger::stop()
+void Debugger::breakpoint()
 {
-    while (true){}
-    
+    unvisual::stopClock();
+    bool pressed = false;
+    while (!pressed)
+    {
+        IM_scan();
+        pressed = isPressed(N3DS_buttons::Key_Start);
+    }
+    unvisual::resumeClock();
 }

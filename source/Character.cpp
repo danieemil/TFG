@@ -5,14 +5,15 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
-: Entity(pos, spr, w, c)
+Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
+    const Vector2d<float>& max_vel, const Vector2d<float>& accel, const Vector2d<float>& decel)
+: Entity(pos, spr, w, c), max_velocity(max_vel), acceleration(accel), deceleration(decel)
 {
 
 }
 
 Character::Character(const Character& c)
-: Entity(c)
+: Entity(c), max_velocity(c.max_velocity), acceleration(c.acceleration), deceleration(c.deceleration)
 {
 
 }
@@ -20,6 +21,9 @@ Character::Character(const Character& c)
 Character& Character::operator= (const Character& c)
 {
     this->Entity::operator=(c);
+    max_velocity = c.max_velocity;
+    acceleration = c.acceleration;
+    deceleration = c.deceleration;
 
     return *this;
 }
@@ -35,7 +39,27 @@ void Character::render(const Vector2d<float>& view_pos)
 
 void Character::update()
 {
-    Entity::update();   
+    Entity::update();
+
+    if(abs(velocity.x)>max_velocity.x)
+    {
+        velocity.x = max_velocity.x*sign(velocity.x);
+    }
+    if(abs(velocity.y)>max_velocity.y)
+    {
+        velocity.y = max_velocity.y*sign(velocity.y);
+    }
+
+    if(abs(velocity.x)<acceleration.x/3.0f)
+    {
+        velocity.x = 0.0f;
+    }
+    if(abs(velocity.y)<acceleration.y/3.0f)
+    {
+        velocity.y = 0.0f;
+    }
+
+    //velocity /= deceleration;
 }
 
 void Character::updateFromCollider()
@@ -106,6 +130,11 @@ const Vector2d<float>& Character::getVelocity() const
 const Vector2d<float>& Character::getPrePosition() const
 {
     return Entity::getPrePosition();
+}
+
+const Class_Id& Character::getClassId() const
+{
+    return Entity::getClassId();
 }
 
 //=========================================

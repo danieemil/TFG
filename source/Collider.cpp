@@ -8,8 +8,8 @@ using namespace physics;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f, const CollisionType& t, void* c, float a, const Vector2d<float>& rot_cent)
-: position(pos), previous_position(pos), flags(f), type(t), creator(c), angle(a), rotation_center(rot_cent)
+Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f, const CollisionType& t, void* c, int i, float a, const Vector2d<float>& rot_cent)
+: position(pos), previous_position(pos), flags(f), type(t), creator(c), index(i), angle(a), rotation_center(rot_cent)
 {
     if(s!=nullptr)
     {
@@ -34,7 +34,7 @@ Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f,
 }
 
 Collider::Collider(const Collider& c)
-: position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr), angle(c.angle), rotation_center(c.rotation_center)
+: position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr), index(-1), angle(c.angle), rotation_center(c.rotation_center)
 {
     for (auto it = c.shapes.begin(); it!=c.shapes.end(); it++)
     {
@@ -77,6 +77,8 @@ Collider& Collider::operator= (const Collider& c)
     position = c.position;
     previous_position = c.previous_position;
     bounds = c.bounds;
+    creator = nullptr;
+    index = -1;
     angle = c.angle;
     rotation_center = c.rotation_center;
 
@@ -254,6 +256,11 @@ void Collider::setCreator(void* c)
     creator = c;
 }
 
+void Collider::setIndex(int i)
+{
+    index = i;
+}
+
 void Collider::setGlobalRotation(float a)
 {
     angle = a;
@@ -317,6 +324,11 @@ const CollisionType& Collider::getType() const
 void* Collider::getCreator() const
 {
     return creator;
+}
+
+int Collider::getIndex() const
+{
+    return index;
 }
 
 float Collider::getRotation() const

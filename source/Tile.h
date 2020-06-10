@@ -38,6 +38,7 @@ public:
     virtual Collider* getBody() const;
     virtual const Vector2d<float>& getVelocity() const;
     virtual const Vector2d<float>& getPrePosition() const;
+    virtual const Class_Id& getClassId() const;
         //Tile
 
     // Destructor

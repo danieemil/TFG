@@ -8,6 +8,7 @@
 
 Timepoint::Timepoint(u64 p)
 {
+    // P es la posición absoluta en el tiempo en el que se crea, si es cero se coge el momento actual
     if(p==0)
     {
         point = svcGetSystemTick();

@@ -43,7 +43,7 @@ public:
 
     void nextLine();
 
-    void stop();
+    void breakpoint();
 
     ~Debugger();
 

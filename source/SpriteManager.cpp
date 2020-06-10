@@ -11,7 +11,15 @@ SpriteManager::SpriteManager(const char* sprites_path)
 
     if(sprites_path!=nullptr)
     {
-        sprite_collection = C2D_SpriteSheetLoad(sprites_path);
+        path = sprites_path;
+    }else
+    {
+        path.clear();
+    }
+
+    if(!path.empty())
+    {
+        sprite_collection = C2D_SpriteSheetLoad(path.data());
     }
     
     sprites.clear();
@@ -106,7 +114,17 @@ void SpriteManager::setSprites(const char* sprites_path)
     {
         C2D_SpriteSheetFree(sprite_collection);
     }
-    sprite_collection = C2D_SpriteSheetLoad(sprites_path);
+    
+    if(sprites_path!=nullptr)
+    {
+        path = sprites_path;
+        sprite_collection = C2D_SpriteSheetLoad(path.data());
+    }
+    else
+    {
+        path.clear();
+    }
+    
 }
 
 
@@ -122,6 +140,11 @@ C2D_SpriteSheet SpriteManager::getSpriteCollection() const
 const std::vector<Sprite*>& SpriteManager::getSprites() const
 {
     return sprites;
+}
+
+std::string SpriteManager::getPath() const
+{
+    return path;
 }
 
 
