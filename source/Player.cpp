@@ -31,9 +31,9 @@ Player& Player::operator= (const Player& p)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Player::render(const Vector2d<float>& view_pos)
+void Player::render(float rp, const Vector2d<float>& view_pos)
 {
-    Combat_Character::render(view_pos);
+    Combat_Character::render(rp, view_pos);
 }
 
 void Player::update()
@@ -50,7 +50,6 @@ void Player::processInput()
 {
 
     heading = Vector2d<float>();
-    velocity = Vector2d<float>();
 
     if( input::isPressed(input::N3DS_buttons::Key_DUp)
     ||
@@ -58,8 +57,7 @@ void Player::processInput()
     {
         unvisual::debugger->setRow(1);
         unvisual::debugger->setColumn(1);
-        unvisual::debugger->print("Up");
-        velocity.y = velocity.y - acceleration.y;
+        unvisual::debugger->print("Up");;
         heading.y += -1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DRight)
@@ -69,7 +67,6 @@ void Player::processInput()
         unvisual::debugger->setRow(2);
         unvisual::debugger->setColumn(1);
         unvisual::debugger->print("Right");
-        velocity.x = velocity.x + acceleration.x;
         heading.x += 1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DDown)
@@ -79,7 +76,6 @@ void Player::processInput()
         unvisual::debugger->setRow(3);
         unvisual::debugger->setColumn(1);
         unvisual::debugger->print("Down");
-        velocity.y = velocity.y + acceleration.y;
         heading.y += 1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DLeft)
@@ -89,17 +85,30 @@ void Player::processInput()
         unvisual::debugger->setRow(4);
         unvisual::debugger->setColumn(1);
         unvisual::debugger->print("Left");
-        velocity.x = velocity.x - acceleration.x;
         heading.x += -1.0f;
+    }
+
+    acceleration = max_acceleration * heading;
+
+    // Si no se está moviendo en un eje, le aplicamos fricción a ese eje
+
+    if(heading.x == 0)
+    {
+        acceleration.x = clamp(0.0f, abs(velocity.x), deceleration.x) * sign(velocity.x) * (-1);
+    }
+
+    if(heading.y == 0)
+    {
+        acceleration.y = clamp(0.0f, abs(velocity.y), deceleration.y) * sign(velocity.y) * (-1);
     }
 
     unvisual::debugger->setRow(6);
     unvisual::debugger->setColumn(1);
     unvisual::debugger->print("Player position:");
     unvisual::debugger->nextLine();
-    unvisual::debugger->print("X = " + std::to_string(position.x));
+    unvisual::debugger->print("X = " + std::to_string(render_position.x));
     unvisual::debugger->nextLine();
-    unvisual::debugger->print("Y = " + std::to_string(position.y));
+    unvisual::debugger->print("Y = " + std::to_string(render_position.y));
     unvisual::debugger->nextLine();
     unvisual::debugger->print("Vel_X = " + std::to_string(velocity.x));
     unvisual::debugger->nextLine();
@@ -147,6 +156,11 @@ void Player::addWeapon(Weapon* wp)
     Combat_Character::addWeapon(wp);
 }
 
+void Player::equipWeapon(size_t index)
+{
+    Combat_Character::equipWeapon(index);
+}
+
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
@@ -181,9 +195,19 @@ const Vector2d<float>& Player::getPrePosition() const
     return Combat_Character::getPrePosition();
 }
 
+const Vector2d<float>& Player::getRenderPosition() const
+{
+    return Combat_Character::getRenderPosition();
+}
+
 const std::vector<Weapon*>& Player::getWeapons() const
 {
     return Combat_Character::getWeapons();
+}
+
+Weapon* Player::getWeaponEquipped() const
+{
+    return Combat_Character::getWeaponEquipped();
 }
 
 const Class_Id& Player::getClassId() const

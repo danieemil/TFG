@@ -18,7 +18,6 @@ public:
     // Métodos
 
     void addEntity(Entity* e);
-    void addPlayer(Player* p);
     void deleteEntity(Entity* e);
     void eraseEntity(Entity* e);
 
@@ -26,10 +25,10 @@ public:
 
     Vector2d<float> scroll2D();
 
-    void render();
+    void render(float rp = 0.0f);
     void renderTilemap(const Vector2d<float>& view_pos = Vector2d<float>());
-    void renderEntities(const Vector2d<float>& view_pos = Vector2d<float>());
-    void renderPlayer(const Vector2d<float>& view_pos = Vector2d<float>());
+    void renderEntities(float rp = 0.0f, const Vector2d<float>& view_pos = Vector2d<float>());
+    void renderPlayer(float rp = 0.0f, const Vector2d<float>& view_pos = Vector2d<float>());
 
     void update();
     void updateEntities();

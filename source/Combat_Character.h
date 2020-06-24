@@ -21,7 +21,7 @@ public:
 
     // Métodos
         //Entity
-    virtual void render(const Vector2d<float>& view_pos = Vector2d<float>()) override;
+    virtual void render(float rp = 0.0f, const Vector2d<float>& view_pos = Vector2d<float>()) override;
     virtual void update() override;
     virtual void updateFromCollider();
         //Character
@@ -37,6 +37,7 @@ public:
         //Character
         //Combat_Character
     virtual void addWeapon(Weapon* wp);
+    virtual void equipWeapon(size_t index);
 
     // Getters
         //Entity
@@ -46,10 +47,12 @@ public:
     virtual Collider* getBody() const;
     virtual const Vector2d<float>& getVelocity() const;
     virtual const Vector2d<float>& getPrePosition() const;
+    virtual const Vector2d<float>& getRenderPosition() const;
     virtual const Class_Id& getClassId() const;
         //Character
         //Combat_Character
     virtual const std::vector<Weapon*>& getWeapons() const;
+    virtual Weapon* getWeaponEquipped() const;
 
     // Destructor
     ~Combat_Character();
@@ -57,6 +60,7 @@ public:
 protected:
 
     std::vector<Weapon*> weapons;
+    Weapon* equipped;
 
 private:
 

@@ -1,15 +1,35 @@
 #include "Game.h"
+
+
+
+int main(int argc, char* argv[])
+{
+
+	Game* game = Game::Instance();
+	game->init();
+	game->loop();
+	game->deInit();
+
+	game->over();
+
+}
+
+
+
+
+
+
+/*
+Ejemplos de creación y utilización de clases. Ahora está distribuido por todo el código.
+
+#include "Game.h"
 #include "Colliders_data.h"
 
 using namespace std;
 using namespace unvisual::input;
 
-
-Game* game;
-
-int main(int argc, char* argv[])
+mainAntiguo(int args, char* argv[])
 {
-
 	//Inicializamos todo
 	unvisual::init();
 	unvisual::initDebugger();
@@ -21,7 +41,7 @@ int main(int argc, char* argv[])
 	const char* tilemap_path2 = "romfs:/maps/testMap2.mp";
 
 	// Creamos el juego
-	game = new Game();
+	Game* game = new Game();
 	game->setSpriteManager(sprites_path);
 
 	World* game_world = game->getWorld();
@@ -45,6 +65,7 @@ int main(int argc, char* argv[])
 	Collider* player_body = new Collider(player_position, player_shape, CollisionFlag::player, CollisionType::col_dynamic);
 	float rotation = 0;
 	player_sprite->setRotation(rotation);
+	// La "Shape" rota entorno al padre "Collider"
 	player_body->setGlobalRotation(rotation);
 
 	
@@ -66,7 +87,6 @@ int main(int argc, char* argv[])
 	Shape* entity_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x/5.0f,entity_size.y));
 	Shape* entity_circ1 = new Circle(Vector2d<float>(entity_size.x/2.0f,entity_size.y/4.0f), entity_size.x*8.0f);
 	Collider* entity_body = new Collider(entity_position, entity_circ1, CollisionFlag::enemy, CollisionType::col_static);
-	//entity_body->addShape(entity_rect2);
 	Entity* entity = new Entity(entity_position, entity_sprite, game_world, entity_body);
 	game_world->addEntity(entity);
 
@@ -78,31 +98,6 @@ int main(int argc, char* argv[])
 	sc->setBackground(255,0,0,255);
 	sc->setTargetPosition(p_position);
 	unvisual::setCurrentScreen(sc);
-
-	auto vec = physics::getColliders();
-
-	int number = 0;
-	int numberL = 25;
-
-	//unvisual::debugger->print((int)vec.size());
-	for (auto it = vec.begin(); it!=vec.end(); it++)
-	{
-		Collider* ccc = (*it);
-		//unvisual::debugger->print((int)ccc->getFlags());
-		number++;
-
-		if(number==numberL)
-		{
-			unvisual::debugger->nextLine();
-			number = 0;
-		}
-
-	}
-	while (false)
-	{
-
-	}
-	
 	
 	// Delta time
 	float dt = 0.0f;
@@ -111,6 +106,7 @@ int main(int argc, char* argv[])
 	Timepoint limit;
 	float seg = 0.0f;
 
+	// Establecer la creación de un timepoint a 100 segundos. Alias cuenta atrás desde 100 seg.
 	limit.operator+(100.0f);
 
 	// Main loop
@@ -142,7 +138,7 @@ int main(int argc, char* argv[])
 		unvisual::debugger->nextLine();
 		unvisual::debugger->nextLine();
 		unvisual::debugger->print("Left(seg):");
-		unvisual::debugger->print(limit - initTimeLoop);
+		unvisual::debugger->print(limit.getElapsed()*(-1));
 
 
 		// Escaneamos las teclas pulsadas(Inputs de la N3DS)
@@ -151,7 +147,8 @@ int main(int argc, char* argv[])
 		
 		game->processInput();
 
-		if(limit.getElapsed()!=-1 && !unvisual::clockStopped())
+		// 
+		if(limit.getElapsed() >= 0.0f && !unvisual::clockStopped())
 		{
 			break;
 		}
@@ -168,36 +165,6 @@ int main(int argc, char* argv[])
 		unvisual::drawEnd();
 
 	}
-	unvisual::debugger->clear();
-	unvisual::debugger->nextLine();
-
-	if(true)
-	{
-		if(game!=nullptr)
-		{
-			delete game;
-			game = nullptr;
-		}
-		
-		initTimeLoop.~Timepoint();
-		total.~Timepoint();
-		limit.~Timepoint();
-		
-		unvisual::clearAllTimepoints();
-
-		bool yes = true;
-
-		while (yes)
-		{
-			IM_scan();
-
-			if(isPressed(N3DS_buttons::Key_Select))
-			{
-				yes = false;
-			}
-		}
-	}
-	
 	
 	if(game!=nullptr)
 	{
@@ -215,4 +182,5 @@ int main(int argc, char* argv[])
 	unvisual::deInit();
 	physics::deInit();
 
-}
+
+*/

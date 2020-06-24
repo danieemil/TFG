@@ -20,7 +20,7 @@ public:
 
     // Métodos
     void render(const Vector2d<float>& view_pos = Vector2d<float>());
-    void update();
+    void update(const Vector2d<float>& pos_dif);
     void loadTilemap(const char* tilemap);
     void generateTiles();
     void destroyTilemap();
@@ -52,6 +52,9 @@ private:
     Vector2d<int> num_tiles;
 
     Vector2d<float> position;
+
+
+
 
     void readBin(const char* file_path);
 

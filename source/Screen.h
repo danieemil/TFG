@@ -20,6 +20,7 @@ class Screen
 
 public:
     // Constructores
+    Screen();
     Screen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch = N3DS_screenH::N3DS_LEFT);
     Screen(const Screen&);
 

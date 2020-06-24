@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "Game.h"
 
 
 //=========================================
@@ -7,13 +8,15 @@
 
 Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
     const Vector2d<float>& max_vel, const Vector2d<float>& accel, const Vector2d<float>& decel)
-: Entity(pos, spr, w, c), max_velocity(max_vel), acceleration(accel), deceleration(decel)
+: Entity(pos, spr, w, c), max_velocity(max_vel), max_acceleration(accel),
+    acceleration(Vector2d<float>()), deceleration(decel)
 {
 
 }
 
 Character::Character(const Character& c)
-: Entity(c), max_velocity(c.max_velocity), acceleration(c.acceleration), deceleration(c.deceleration)
+: Entity(c), max_velocity(c.max_velocity), max_acceleration(c.max_acceleration),
+    acceleration(c.acceleration), deceleration(c.deceleration)
 {
 
 }
@@ -22,6 +25,7 @@ Character& Character::operator= (const Character& c)
 {
     this->Entity::operator=(c);
     max_velocity = c.max_velocity;
+    max_acceleration = c.max_acceleration;
     acceleration = c.acceleration;
     deceleration = c.deceleration;
 
@@ -32,14 +36,19 @@ Character& Character::operator= (const Character& c)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Character::render(const Vector2d<float>& view_pos)
+void Character::render(float rp, const Vector2d<float>& view_pos)
 {
-    Entity::render(view_pos);
+    Entity::render(rp, view_pos);
 }
 
 void Character::update()
 {
+
     Entity::update();
+
+    Game* g = Game::Instance();
+
+    velocity += acceleration;
 
     if(abs(velocity.x)>max_velocity.x)
     {
@@ -59,7 +68,7 @@ void Character::update()
         velocity.y = 0.0f;
     }
 
-    //velocity /= deceleration;
+    
 }
 
 void Character::updateFromCollider()
@@ -130,6 +139,11 @@ const Vector2d<float>& Character::getVelocity() const
 const Vector2d<float>& Character::getPrePosition() const
 {
     return Entity::getPrePosition();
+}
+
+const Vector2d<float>& Character::getRenderPosition() const
+{
+    return Entity::getRenderPosition();
 }
 
 const Class_Id& Character::getClassId() const

@@ -4,20 +4,18 @@
 #include "World.h"
 #include "SpriteManager.h"
 
-// Configuración de la ventana de render
-
+//Clase Singleton para que todos puedan acceder a las variables de Game
 class Game
 {
 
 public:
-    // Constructores
-    Game(const char* spr_path = nullptr);
 
     // Métodos
-    void init(const char* spr_path = nullptr);
+    void init();
     void deInit();
-    void render();
+    void render(float rp = 0.0f);
     void update();
+    void updateCollisions();
     void loop();
     void processInput();
     bool isRunning();
@@ -30,6 +28,19 @@ public:
     // Getters
     World* getWorld() const;
     SpriteManager* getSpriteManager() const;
+    float getDeltaTime() const;
+    float getUpdateTime() const;
+    const float getUpd() const;
+
+    static Game* Instance(); 
+
+    // Destructor(Singleton)
+    void over();
+
+protected:
+
+    // Constructores
+    Game();
 
     // Destructor
     ~Game();
@@ -38,8 +49,17 @@ private:
 
     World* world;
     SpriteManager* manager;
+    Screen screen;
 
     bool running;
+    float dt;
+    //const float upd = 15.0f/60.0f;
+    const float upd = 0.0f;
+
+	Timepoint delta_time;
+    Timepoint update_time;
+
+    static Game* p_instance;
 
 };
 

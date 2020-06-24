@@ -9,8 +9,8 @@ namespace utilities
     // PI DEFINITION
     const float PI_F = 3.14159265358979f;
 
-    template <class C>
-    C mapValue(const C& s, const C& a1, const C& a2, const C& b1, const C& b2)
+    template <class T>
+    T mapValue(const T& s, const T& a1, const T& a2, const T& b1, const T& b2)
     {
         return b1 + ( (s-a1) * (b2 - b1) / (a2 - a1));
     }
@@ -21,7 +21,8 @@ namespace utilities
         return (v > T(0)) - (v < T(0));
     }
 
-    inline float clamp(const float& min, const float& max, float value)
+    template <class T>
+    T clamp(const T& min, const T& max, T value)
     {
         if(value < min)
         {
@@ -34,9 +35,16 @@ namespace utilities
         return value;
     }
 
-    inline float toRadians(float angle)
+    template<class T>
+    T toRadians(const T& angle)
     {
         return angle * PI_F / 180.0f;
+    }
+
+    template<class T>
+    T toDegrees(const T& radians)
+    {
+        return radians * 180.0f / PI_F;
     }
 
     template <class T>
@@ -60,12 +68,12 @@ namespace utilities
             y=y/l;
         }
 
-        float Length() const
+        T Length() const
         {
             return sqrt((x * x) + (y * y));
         }
 
-        float DotProduct(const Vector2d<T> & v) const
+        T DotProduct(const Vector2d<T> & v) const
         {
             return x * v.x + y * v.y;
         }
@@ -85,43 +93,50 @@ namespace utilities
         }
 
         Vector2d<T> operator+(const Vector2d<T>& v) const{ return Vector2d<T>(x+v.x, y+v.y); }
-        Vector2d<T> operator+(const float& f) const{ return Vector2d<T>(f+x, f+y); }
+        Vector2d<T> operator+(const T& f) const{ return Vector2d<T>(f+x, f+y); }
         void operator+=(const Vector2d<T>& v){ 
             x+=v.x;
             y+=v.y; 
         }
         Vector2d<T> operator-(const Vector2d<T>& v) const{ return Vector2d<T>(x-v.x, y-v.y); }
-        Vector2d<T> operator-(const float& f) const{ return Vector2d<T>(x-f, y-f); }
+        Vector2d<T> operator-(const T& f) const{ return Vector2d<T>(x-f, y-f); }
         void operator-=(const Vector2d<T>& v){
             x-=v.x;
             y-=v.y;
         }
         Vector2d<T> operator*(const Vector2d<T>& v) const{ return Vector2d<T>(x*v.x,y*v.y); }
-        Vector2d<T> operator*(const float& f) const{ return Vector2d<T>(f*x, f*y); }
+        Vector2d<T> operator*(const T& f) const{ return Vector2d<T>(f*x, f*y); }
         void operator*=(const Vector2d<T>& v){
             x = x*v.x;
             y = y*v.y;
         }
-        void operator*=(const float& f){ 
+        void operator*=(const T& f){ 
             x = f*x;
             y = f*y;
         }
         Vector2d<T> operator/(const Vector2d<T>& v) const{ return Vector2d<T>(x/v.x, y/v.y); }
-        Vector2d<T> operator/(const float& f) const{ return Vector2d<T>(x/f, y/f); }
+        Vector2d<T> operator/(const T& f) const{ return Vector2d<T>(x/f, y/f); }
         void operator/=(const Vector2d<T>& v){
             x = x/v.x;
             y = y/v.y;
         }
-        void operator/=(const float& f){
+        void operator/=(const T& f){
             x = x/f;
             y = y/f;
         }
-        Vector2d<T> operator=(const Vector2d<T> t){this->x = t.x; this->y = t.y;  return *this;}
-        bool operator==(const Vector2d<T> t) const
+        Vector2d<T> operator=(const Vector2d<T>& t){this->x = t.x; this->y = t.y;  return *this;}
+        bool operator==(const Vector2d<T>& t) const
         {
             if(this->x == t.x)
                 if(this->y == t.y)
                     return true;
+            return false;
+        }
+
+        bool operator!=(const Vector2d<T>& t) const
+        {
+            if(x != t.x || y != t.y)
+                return true;
             return false;
         }
 

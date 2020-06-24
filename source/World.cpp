@@ -46,11 +46,6 @@ void World::addEntity(Entity* e)
     }
 }
 
-void World::addPlayer(Player* p)
-{
-    player = p;
-}
-
 void World::deleteEntity(Entity* e)
 {
     if(e!=nullptr)
@@ -129,13 +124,13 @@ Vector2d<float> World::scroll2D()
     return view_pos;
 }
 
-void World::render()
+void World::render(float rp)
 {
     Vector2d<float> view_pos;
     view_pos = scroll2D();
     renderTilemap(view_pos);
-    renderEntities(view_pos);
-    renderPlayer(view_pos);
+    renderEntities(rp, view_pos);
+    renderPlayer(rp, view_pos);
 }
 
 void World::renderTilemap(const Vector2d<float>& view_pos)
@@ -143,19 +138,19 @@ void World::renderTilemap(const Vector2d<float>& view_pos)
     tilemap->render(view_pos);
 }
 
-void World::renderEntities(const Vector2d<float>& view_pos)
+void World::renderEntities(float rp, const Vector2d<float>& view_pos)
 {
     for(auto ent = entities.begin();ent!=entities.end();ent++)
     {
-        (*ent)->render(view_pos);
+        (*ent)->render(rp, view_pos);
     }
 }
 
-void World::renderPlayer(const Vector2d<float>& view_pos)
+void World::renderPlayer(float rp, const Vector2d<float>& view_pos)
 {
     if(player!=nullptr)
     {
-        player->render(view_pos);
+        player->render(rp, view_pos);
     }
 }
 

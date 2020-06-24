@@ -285,8 +285,6 @@ Intersection* AABB::intersect(Convex* c)
                 std::vector<Vector2d<float>> vertices = getVertices();
                 Vector2d<float> c_pos = c_collider->getPosition();
 
-                auto deb = unvisual::debugger;
-
                 // Calcular posición csoluta de cada uno de los vértices
                 std::vector<Vector2d<float>> vertices_pos;
                 for (auto &&vertex : vertices)

@@ -41,61 +41,7 @@ namespace physics
         float sizeX, sizeY; // Dimensiones del sprite 
         float sX, sY;           // Dimensiones del collider
 
-
-        // Tileset de los tiles de los mapas de pruebas
-        sizeX = 16;
-        sizeY = 16;
-        sX = sizeX - 3;
-        sY = sizeY - 3;
-        
-        tileset_route = "romfs:/gfx/TileSet.t3x";
-        
-        // Cuadrado negro
-        s = new AABB(Vector2d<float>(0,0), Vector2d<float>(sizeX,sizeY));
-        tileset_colliders.insert(pair<int, Shape*>(0,s));
-
-        // Rampa (esquina 90º abajo derecha)
-        vertices = 
-        {
-            Vector2d<float>(sX,0),
-            Vector2d<float>(0,sY),
-            Vector2d<float>(sX,sY)
-        };
-        s = new Convex(vertices);
-        tileset_colliders.insert(pair<int, Shape*>(1,s));
-
-        // Rampa (esquina 90º arriba izquierda)
-        vertices = 
-        {
-            Vector2d<float>(0,0),
-            Vector2d<float>(sX,0),
-            Vector2d<float>(0,sY)
-        };
-        s = new Convex(vertices);
-        tileset_colliders.insert(pair<int, Shape*>(2,s));
-
-        // Rampa (esquina 90º arriba derecha)
-        vertices = 
-        {
-            Vector2d<float>(0,0),
-            Vector2d<float>(sX,0),
-            Vector2d<float>(sX,sY)
-        };
-        s = new Convex(vertices);
-        tileset_colliders.insert(pair<int, Shape*>(3,s));
-
-        // Rampa (esquina 90º abajo izquierda)
-        vertices = 
-        {
-            Vector2d<float>(0,0),
-            Vector2d<float>(0,sY),
-            Vector2d<float>(sX,sY)
-        };
-        s = new Convex(vertices);
-        tileset_colliders.insert(pair<int, Shape*>(4,s));
-        
-        tilesets_colliders.insert(pair<string, std::map<int, Shape*>>(tileset_route, tileset_colliders));
-
+    
         // Tileset de los sprites de prueba
         tileset_route = "romfs:/gfx/sprites.t3x";
         tileset_colliders.clear();

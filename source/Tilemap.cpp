@@ -63,14 +63,14 @@ void Tilemap::render(const Vector2d<float>& view_pos)
             {
                 if(tiles[i][j]!=nullptr)
                 {
-                    tiles[i][j]->render(view_pos);
+                    tiles[i][j]->render(0.0f, view_pos);
                 }
             }
         }
     }
 }
 
-void Tilemap::update()
+void Tilemap::update(const Vector2d<float>& pos_dif)
 {
     if(tiles!=nullptr)
     {
@@ -90,6 +90,15 @@ void Tilemap::update()
             pos.y = pos.y + tile_size.y;
         }
     }
+
+    for (auto &&collider : colliders)
+    {
+        if(collider!=nullptr)
+        {
+            collider->setPosition(collider->getPosition() + pos_dif);
+        }
+    }
+    
 }
 
 void Tilemap::loadTilemap(const char* tilemap)
@@ -101,6 +110,7 @@ void Tilemap::loadTilemap(const char* tilemap)
     readBin(tilemap);
 
     generateTiles();
+    update(position);
 
 }
 
@@ -112,8 +122,6 @@ void Tilemap::generateTiles()
         {
             if(num_tiles.x > 0 && num_tiles.y > 0)
             {
-
-                auto deb = unvisual::debugger;
 
                 map_size.x = num_tiles.x * tile_size.x;
                 map_size.y = num_tiles.y * tile_size.y;
@@ -216,8 +224,8 @@ void Tilemap::setTileset(const char* spr_sheet)
 
 void Tilemap::setPosition(const Vector2d<float>& pos)
 {
-    position = pos;
-    update();
+    position = position + pos;
+    update(pos);
 }
 
 
@@ -288,8 +296,6 @@ void Tilemap::readBin(const char* file_path)
             file2mem(in, &level[i][j]);
         }
     }
-
-    auto deb = unvisual::debugger;
 
     // Físicas
     int c_number = 0;

@@ -31,9 +31,9 @@ Weapon& Weapon::operator= (const Weapon& w)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Weapon::render(const Vector2d<float>& view_pos)
+void Weapon::render(float rp, const Vector2d<float>& view_pos)
 {
-    Entity::render(view_pos);
+    Entity::render(rp, view_pos);
 }
 
 void Weapon::update()
@@ -117,6 +117,11 @@ const Vector2d<float>& Weapon::getVelocity() const
 const Vector2d<float>& Weapon::getPrePosition() const
 {
     return Entity::getPrePosition();
+}
+
+const Vector2d<float>& Weapon::getRenderPosition() const
+{
+    return Entity::getRenderPosition();
 }
 
 Combat_Character* Weapon::getCharacter() const

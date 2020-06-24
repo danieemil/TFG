@@ -91,7 +91,7 @@ u64 Timepoint::getPoint() const
     return point;
 }
 
-float Timepoint::getElapsed()
+float Timepoint::getElapsed() const
 {
 
     float res = -1;
@@ -101,6 +101,9 @@ float Timepoint::getElapsed()
     if(now > point)
     {
         res = (now - point)/FREQUENCY;
+    }else
+    {
+        res = (point - now)/-FREQUENCY;
     }
 
     return res;

@@ -7,7 +7,7 @@
 //=========================================
 
 Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
-: world(w), sprite(spr), position(pos), pre_position(pos), body(c), velocity(), id(Class_Id::e_none)
+: world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c), velocity(), id(Class_Id::e_none)
 {
     if(c!=nullptr)
     {
@@ -16,7 +16,7 @@ Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
 }
 
 Entity::Entity(const Entity& e) :
-world(nullptr), sprite(nullptr), position(e.position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity), id(e.id)
+world(nullptr), sprite(nullptr), position(e.position), render_position(e.render_position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity), id(e.id)
 {
     
 }
@@ -28,6 +28,7 @@ Entity& Entity::operator= (const Entity& e)
     body = nullptr;
 
     position = e.position;
+    render_position = e.render_position;
     pre_position = e.pre_position;
     velocity = e.velocity;
     id = e.id;
@@ -40,11 +41,14 @@ Entity& Entity::operator= (const Entity& e)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Entity::render(const Vector2d<float>& view_pos)
+void Entity::render(float rp, const Vector2d<float>& view_pos)
 {
+    // Interpolación
+    render_position = pre_position + (position - pre_position) * rp;
+
     if(sprite!=nullptr)
     {
-        sprite->setPosition(position);
+        sprite->setPosition(render_position);
         sprite->drawSprite(view_pos);
     }
 }
@@ -151,6 +155,11 @@ const Vector2d<float>& Entity::getVelocity() const
 const Vector2d<float>& Entity::getPrePosition() const
 {
     return pre_position;
+}
+
+const Vector2d<float>& Entity::getRenderPosition() const
+{
+    return render_position;
 }
 
 const Class_Id& Entity::getClassId() const

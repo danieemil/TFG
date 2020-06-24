@@ -6,6 +6,12 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
+Screen::Screen()
+: width(0), height(0), position(), target_position(nullptr)
+{
+    renderer = nullptr;
+}
+
 Screen::Screen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch)
 : width(s_width), height(s_height), position(), target_position(nullptr)
 {

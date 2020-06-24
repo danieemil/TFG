@@ -30,7 +30,7 @@ public:
 
     // Getters
     u64 getPoint() const;
-    float getElapsed();
+    float getElapsed() const;
 
     // Destructor
     ~Timepoint();
