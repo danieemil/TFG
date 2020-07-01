@@ -1,0 +1,39 @@
+A la hora de crear las físicas hay que tener en cuenta que todas las normales están
+apuntando en la dirección correcta, esto se consigue en la creación de polígonos:
+
+1 -> El punto de la izquierda, que esté en la parte más arriba.
+2 -> Vamos de izquierda a derecha seleccionando los puntos que estén más arriba.
+3 -> Cuando se llegue al punto que esté más a la derecha vamos de derecha a izquierda.
+4 -> Finalmente el último punto 
+
+
+Example 1:
+
+1            2
+ ·---------·
+  \       /
+   \     /
+    \   /
+     \ /
+      ·
+      3
+
+Example 2:
+           2
+          ·
+         /|
+        / |
+       /  |
+      /   |
+     /    |
+    /     |
+   ·------·
+  1        3
+
+
+
+PD: En Tiled no usar la opción de duplicar objeto.
+
+
+
+

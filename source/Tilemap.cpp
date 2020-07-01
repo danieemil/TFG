@@ -63,7 +63,7 @@ void Tilemap::render(const Vector2d<float>& view_pos)
             {
                 if(tiles[i][j]!=nullptr)
                 {
-                    tiles[i][j]->render(0.0f, view_pos);
+                    tiles[i][j]->render(view_pos);
                 }
             }
         }
@@ -143,7 +143,7 @@ void Tilemap::generateTiles()
                         tiles[i][j] = nullptr;
                         if(sp!=nullptr)
                         {
-                            tiles[i][j] = new Tile(p,sp);   
+                            tiles[i][j] = new Tile(p,sp);
                         }
                         p.x = p.x + tile_size.x;
                     }

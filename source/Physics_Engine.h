@@ -24,8 +24,11 @@ namespace physics
     bool removeStatic(Collider* c);
     bool removeDynamic(Collider* c);
 
+    // Actualizar valores de los cuerpos que se mueven
+    void update(float dt);
+
     // Comprobar y corregir colisiones
-    void step();
+    void step(float dt);
 
     // Rayos contra las colisiones
     std::vector<Intersection*> rayTestStatics(const Vector2d<float>& a, const Vector2d<float>& b);

@@ -20,9 +20,10 @@ public:
 
     // Métodos
         //Entity
-    void render(float rp = 0.0f, const Vector2d<float>& view_pos = Vector2d<float>()) override;
+    void render(const Vector2d<float>& view_pos = Vector2d<float>()) override;
     void update() override;
     void updateFromCollider();
+    void interpolate(float rp = 0.0f);
         //Character
         //Combat_Character
         //Player

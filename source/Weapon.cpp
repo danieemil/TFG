@@ -31,9 +31,9 @@ Weapon& Weapon::operator= (const Weapon& w)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Weapon::render(float rp, const Vector2d<float>& view_pos)
+void Weapon::render(const Vector2d<float>& view_pos)
 {
-    Entity::render(rp, view_pos);
+    Entity::render(view_pos);
 }
 
 void Weapon::update()
@@ -44,6 +44,11 @@ void Weapon::update()
 void Weapon::updateFromCollider()
 {
     Entity::updateFromCollider();
+}
+
+void Weapon::interpolate(float rp)
+{
+    Entity::interpolate(rp);
 }
 
 

@@ -234,7 +234,13 @@ Intersection* Convex::intersect(Circle* c)
 
                     if(d < c_radius)
                     {
-                        std::max(c_radius - d, overlap);
+                        float o = c_radius - d;
+                        if(overlap < o)
+                        {
+                            overlap = o;
+                            dir_overlap = vertex - c_center_pos;
+                            dir_overlap.Normalize();
+                        }
                     }
                 }
 

@@ -16,6 +16,8 @@ namespace unvisual
         // Inicializador por defecto de los gráficos básicos
         gfxInitDefault();
 
+        gfxSetDoubleBuffering(gfxScreen_t::GFX_BOTTOM, true);
+
         // Permitimos acceder a la ROMFS (Read Only Memory File System)
         // Eso significa que podemos acceder a la carpeta romfs poniendo "romfs:"
         romfsInit();
@@ -99,7 +101,7 @@ namespace unvisual
     {
         if(current_screen!=nullptr)
         {
-            C2D_SceneBegin(current_screen->getRenderer());
+            C2D_SceneTarget(current_screen->getRenderer());
             C2D_Prepare();
         }
     }

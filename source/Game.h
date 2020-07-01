@@ -13,9 +13,10 @@ public:
     // Métodos
     void init();
     void deInit();
-    void render(float rp = 0.0f);
+    void render();
     void update();
     void updateCollisions();
+    void interpolate();
     void loop();
     void processInput();
     bool isRunning();
@@ -54,7 +55,7 @@ private:
     bool running;
     float dt;
     //const float upd = 15.0f/60.0f;
-    const float upd = 0.0f;
+    const float upd = 0.0166;
 
 	Timepoint delta_time;
     Timepoint update_time;

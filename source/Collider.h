@@ -45,7 +45,7 @@ class Collider
 
 public:
     // Constructores
-    Collider(const Vector2d<float>& pos, Shape* s = nullptr, const CollisionFlag& f = CollisionFlag::none, const CollisionType& t = CollisionType::col_none, void* c = nullptr, int i = -1, float a = 0.0f, const Vector2d<float>& rot_cent = Vector2d<float>(0,0));
+    Collider(const Vector2d<float>& pos, Shape* s = nullptr, const CollisionFlag& f = CollisionFlag::none, const CollisionType& t = CollisionType::col_none, void* c = nullptr, int i = -1, float a = 0.0f, const Vector2d<float>& rot_cent = Vector2d<float>(0,0), const Vector2d<float>& vel = Vector2d<float>());
     Collider(const Collider& c);
 
     Collider& operator= (const Collider& c);
@@ -62,6 +62,8 @@ public:
 
     bool isStatic() const;
 
+    void update(float dt);
+
     // Setters
     void setPosition(const Vector2d<float>& pos);
     void setFlags(const CollisionFlag& f);
@@ -71,6 +73,7 @@ public:
     void setGlobalRotation(float a);
     void setLocalsRotation(float a);
     void setRotationCenter(const Vector2d<float>& rot_cent);
+    void setVelocity(const Vector2d<float>& vel);
 
     // Getters
     const Vector2d<float>& getPosition() const;
@@ -82,6 +85,7 @@ public:
     int getIndex() const;
     float getRotation() const;
     const Vector2d<float>& getRotationCenter() const;
+    const Vector2d<float>& getVelocity() const;
 
     // Destructor
     ~Collider();
@@ -98,6 +102,7 @@ private:
     int index;
     float angle;
     Vector2d<float> rotation_center;
+    Vector2d<float> velocity; // Describe lo que te mueves en X e Y en un segundo
 
     void calculateValues();
 

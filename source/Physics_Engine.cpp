@@ -1,6 +1,7 @@
 #include "Physics_Engine.h"
 #include "Unvisual_Engine.h"
 
+#include "Entity.h"
 
 namespace physics
 {
@@ -169,9 +170,34 @@ namespace physics
         return false;
     }
 
-    // En esta función se analizan y resuelven todas las colisiones
-    void step()
+    // Actualizamos los valores de todos los cuerpos que se muevan
+    void update(float dt)
     {
+        for(auto it = colliders.begin(); it!=colliders.end(); it++)
+        {
+            Collider* collider = (*it);
+            if(collider!=nullptr)
+            {
+                collider->update(dt);
+            }
+        }
+
+        for (auto it = dynamics.begin(); it!=dynamics.end(); it++)
+        {
+            Collider* collider = (*it);
+            if (collider!=nullptr)
+            {
+                collider->update(dt);
+            }
+        }
+    }
+
+    // En esta función se analizan y resuelven todas las colisiones
+    void step(float dt)
+    {
+
+        update(dt);
+
         // Todos los colliders neutros se comprueban entre sí SOLO UNA VEZ
         for(auto it = colliders.begin(); it!=colliders.end(); it++)
         {
@@ -201,6 +227,7 @@ namespace physics
                         if(colliderA->intersectBounds(colliderB))
                         {
                             colliderA->intersectFix(colliderA->intersectShapes(colliderB));
+                            static_cast<Entity*>(colliderA->getCreator())->updateFromCollider();
                         }
                     }
                 }

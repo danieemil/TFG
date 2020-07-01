@@ -33,19 +33,24 @@ Tile& Tile::operator= (const Tile& c)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Tile::render(float rp, const Vector2d<float>& view_pos)
+void Tile::render(const Vector2d<float>& view_pos)
 {
-    Entity::render(rp, view_pos);
+    Entity::render(view_pos);
 }
 
 void Tile::update()
 {
-    Entity::update();   
+    Entity::update();
 }
 
 void Tile::updateFromCollider()
 {
     Entity::updateFromCollider();
+}
+
+void Tile::interpolate(float rp)
+{
+    Entity::interpolate(rp);
 }
 
 

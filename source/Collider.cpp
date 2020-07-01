@@ -8,8 +8,8 @@ using namespace physics;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f, const CollisionType& t, void* c, int i, float a, const Vector2d<float>& rot_cent)
-: position(pos), previous_position(pos), flags(f), type(t), creator(c), index(i), angle(a), rotation_center(rot_cent)
+Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f, const CollisionType& t, void* c, int i, float a, const Vector2d<float>& rot_cent, const Vector2d<float>& vel)
+: position(pos), previous_position(pos), flags(f), type(t), creator(c), index(i), angle(a), rotation_center(rot_cent), velocity(vel)
 {
     if(s!=nullptr)
     {
@@ -24,6 +24,7 @@ Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f,
     if (type == CollisionType::col_static)
     {
         addStatic(this);
+        velocity = Vector2d<float>();
     }
     else if (type == CollisionType::col_dynamic)
     {
@@ -34,7 +35,7 @@ Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f,
 }
 
 Collider::Collider(const Collider& c)
-: position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr), index(-1), angle(c.angle), rotation_center(c.rotation_center)
+: position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr), index(-1), angle(c.angle), rotation_center(c.rotation_center), velocity(c.velocity)
 {
     for (auto it = c.shapes.begin(); it!=c.shapes.end(); it++)
     {
@@ -54,6 +55,7 @@ Collider::Collider(const Collider& c)
     if (type == CollisionType::col_static)
     {
         addStatic(this);
+        velocity = Vector2d<float>();
     }
     else if (type == CollisionType::col_dynamic)
     {
@@ -81,6 +83,7 @@ Collider& Collider::operator= (const Collider& c)
     index = -1;
     angle = c.angle;
     rotation_center = c.rotation_center;
+    velocity = c.velocity;
 
     setFlags(c.flags);
     setType(c.type);
@@ -197,6 +200,14 @@ bool Collider::isStatic() const
     return (type == CollisionType::col_static);
 }
 
+void Collider::update(float dt)
+{
+    previous_position = position;
+    position = position + velocity * dt;
+
+    calculateValues();
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -244,6 +255,7 @@ void Collider::setType(const CollisionType& t)
     if (type == CollisionType::col_static)
     {
         addStatic(this);
+        velocity = Vector2d<float>();
     }
     else if (type == CollisionType::col_dynamic)
     {
@@ -289,6 +301,11 @@ void Collider::setLocalsRotation(float a)
 void Collider::setRotationCenter(const Vector2d<float>& rot_cent)
 {
     rotation_center = rot_cent;
+}
+
+void Collider::setVelocity(const Vector2d<float>& vel)
+{
+    velocity = vel;
 }
 
 
@@ -339,6 +356,11 @@ float Collider::getRotation() const
 const Vector2d<float>& Collider::getRotationCenter() const
 {
     return rotation_center;
+}
+
+const Vector2d<float>& Collider::getVelocity() const
+{
+    return velocity;
 }
 
 

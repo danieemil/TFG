@@ -29,6 +29,8 @@ Game::Game()
     manager = new SpriteManager();
     world = new World();
     running = true;
+
+    init();
 }
 
 //=========================================
@@ -64,7 +66,7 @@ void Game::init()
 
 
 	// Creamos al jugador
-	Vector2d<float> player_position = Vector2d<float>(50,50);
+	Vector2d<float> player_position = Vector2d<float>(250.5f,150.5f);
 
 		// Gráficos del jugador
 	Sprite* player_sprite = manager->createSprite(0);
@@ -74,9 +76,9 @@ void Game::init()
 	Collider* player_body = new Collider(player_position, player_shape, CollisionFlag::player, CollisionType::col_dynamic);
 
 		// Otros atributos del jugador
-	Vector2d<float> player_max_vel = Vector2d<float>(2.0f,2.0f);
-	Vector2d<float> player_accel = Vector2d<float>(0.2f, 0.2f);
-	Vector2d<float> player_decel = Vector2d<float>(0.2f,0.2f);
+	Vector2d<float> player_max_vel = Vector2d<float>(40.0f,40.0f);
+	Vector2d<float> player_accel = Vector2d<float>(10.0f, 10.0f);
+	Vector2d<float> player_decel = Vector2d<float>(10.0f,10.0f);
 	Player* player = new Player(player_position, player_sprite, world, player_body, player_max_vel, player_accel, player_decel);
 	world->setPlayer(player);
 
@@ -95,14 +97,17 @@ void Game::init()
 	Shape* entity_rect2 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x, entity_size.y/2.0f));
 	Shape* entity_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x/5.0f,entity_size.y));
 	Shape* entity_circ1 = new Circle(Vector2d<float>(entity_size.x/2.0f,entity_size.y/4.0f), entity_size.x*8.0f);
-	Collider* entity_body = new Collider(entity_position, entity_circ1, CollisionFlag::enemy, CollisionType::col_static);
-	Entity* entity = new Entity(entity_position, entity_sprite, world, entity_body);
-	world->addEntity(entity);
+	//Collider* entity_body = new Collider(entity_position, entity_circ1, CollisionFlag::enemy, CollisionType::col_static);
+	//Entity* entity = new Entity(entity_position, entity_sprite, world, entity_body);
+	//world->addEntity(entity);
 
 	
 	// Delta time
 	dt = 0.0f;
 	delta_time.reset();
+
+    // Ya que solo se están usando gráficos en 2D
+    unvisual::prepare2D();
 }
 
 void Game::deInit()
@@ -112,11 +117,11 @@ void Game::deInit()
 	physics::deInit();
 }
 
-void Game::render(float rp)
+void Game::render()
 {
     if(world!=nullptr)
     {
-        world->render(rp);
+        world->render();
     }
 }
 
@@ -130,10 +135,15 @@ void Game::update()
 
 void Game::updateCollisions()
 {
-    physics::step();
+    physics::step(dt);
+}
+
+void Game::interpolate()
+{
+    float rp = clamp(0.0f,1.0f,update_time.getElapsed()/upd);
     if(world!=nullptr)
     {
-        world->updateCollisions();
+        world->interpolate(rp);
     }
 }
 
@@ -160,6 +170,12 @@ void Game::loop()
 		debug->print("Delta Time:");
 		debug->print(dt);
 		debug->nextLine();
+        debug->print("Screen x:");
+		debug->print(unvisual::getCurrentScreen()->getPosition().x);
+		debug->nextLine();
+        debug->print("Screen y:");
+		debug->print(unvisual::getCurrentScreen()->getPosition().y);
+		debug->nextLine();
 
 
 		// Escaneamos las teclas pulsadas(Inputs de la N3DS)
@@ -173,21 +189,18 @@ void Game::loop()
             update();
         }
 
+        //interpolate();
+
         updateCollisions();
 
 		unvisual::drawBegin();
 		unvisual::drawOnCurrentScreen();
-		unvisual::prepare2D();
-
-        // Porcentaje que sirve para interpolar
-        float rp = update_time.getElapsed()/upd;
-        if (rp > 1.0f) rp = 1.0f;
 
 		// Renderizamos el juego entero en la patnalla seleccionada
-		render(rp);
+		render();
 
 		unvisual::drawEnd();
-
+        
 	}
 }
 
@@ -233,8 +246,6 @@ void Game::processInput()
     {
         world->processInput();
     }
-    
-    
 }
 
 bool Game::isRunning()

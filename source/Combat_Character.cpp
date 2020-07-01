@@ -35,12 +35,12 @@ Combat_Character& Combat_Character::operator= (const Combat_Character& cc)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Combat_Character::render(float rp, const Vector2d<float>& view_pos)
+void Combat_Character::render(const Vector2d<float>& view_pos)
 {
-    Character::render(rp, view_pos);
+    Character::render(view_pos);
     if(equipped!=nullptr)
     {
-        equipped->render(rp, view_pos);
+        equipped->render(view_pos);
     }
 }
 
@@ -56,6 +56,11 @@ void Combat_Character::update()
 void Combat_Character::updateFromCollider()
 {
     Character::updateFromCollider();
+}
+
+void Combat_Character::interpolate(float rp)
+{
+    Character::interpolate(rp);
 }
 
 

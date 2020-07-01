@@ -1,6 +1,8 @@
 #include "Entity.h"
 #include "World.h"
 
+#include "Game.h"
+
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
@@ -41,11 +43,8 @@ Entity& Entity::operator= (const Entity& e)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Entity::render(float rp, const Vector2d<float>& view_pos)
+void Entity::render(const Vector2d<float>& view_pos)
 {
-    // Interpolación
-    render_position = pre_position + (position - pre_position) * rp;
-
     if(sprite!=nullptr)
     {
         sprite->setPosition(render_position);
@@ -55,21 +54,32 @@ void Entity::render(float rp, const Vector2d<float>& view_pos)
 
 void Entity::update()
 {
-    pre_position = position;
-    position = position + velocity;
+    Game* g = Game::Instance();
 
+    pre_position = position;
     if(body!=nullptr)
     {
-        body->setPosition(position);
+        position = body->getPosition();
+        body->setVelocity(velocity);
     }
+    render_position = position;
+
+    
 }
 
 void Entity::updateFromCollider()
 {
     if(body!=nullptr)
     {
-        position = body->getPosition();
+        render_position = body->getPosition();
+        //render_position = position;
     }
+}
+
+void Entity::interpolate(float rp)
+{
+    // Interpolación
+    render_position = pre_position + (position - pre_position) * rp;
 }
 
 

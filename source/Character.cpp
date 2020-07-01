@@ -36,17 +36,15 @@ Character& Character::operator= (const Character& c)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Character::render(float rp, const Vector2d<float>& view_pos)
+void Character::render(const Vector2d<float>& view_pos)
 {
-    Entity::render(rp, view_pos);
+    Entity::render(view_pos);
 }
 
 void Character::update()
 {
 
     Entity::update();
-
-    Game* g = Game::Instance();
 
     velocity += acceleration;
 
@@ -76,6 +74,10 @@ void Character::updateFromCollider()
     Entity::updateFromCollider();
 }
 
+void Character::interpolate(float rp)
+{
+    Entity::interpolate(rp);
+}
 
 //=========================================
 //=               SETTERS   	    	  =

@@ -31,9 +31,10 @@ public:
     Entity& operator= (const Entity& e);
 
     // Métodos
-    virtual void render(float rp = 0.0f, const Vector2d<float>& view_pos = Vector2d<float>());
+    virtual void render(const Vector2d<float>& view_pos = Vector2d<float>());
     virtual void update();
     virtual void updateFromCollider();
+    virtual void interpolate(float rp = 0.0f);
 
     // Setters
     virtual void setSprite(Sprite* spr);

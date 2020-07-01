@@ -31,9 +31,9 @@ Player& Player::operator= (const Player& p)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Player::render(float rp, const Vector2d<float>& view_pos)
+void Player::render(const Vector2d<float>& view_pos)
 {
-    Combat_Character::render(rp, view_pos);
+    Combat_Character::render(view_pos);
 }
 
 void Player::update()
@@ -44,6 +44,11 @@ void Player::update()
 void Player::updateFromCollider()
 {
     Combat_Character::updateFromCollider();
+}
+
+void Player::interpolate(float rp)
+{
+    Combat_Character::interpolate(rp);
 }
 
 void Player::processInput()

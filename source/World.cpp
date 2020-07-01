@@ -9,17 +9,24 @@ World::World(const char* tileset_path, Player* p)
 {
     player = p;
     tilemap = new Tilemap(tileset_path);
+
+    scroll_vel = Vector2d<float>(4.0f,4.0f);
 }
 
-World::World(const World& d)
+World::World(const World& w)
 {
     player = nullptr;
     tilemap = nullptr;
+
+    scroll_vel = w.scroll_vel;
+
 }
 
-World& World::operator= (const World& d)
+World& World::operator= (const World& w)
 {
 
+    player = nullptr;
+    tilemap = nullptr;
     return *this;
 
 }
@@ -116,6 +123,38 @@ Vector2d<float> World::scroll2D()
                 sc_pos.x = clamp(Tpos.x, TPSCM.x, sc_pos.x);
                 sc_pos.y = clamp(Tpos.y, TPSCM.y, sc_pos.y);
             }
+
+            // Establecer un máximo de velocidad a la que se puede hacer scroll
+            Vector2d<float> pre_pos = sc->getPosition();
+            Vector2d<float> dist = sc_pos - pre_pos;
+            Vector2d<float> aux;
+            aux.x = sign(dist.x) * scroll_vel.x;
+            aux.y = sign(dist.y) * scroll_vel.y;
+            Vector2d<float> sc_aux = pre_pos + aux;
+            
+            if(scroll_vel.x>abs(dist.x))
+                sc_aux.x = sc_pos.x;
+            if(scroll_vel.y>abs(dist.y))
+                sc_aux.y = sc_pos.y;
+
+            // Evitamos los errores de renderizado cuando es próximo a [X.5]
+            float mx = (sc_aux.x - (int)sc_aux.x) - 0.5f;
+            if (abs(mx)<0.05f)
+            {
+                sc_aux.x = sc_aux.x + 0.1f;
+            }
+            float my = (sc_aux.y - (int)sc_aux.y) - 0.5f;
+            if (abs(my)<0.05f)
+            {
+                sc_aux.y = sc_aux.y + 0.1f;
+            }
+
+            
+
+            sc_pos = Vector2d<float>(sc_aux.x, sc_aux.y);
+
+
+
             sc->setPosition(sc_pos);
             view_pos = sc_pos;
         }
@@ -124,13 +163,13 @@ Vector2d<float> World::scroll2D()
     return view_pos;
 }
 
-void World::render(float rp)
+void World::render()
 {
     Vector2d<float> view_pos;
     view_pos = scroll2D();
     renderTilemap(view_pos);
-    renderEntities(rp, view_pos);
-    renderPlayer(rp, view_pos);
+    renderEntities(view_pos);
+    renderPlayer(view_pos);
 }
 
 void World::renderTilemap(const Vector2d<float>& view_pos)
@@ -138,19 +177,41 @@ void World::renderTilemap(const Vector2d<float>& view_pos)
     tilemap->render(view_pos);
 }
 
-void World::renderEntities(float rp, const Vector2d<float>& view_pos)
+void World::renderEntities(const Vector2d<float>& view_pos)
 {
     for(auto ent = entities.begin();ent!=entities.end();ent++)
     {
-        (*ent)->render(rp, view_pos);
+        (*ent)->render(view_pos);
     }
 }
 
-void World::renderPlayer(float rp, const Vector2d<float>& view_pos)
+void World::renderPlayer(const Vector2d<float>& view_pos)
 {
     if(player!=nullptr)
     {
-        player->render(rp, view_pos);
+        player->render(view_pos);
+    }
+}
+
+void World::interpolate(float rp)
+{
+    interpolateEntities(rp);
+    interpolatePlayer(rp);
+}
+
+void World::interpolateEntities(float rp)
+{
+    for(auto ent = entities.begin();ent!=entities.end();ent++)
+    {
+        (*ent)->interpolate(rp);
+    }
+}
+
+void World::interpolatePlayer(float rp)
+{
+    if(player!=nullptr)
+    {
+        player->interpolate(rp);
     }
 }
 

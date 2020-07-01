@@ -25,10 +25,14 @@ public:
 
     Vector2d<float> scroll2D();
 
-    void render(float rp = 0.0f);
+    void render();
     void renderTilemap(const Vector2d<float>& view_pos = Vector2d<float>());
-    void renderEntities(float rp = 0.0f, const Vector2d<float>& view_pos = Vector2d<float>());
-    void renderPlayer(float rp = 0.0f, const Vector2d<float>& view_pos = Vector2d<float>());
+    void renderEntities(const Vector2d<float>& view_pos = Vector2d<float>());
+    void renderPlayer(const Vector2d<float>& view_pos = Vector2d<float>());
+
+    void interpolate(float rp = 0.0f);
+    void interpolateEntities(float rp = 0.0f);
+    void interpolatePlayer(float rp = 0.0f);
 
     void update();
     void updateEntities();
@@ -56,6 +60,8 @@ private:
     std::vector<Entity*> entities;
     Player* player;
     Tilemap* tilemap;
+
+    Vector2d<float> scroll_vel;
 
 };
 

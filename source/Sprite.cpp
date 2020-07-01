@@ -41,11 +41,19 @@ Sprite& Sprite::operator= (const Sprite& spr)
 
 void Sprite::drawSprite(const Vector2d<float>& view_pos)
 {
+    Screen* s = unvisual::getCurrentScreen();
+    
+    float h = (float)s->getHeight();
+    float w = (float)s->getWidth();
+
     // Necesario para aplicar scroll 2D personalizado
     Vector2d<float> p = position - view_pos;
-
-    C2D_SpriteSetPos(&sprite, p.x, p.y);
-    C2D_DrawSprite(&sprite);
+    if((p.x + sprite.params.pos.w) > 0.0f && p.x < w)
+        if((p.y + sprite.params.pos.h) > 0.0f && p.y < h)
+        {
+            C2D_SpriteSetPos(&sprite, p.x, p.y);
+            C2D_DrawSprite(&sprite);
+        }
 }
 
 
