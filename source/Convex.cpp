@@ -177,7 +177,9 @@ Intersection* Convex::intersect(AABB* ab)
                     overlap_dir.x = abs(overlap_dir.x) * sX;
                     overlap_dir.y = abs(overlap_dir.y) * sY;
 
-                    Vector2d<float> fix_pos = center_pos + (overlap_dir * overlap) - center;
+                    intersection.overlap = overlap_dir * overlap;
+
+                    Vector2d<float> fix_pos = center_pos + (intersection.overlap) - center;
 
                     intersection.fixed_position = fix_pos;
                     intersection.intersects = true;
@@ -289,7 +291,9 @@ Intersection* Convex::intersect(Circle* c)
                         dir = dir_overlap;
                     }
 
-                    Vector2d<float> fix_pos = center_pos + (dir * overlap) - center;
+                    intersection.overlap = dir * overlap;
+
+                    Vector2d<float> fix_pos = center_pos + (intersection.overlap) - center;
 
 
                     intersection.fixed_position = fix_pos;
@@ -368,10 +372,9 @@ Intersection* Convex::intersect(Convex* c)
 
                     Vector2d<float> d = center_prev - center_pos;
 
-                    //overlap_dir.x = abs(overlap_dir.x) * sign(d.x);
-                    //overlap_dir.y = abs(overlap_dir.y) * sign(d.y);
+                    intersection.overlap = overlap_dir * overlap;
 
-                    Vector2d<float> fix_pos = center_pos - (overlap_dir * overlap) - center;
+                    Vector2d<float> fix_pos = center_pos - (intersection.overlap) - center;
 
 
                     intersection.fixed_position = fix_pos;

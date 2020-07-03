@@ -226,8 +226,12 @@ namespace physics
                     {
                         if(colliderA->intersectBounds(colliderB))
                         {
-                            colliderA->intersectFix(colliderA->intersectShapes(colliderB));
-                            static_cast<Entity*>(colliderA->getCreator())->updateFromCollider();
+                            Intersection* i = colliderA->intersectShapes(colliderB);
+                            colliderA->intersectFix(i);
+                            if(i!=nullptr && i->intersects)
+                            {
+                                static_cast<Entity*>(colliderA->getCreator())->updateFromCollider();
+                            }
                         }
                     }
                 }

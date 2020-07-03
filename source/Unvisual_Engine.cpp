@@ -29,6 +29,9 @@ namespace unvisual
         C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
 
         input::IM_init();
+
+        aptSetHomeAllowed(false);
+        
     }
 
     void deInit()
@@ -41,7 +44,7 @@ namespace unvisual
         }
 
         // Quitamos los puntos en el tiempo
-        clearAllTimepoints();
+        //clearAllTimepoints();
 
         input::IM_deInit();
 
@@ -56,6 +59,7 @@ namespace unvisual
 
         // Liberamos la memoria que se usa para los gráficos básicos
         gfxExit();
+        
     }
 
 
@@ -168,9 +172,6 @@ namespace unvisual
             Timepoint* timepoint = (*timepoint_it);
             if(timepoint==t)
             {
-                unvisual::debugger->print("Eliminando timepoint: ");
-                unvisual::debugger->print(timepoint);
-                unvisual::debugger->nextLine();
                 timepoints.erase(timepoint_it);
                 break;
             }

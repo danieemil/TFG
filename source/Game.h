@@ -54,8 +54,8 @@ private:
 
     bool running;
     float dt;
-    //const float upd = 15.0f/60.0f;
-    const float upd = 0.0166;
+    const float upd = 15.0f/60.0f;
+    //const float upd = 0.0166;
 
 	Timepoint delta_time;
     Timepoint update_time;

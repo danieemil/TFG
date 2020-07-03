@@ -19,6 +19,7 @@ Intersection::Intersection(const Intersection& i)
     B = i.B;
     position = i.position;
     fixed_position = i.fixed_position;
+    overlap = i.overlap;
 }
 
 Intersection& Intersection::operator=(const Intersection& i)
@@ -28,6 +29,7 @@ Intersection& Intersection::operator=(const Intersection& i)
     B = i.B;
     position = i.position;
     fixed_position = i.fixed_position;
+    overlap = i.overlap;
 
     return *this;
 }

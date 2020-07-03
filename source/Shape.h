@@ -32,6 +32,7 @@ public:
 
     Vector2d<float> position;
     Vector2d<float> fixed_position;
+    Vector2d<float> overlap;
 
     bool intersects;
 

@@ -4,6 +4,8 @@
 using namespace std;
 using namespace unvisual::input;
 
+
+
 // Singleton
 Game* Game::p_instance = 0;
 Game* Game::Instance()
@@ -41,11 +43,6 @@ void Game::init()
 {
 
     running = true;
-
-    //Inicializamos todo
-	unvisual::init();
-	unvisual::initDebugger();
-	physics::init();
 
     // Creamos una "Ventana" para dibujos en 3D y la ubicamos en la pantalla de abajo
 	screen.setScreen(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN, N3DS_screenV::N3DS_BOTTOM);
@@ -94,9 +91,9 @@ void Game::init()
 
 		// Posibles colisiones de la entidad(Probando)
 	Vector2d<size_t> entity_size = entity_sprite->getSize();
-	Shape* entity_rect2 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x, entity_size.y/2.0f));
-	Shape* entity_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x/5.0f,entity_size.y));
-	Shape* entity_circ1 = new Circle(Vector2d<float>(entity_size.x/2.0f,entity_size.y/4.0f), entity_size.x*8.0f);
+	//Shape* entity_rect2 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x, entity_size.y/2.0f));
+	//Shape* entity_rect1 = new AABB(Vector2d<float>(0,0), Vector2d<float>(entity_size.x/5.0f,entity_size.y));
+	//Shape* entity_circ1 = new Circle(Vector2d<float>(entity_size.x/2.0f,entity_size.y/4.0f), entity_size.x*8.0f);
 	//Collider* entity_body = new Collider(entity_position, entity_circ1, CollisionFlag::enemy, CollisionType::col_static);
 	//Entity* entity = new Entity(entity_position, entity_sprite, world, entity_body);
 	//world->addEntity(entity);
@@ -110,13 +107,6 @@ void Game::init()
     unvisual::prepare2D();
 }
 
-void Game::deInit()
-{	
-	// Deinicializar todo(si no se hace, habrán memory leaks)
-	unvisual::deInit();
-	physics::deInit();
-}
-
 void Game::render()
 {
     if(world!=nullptr)
@@ -127,10 +117,19 @@ void Game::render()
 
 void Game::update()
 {
+    if(update_time.getElapsed()>upd)
+    {
+        update_time.reset();
+        if(world!=nullptr)
+        {
+            world->updateEntities();
+        }
+    }
     if(world!=nullptr)
     {
-        world->update();
+        world->updatePlayer();
     }
+    
 }
 
 void Game::updateCollisions()
@@ -177,21 +176,16 @@ void Game::loop()
 		debug->print(unvisual::getCurrentScreen()->getPosition().y);
 		debug->nextLine();
 
-
 		// Escaneamos las teclas pulsadas(Inputs de la N3DS)
 		IM_scan();
 		
 		processInput();
 
-        if(update_time.getElapsed()>upd)
-        {
-            update_time.reset();
-            update();
-        }
-
-        //interpolate();
+        update();
 
         updateCollisions();
+
+        interpolate();
 
 		unvisual::drawBegin();
 		unvisual::drawOnCurrentScreen();
@@ -200,12 +194,17 @@ void Game::loop()
 		render();
 
 		unvisual::drawEnd();
-        
 	}
 }
 
 void Game::processInput()
 {
+
+    if(aptIsHomePressed())
+    {
+        unvisual::stopClock();
+    }
+
     // Si se pulsa 'start' se sale del programa
     if (isPressed(N3DS_buttons::Key_Start))
     {
@@ -316,8 +315,6 @@ void Game::over()
 
 Game::~Game()
 {
-    deInit();
-
     if(world!=nullptr)
     {
         delete world;

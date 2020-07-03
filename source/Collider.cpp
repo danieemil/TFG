@@ -170,6 +170,20 @@ void Collider::intersectFix(Intersection* inter)
     if(inter!=nullptr && inter->intersects)
     {
         position = inter->fixed_position;
+        
+        // Si se choca, su velocidad se reduce en función de la intersección producida.
+        /*
+        Vector2d<float> o = inter->overlap;
+        o.Normalize();
+        o = o * velocity.Length();
+        Vector2d<float> r_vel = velocity + o;
+
+        if(sign(r_vel.x)!=sign(velocity.x)) velocity.x = 0.0f;
+        else velocity.x = r_vel.x;
+
+        if(sign(r_vel.y)!=sign(velocity.y)) velocity.y = 0.0f;
+        else velocity.y = r_vel.y;
+        */
     }
 }
 

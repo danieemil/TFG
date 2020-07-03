@@ -1,17 +1,23 @@
 #include "Game.h"
 
 
-
 int main(int argc, char* argv[])
 {
+
+	//Inicializamos todo
+	unvisual::init();
+	unvisual::initDebugger();
+	physics::init();
 
 	Game* game = Game::Instance();
 	game->loop();
 	game->over();
 
+	// Deinicializar todo(si no se hace, habrán memory leaks)
+	unvisual::deInit();
+	physics::deInit();
+
 }
-
-
 
 
 

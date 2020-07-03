@@ -65,7 +65,6 @@ void Character::update()
     {
         velocity.y = 0.0f;
     }
-
     
 }
 

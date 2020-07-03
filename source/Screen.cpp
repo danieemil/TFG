@@ -107,5 +107,12 @@ const utilities::Vector2d<float>* Screen::getTargetPosition() const
 
 Screen::~Screen()
 {
-    C3D_RenderTargetDelete(renderer);
+    if(renderer!=nullptr)
+    {
+        C3D_RenderTargetDelete(renderer);
+        renderer = nullptr;
+    }
+
+    
+    
 }

@@ -149,12 +149,7 @@ Vector2d<float> World::scroll2D()
                 sc_aux.y = sc_aux.y + 0.1f;
             }
 
-            
-
             sc_pos = Vector2d<float>(sc_aux.x, sc_aux.y);
-
-
-
             sc->setPosition(sc_pos);
             view_pos = sc_pos;
         }
@@ -346,18 +341,12 @@ World::~World()
 
         if(e!=nullptr)
         {
-            unvisual::debugger->print("Borrando Entidad: ");
-            unvisual::debugger->print(e);
-            unvisual::debugger->nextLine();
             delete e;
         }
     }
 
     if(player!=nullptr)
     {
-        unvisual::debugger->print("Borrando Player: ");
-        unvisual::debugger->print(player);
-        unvisual::debugger->nextLine();
         delete player;
     }
 }

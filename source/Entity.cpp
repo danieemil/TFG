@@ -63,7 +63,6 @@ void Entity::update()
         body->setVelocity(velocity);
     }
     render_position = position;
-
     
 }
 
@@ -72,14 +71,15 @@ void Entity::updateFromCollider()
     if(body!=nullptr)
     {
         render_position = body->getPosition();
-        //render_position = position;
+        position = render_position;
     }
 }
 
 void Entity::interpolate(float rp)
 {
     // Interpolación
-    render_position = pre_position + (position - pre_position) * rp;
+    //render_position = pre_position + (position - pre_position) * rp;
+    render_position = body->getPosition();
 }
 
 
