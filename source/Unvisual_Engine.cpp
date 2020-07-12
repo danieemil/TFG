@@ -5,7 +5,10 @@ using namespace utilities;
 
 namespace unvisual
 {
-
+    namespace
+    {
+        aptHookCookie* hc = nullptr;
+    };
 
     ////////////////////////////
     //  Gestión de librerías  //
@@ -30,18 +33,25 @@ namespace unvisual
 
         input::IM_init();
 
-        aptSetHomeAllowed(false);
+        // Inicializar el monitor de estados del APT
+        aptSetHomeAllowed(true);
+        aptSetSleepAllowed(true);
+
+        if(hc==nullptr)
+        {
+            hc = new aptHookCookie();
+            hc->next = nullptr;
+            hc->callback = aptState;
+            hc->param = nullptr;
+        }
         
+        aptHook(hc,hc->callback, nullptr);
     }
 
     void deInit()
     {
         // Apagamos el depurador
-        if(debugger!=nullptr)
-        {
-            delete debugger;
-            debugger = nullptr;
-        }
+        deInitDebugger();
 
         // Quitamos los puntos en el tiempo
         //clearAllTimepoints();
@@ -59,9 +69,32 @@ namespace unvisual
 
         // Liberamos la memoria que se usa para los gráficos básicos
         gfxExit();
+
+        // Liberar el monitor de estados del APT
+        if(hc!=nullptr)
+        {
+            aptUnhook(hc);
+            delete hc;
+            hc = nullptr;
+        }
         
     }
 
+
+    void aptState(APT_HookType hook, void* param)
+    {
+        if(debugger!=nullptr)
+        {
+            if(hook == APTHOOK_ONSUSPEND || hook == APTHOOK_ONSLEEP)
+            {
+                stopClock();
+            }
+            else if (hook == APTHOOK_ONRESTORE || hook == APTHOOK_ONWAKEUP)
+            {
+                resumeClock();
+            }
+        }
+    }
 
 
     ///////////////////////////
@@ -69,7 +102,19 @@ namespace unvisual
     ///////////////////////////
     void initDebugger()
     {
-        debugger = new Debugger(N3DS_screenV::N3DS_TOP);
+        if(debugger==nullptr)
+        {
+            debugger = new Debugger(N3DS_screenV::N3DS_TOP);
+        }
+    }
+
+    void deInitDebugger()
+    {
+        if(debugger!=nullptr)
+        {
+            delete debugger;
+            debugger = nullptr;
+        }
     }
 
     Debugger* debugger = nullptr;

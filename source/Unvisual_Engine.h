@@ -14,9 +14,12 @@ namespace unvisual
     void init();
     void deInit();
 
+    // Monitor de APT STATE
+    void aptState(APT_HookType hook, void* param);
 
     // Consola de depuración
     void initDebugger();
+    void deInitDebugger();
     extern Debugger* debugger;
 
 

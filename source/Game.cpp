@@ -162,16 +162,24 @@ void Game::loop()
 		debug->print("Time: ");
 		debug->print(std::to_string(svcGetSystemTick()));
 		debug->nextLine();
+        debug->setColumn(1);
+		debug->setRow(11);
 		debug->print("Max :  ");
 		debug->print("18446744073709551615");
 		debug->nextLine();
 		debug->nextLine();
+        debug->setColumn(1);
+		debug->setRow(13);
 		debug->print("Delta Time:");
 		debug->print(dt);
 		debug->nextLine();
+        debug->setColumn(1);
+		debug->setRow(14);
         debug->print("Screen x:");
 		debug->print(unvisual::getCurrentScreen()->getPosition().x);
 		debug->nextLine();
+        debug->setColumn(1);
+		debug->setRow(15);
         debug->print("Screen y:");
 		debug->print(unvisual::getCurrentScreen()->getPosition().y);
 		debug->nextLine();
@@ -200,9 +208,9 @@ void Game::loop()
 void Game::processInput()
 {
 
-    if(aptIsHomePressed())
+    if(aptIsHomePressed() || true)
     {
-        unvisual::stopClock();
+        unvisual::resumeClock();
     }
 
     // Si se pulsa 'start' se sale del programa
