@@ -8,21 +8,48 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Weapon::Weapon(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, Combat_Character* cc)
-: Entity(pos, spr, w, c), character(cc)
+Weapon::Weapon(float t_attack, const Vector2d<float>& rel_attack, const Vector2d<float>& rel_pos, Sprite* spr, World* w, Collider* c, Combat_Character* cc)
+: Entity(rel_pos, spr, w, c), character(cc), rel_position(rel_pos), attacking(false), attack_time(t_attack), orig_rel_position(rel_position), attack_rel_position(rel_attack)
 {
     id = Class_Id::e_weapon;
+
+    position = rel_position;
+
+    if(character!=nullptr)
+    {
+        position += character->getPosition();
+        character->addWeapon(this);
+    }
+
 }
 
 Weapon::Weapon(const Weapon& w)
-: Entity(w), character(w.character)
+: Entity(w), character(w.character), rel_position(w.rel_position), attacking(false), attack_time(w.attack_time), orig_rel_position(w.orig_rel_position), attack_rel_position(w.attack_rel_position)
 {
+    position = rel_position;
 
+    if(character!=nullptr)
+    {
+        position += character->getPosition();
+        character->addWeapon(this);
+    }
 }
 
 Weapon& Weapon::operator= (const Weapon& w)
 {
     this->Entity::operator=(w);
+    character = w.character;
+
+    if(character!=nullptr)
+    {
+        character->addWeapon(this);
+    }
+
+    attacking = false;
+    attack_time = w.attack_time;
+    rel_position = w.rel_position;
+    orig_rel_position = w.orig_rel_position;
+    attack_rel_position = w.attack_rel_position;
 
     return *this;
 }
@@ -38,7 +65,24 @@ void Weapon::render(const Vector2d<float>& view_pos)
 
 void Weapon::update()
 {
-    Entity::update();   
+    rel_position = orig_rel_position;
+
+    if(attacking)
+    {
+        rel_position += attack_rel_position;
+
+        if (time_attacking.getElapsed() > attack_time)
+        {
+            attacking = false;
+        }
+    }
+
+    if (character!=nullptr)
+    {
+        position = character->getPosition() + rel_position;
+    }
+
+    Entity::update();
 }
 
 void Weapon::updateFromCollider()
@@ -48,7 +92,21 @@ void Weapon::updateFromCollider()
 
 void Weapon::interpolate(float rp)
 {
-    Entity::interpolate(rp);
+    render_position = rel_position;
+
+    if(character!=nullptr)
+    {
+        render_position += character->getRenderPosition();
+    }
+}
+
+void Weapon::attack()
+{
+    if(!attacking)
+    {
+        attacking = true;
+        time_attacking.reset();
+    }
 }
 
 
@@ -132,6 +190,11 @@ const Vector2d<float>& Weapon::getRenderPosition() const
 Combat_Character* Weapon::getCharacter() const
 {
     return character;
+}
+
+const Vector2d<float>& Weapon::getRelativePosition() const
+{
+    return rel_position;
 }
 
 const Class_Id& Weapon::getClassId() const

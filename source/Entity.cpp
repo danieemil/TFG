@@ -54,15 +54,11 @@ void Entity::render(const Vector2d<float>& view_pos)
 
 void Entity::update()
 {
-    Game* g = Game::Instance();
-
     pre_position = position;
     if(body!=nullptr)
     {
-        position = body->getPosition();
         body->setVelocity(velocity);
     }
-    render_position = position;
     
 }
 
@@ -70,16 +66,22 @@ void Entity::updateFromCollider()
 {
     if(body!=nullptr)
     {
-        render_position = body->getPosition();
-        position = render_position;
+        position = body->getPosition();
     }
 }
 
 void Entity::interpolate(float rp)
 {
-    // Interpolación
-    //render_position = pre_position + (position - pre_position) * rp;
-    render_position = body->getPosition();
+    
+    if(body!=nullptr)
+    {
+        render_position = body->getPosition();
+    }else
+    {
+        // Interpolación
+        render_position = pre_position + (position - pre_position) * rp;
+    }
+    
 }
 
 

@@ -10,7 +10,7 @@ class Weapon : public Entity
 
 public:
     // Constructores
-    Weapon(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+    Weapon(float t_attack, const Vector2d<float>& rel_attack, const Vector2d<float>& rel_pos = Vector2d<float>(), Sprite* spr = nullptr,
             World* w = nullptr, Collider* c = nullptr, Combat_Character* cc = nullptr);
     Weapon(const Weapon& w);
 
@@ -23,6 +23,7 @@ public:
     virtual void updateFromCollider();
     virtual void interpolate(float rp = 0.0f);
         //Weapon
+    virtual void attack();
 
     // Setters
         //Entity
@@ -46,12 +47,20 @@ public:
     virtual const Class_Id& getClassId() const;
         //Weapon
     virtual Combat_Character* getCharacter() const;
+    virtual const Vector2d<float>& getRelativePosition() const;
     // Destructor
     ~Weapon();
 
 protected:
 
     Combat_Character* character;
+    Vector2d<float> rel_position;
+    Vector2d<float> orig_rel_position;
+    Vector2d<float> attack_rel_position;
+
+    bool attacking;
+    float attack_time;
+    Timepoint time_attacking;
 
 private:
 

@@ -46,7 +46,7 @@ void Game::init()
 
     // Creamos una "Ventana" para dibujos en 3D y la ubicamos en la pantalla de abajo
 	screen.setScreen(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN, N3DS_screenV::N3DS_BOTTOM);
-	screen.setBackground(255,0,0,255);
+	screen.setBackground(u8(255),u8(255),u8(255),u8(255));
 	unvisual::setCurrentScreen(&screen);
 
 
@@ -78,6 +78,11 @@ void Game::init()
 	Vector2d<float> player_decel = Vector2d<float>(10.0f,10.0f);
 	Player* player = new Player(player_position, player_sprite, world, player_body, player_max_vel, player_accel, player_decel);
 	world->setPlayer(player);
+
+        // Arma del jugador
+        Sprite* weapon_sprite = manager->createSprite(1);
+        Weapon* player_weapon = new Weapon(1.0f, Vector2d<float>(0.0f, -10.0f), Vector2d<float>(), weapon_sprite, nullptr, nullptr, player);
+        player->equipWeapon(0);
 
     // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
     screen.setTargetPosition(&player->getRenderPosition());
@@ -158,31 +163,32 @@ void Game::loop()
         Debugger* debug = unvisual::debugger;
 
 		debug->setColumn(1);
-		debug->setRow(10);
+		debug->setRow(14);
 		debug->print("Time: ");
 		debug->print(std::to_string(svcGetSystemTick()));
 		debug->nextLine();
         debug->setColumn(1);
-		debug->setRow(11);
+		debug->setRow(15);
 		debug->print("Max :  ");
 		debug->print("18446744073709551615");
 		debug->nextLine();
 		debug->nextLine();
         debug->setColumn(1);
-		debug->setRow(13);
+		debug->setRow(17);
 		debug->print("Delta Time:");
 		debug->print(dt);
 		debug->nextLine();
         debug->setColumn(1);
-		debug->setRow(14);
+		debug->setRow(18);
         debug->print("Screen x:");
 		debug->print(unvisual::getCurrentScreen()->getPosition().x);
 		debug->nextLine();
         debug->setColumn(1);
-		debug->setRow(15);
+		debug->setRow(19);
         debug->print("Screen y:");
 		debug->print(unvisual::getCurrentScreen()->getPosition().y);
 		debug->nextLine();
+
 
 		// Escaneamos las teclas pulsadas(Inputs de la N3DS)
 		IM_scan();

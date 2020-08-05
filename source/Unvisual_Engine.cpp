@@ -34,6 +34,11 @@ namespace unvisual
         input::IM_init();
 
         // Inicializar el monitor de estados del APT
+        initAPT();
+    }
+
+    void initAPT()
+    {
         aptSetHomeAllowed(true);
         aptSetSleepAllowed(true);
 
@@ -71,28 +76,30 @@ namespace unvisual
         gfxExit();
 
         // Liberar el monitor de estados del APT
+        deInitAPT();
+        
+    }
+
+    void deInitAPT()
+    {
         if(hc!=nullptr)
         {
             aptUnhook(hc);
             delete hc;
             hc = nullptr;
         }
-        
     }
 
 
     void aptState(APT_HookType hook, void* param)
     {
-        if(debugger!=nullptr)
+        if(hook == APTHOOK_ONSUSPEND || hook == APTHOOK_ONSLEEP)
         {
-            if(hook == APTHOOK_ONSUSPEND || hook == APTHOOK_ONSLEEP)
-            {
-                stopClock();
-            }
-            else if (hook == APTHOOK_ONRESTORE || hook == APTHOOK_ONWAKEUP)
-            {
-                resumeClock();
-            }
+            stopClock();
+        }
+        else if (hook == APTHOOK_ONRESTORE || hook == APTHOOK_ONWAKEUP)
+        {
+            resumeClock();
         }
     }
 

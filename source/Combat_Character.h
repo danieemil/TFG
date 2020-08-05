@@ -27,6 +27,7 @@ public:
     virtual void interpolate(float rp = 0.0f);
         //Character
         //Combat_Character
+    virtual void attack();
 
     // Setters
         //Entity

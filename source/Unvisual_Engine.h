@@ -12,7 +12,9 @@ namespace unvisual
 {
     // Gestión de librerías y dependencias
     void init();
+    void initAPT();
     void deInit();
+    void deInitAPT();
 
     // Monitor de APT STATE
     void aptState(APT_HookType hook, void* param);

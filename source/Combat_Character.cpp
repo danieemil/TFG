@@ -56,11 +56,27 @@ void Combat_Character::update()
 void Combat_Character::updateFromCollider()
 {
     Character::updateFromCollider();
+    if(equipped!=nullptr)
+    {
+        equipped->updateFromCollider();
+    }
 }
 
 void Combat_Character::interpolate(float rp)
 {
     Character::interpolate(rp);
+    if(equipped!=nullptr)
+    {
+        equipped->interpolate(rp);
+    }
+}
+
+void Combat_Character::attack()
+{
+    if(equipped!=nullptr)
+    {
+        equipped->attack();
+    }
 }
 
 
@@ -97,6 +113,13 @@ void Combat_Character::addWeapon(Weapon* wp)
 {
     if(wp!=nullptr)
     {
+        for (auto w_eapon : weapons)
+        {
+            if(w_eapon==wp)
+            {
+                return;
+            }
+        }
         weapons.emplace_back(wp);
     }
 }

@@ -93,6 +93,12 @@ void Player::processInput()
         heading.x += -1.0f;
     }
 
+    if( input::isPressed(input::N3DS_buttons::Key_A))
+    {
+        attack();
+    }
+
+
     acceleration = max_acceleration * heading;
 
     // Si no se está moviendo en un eje, le aplicamos fricción a ese eje
@@ -119,6 +125,16 @@ void Player::processInput()
     unvisual::debugger->nextLine();
     unvisual::debugger->print("Vel_Y = " + std::to_string(velocity.y));
     unvisual::debugger->nextLine();
+    if(equipped!=nullptr)
+    {
+        unvisual::debugger->print("Weapon position:");
+        unvisual::debugger->nextLine();
+	    unvisual::debugger->print("X = " + std::to_string(equipped->getPosition().x));
+	    unvisual::debugger->nextLine();
+        unvisual::debugger->print("Y = " + std::to_string(equipped->getPosition().y));
+        unvisual::debugger->nextLine();
+    }
+	
 
 }
 

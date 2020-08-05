@@ -36,7 +36,7 @@ public:
     C3D_RenderTarget* getRenderer() const;
     int getWidth() const;
     int getHeight() const;
-    int getBackground() const;
+    u32 getBackground() const;
     const utilities::Vector2d<float>& getPosition() const;
     const utilities::Vector2d<float>* getTargetPosition() const;
 
@@ -49,7 +49,7 @@ private:
     utilities::Vector2d<float> position;
     const utilities::Vector2d<float>* target_position;
     C3D_RenderTarget* renderer;
-    int background_color;
+    u32 background_color;
 
 };
 

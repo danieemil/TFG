@@ -85,7 +85,7 @@ int Screen::getHeight() const
     return height;
 }
 
-int Screen::getBackground() const
+u32 Screen::getBackground() const
 {
     return background_color;
 }
