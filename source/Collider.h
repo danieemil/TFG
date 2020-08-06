@@ -51,9 +51,6 @@ public:
     Collider& operator= (const Collider& c);
 
     // Métodos
-    void addShape(Shape* s);
-    void delShape(Shape* s);
-
     bool intersectBounds(Collider* c);
     Intersection* intersectShapes(Collider* c);
     void intersectFix(Intersection* inter);
@@ -65,6 +62,7 @@ public:
     void update(float dt);
 
     // Setters
+    void setShape(Shape* s);
     void setPosition(const Vector2d<float>& pos);
     void setFlags(const CollisionFlag& f);
     void setType(const CollisionType& t);
@@ -76,6 +74,7 @@ public:
     void setVelocity(const Vector2d<float>& vel);
 
     // Getters
+    Shape* getShape() const;
     const Vector2d<float>& getPosition() const;
     const Vector2d<float>& getPreviousPosition() const;
     const Bounding_Box& getBounds() const;
@@ -92,7 +91,7 @@ public:
 
 private:
 
-    std::vector<Shape*> shapes;
+    Shape* shape;
     Vector2d<float> position;
     Vector2d<float> previous_position;
     Bounding_Box bounds;

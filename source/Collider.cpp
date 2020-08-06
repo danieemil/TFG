@@ -9,12 +9,10 @@ using namespace physics;
 //=========================================
 
 Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f, const CollisionType& t, void* c, int i, float a, const Vector2d<float>& rot_cent, const Vector2d<float>& vel)
-: position(pos), previous_position(pos), flags(f), type(t), creator(c), index(i), angle(a), rotation_center(rot_cent), velocity(vel)
+: shape(nullptr), position(pos), previous_position(pos), flags(f), type(t), creator(c), index(i), angle(a), rotation_center(rot_cent), velocity(vel)
 {
-    if(s!=nullptr)
-    {
-        addShape(s);
-    }
+
+    setShape(s);
 
     if(flags != CollisionFlag::none)
     {
@@ -30,22 +28,12 @@ Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f,
     {
         addDynamic(this);
     }
-    
-
 }
 
 Collider::Collider(const Collider& c)
-: position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr), index(-1), angle(c.angle), rotation_center(c.rotation_center), velocity(c.velocity)
+: shape(nullptr), position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr), index(-1), angle(c.angle), rotation_center(c.rotation_center), velocity(c.velocity)
 {
-    for (auto it = c.shapes.begin(); it!=c.shapes.end(); it++)
-    {
-        Shape* s = (*it);
-
-        if(s!=nullptr)
-        {
-            addShape(s);
-        }
-    }
+    setShape(c.shape);
 
     if(flags != CollisionFlag::none)
     {
@@ -66,15 +54,7 @@ Collider::Collider(const Collider& c)
 
 Collider& Collider::operator= (const Collider& c)
 {
-    for (auto it = c.shapes.begin(); it!=c.shapes.end(); it++)
-    {
-        Shape* s = (*it);
-
-        if(s!=nullptr)
-        {
-            addShape(s);
-        }
-    }
+    setShape(c.shape);
 
     position = c.position;
     previous_position = c.previous_position;
@@ -96,40 +76,6 @@ Collider& Collider::operator= (const Collider& c)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Collider::addShape(Shape* s)
-{
-    if(s!=nullptr)
-    {
-        for(auto it = shapes.begin(); it!=shapes.end(); it++)
-        {
-            if((*it)==s)
-            {
-                return;
-            }
-        }
-        shapes.push_back(s);
-        s->setCollider(this);
-        calculateValues();
-    }
-}
-
-void Collider::delShape(Shape* s)
-{
-    if(s!=nullptr)
-    {
-        for (auto it = shapes.begin(); it!=shapes.end(); it++)
-        {
-            if((*it)==s)
-            {
-                delete s;
-                shapes.erase(it);
-                calculateValues();
-                return;
-            }
-        }
-    }
-}
-
 // Detecta si los bounds intersectan con los de "c"
 bool Collider::intersectBounds(Collider* c)
 {
@@ -145,20 +91,14 @@ Intersection* Collider::intersectShapes(Collider* c)
 {
     if (c!=nullptr)
     {
-        for (auto it = shapes.begin(); it!=shapes.end(); it++)
+        Shape* s = c->getShape();
+        if(shape!=nullptr && s!=nullptr)
         {
-            Shape* sA = (*it);
+            Intersection* inter = shape->intersect(s);
 
-            for (auto it2 = c->shapes.begin(); it2!=c->shapes.end(); it2++)
+            if(inter!=nullptr)
             {
-                Shape* sB = (*it2);
-
-                Intersection* inter = sA->intersect(sB);
-
-                if(inter!=nullptr)
-                {
-                    return inter;
-                }
+                return inter;
             }
         }
     }
@@ -195,7 +135,7 @@ Intersection* Collider::intersectSegment(const Vector2d<float>& a, const Vector2
         {
             Intersection* i = nullptr;
 
-            for (auto &&shape : shapes)
+            if(shape!=nullptr)
             {
                 i = shape->intersect(a, b);
 
@@ -226,6 +166,21 @@ void Collider::update(float dt)
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
+
+void Collider::setShape(Shape* s)
+{
+    if(shape!=nullptr)
+    {
+        delete shape;
+    }
+    shape = s;
+
+    if(shape!=nullptr)
+    {
+        shape->setCollider(this);
+        calculateValues();
+    }
+}
 
 void Collider::setPosition(const Vector2d<float>& pos)
 {
@@ -290,24 +245,18 @@ void Collider::setIndex(int i)
 void Collider::setGlobalRotation(float a)
 {
     angle = a;
-    for (auto &&shape : shapes)
+    if (shape!=nullptr)
     {
-        if (shape!=nullptr)
-        {
-            shape->setGlobalRotation();
-        }
+        shape->setGlobalRotation();
     }
     calculateValues();
 }
 
 void Collider::setLocalsRotation(float a)
 {
-    for (auto &&shape : shapes)
+    if (shape!=nullptr)
     {
-        if (shape!=nullptr)
-        {
-            shape->setLocalRotation(a);
-        }
+        shape->setLocalRotation(a);
     }
     calculateValues();
 }
@@ -326,6 +275,11 @@ void Collider::setVelocity(const Vector2d<float>& vel)
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
+
+Shape* Collider::getShape() const
+{
+    return shape;
+}
 
 const Vector2d<float>& Collider::getPosition() const
 {
@@ -385,16 +339,10 @@ const Vector2d<float>& Collider::getVelocity() const
 Collider::~Collider()
 {
 
-    auto it = shapes.begin();
-
-    while (it!=shapes.end())
+    if(shape!=nullptr)
     {
-        Shape* s = (*it);
-        if(s!=nullptr)
-        {
-            delete s;
-        }
-        shapes.erase(it);
+        delete shape;
+        shape = nullptr;
     }
 
     if(flags != CollisionFlag::none)
@@ -417,38 +365,12 @@ Collider::~Collider()
 //=               PRIVATE   	    	  =
 //=========================================
 
-// Recalcula los datos de la bounding box que contiene a todas las figuras
+// Recalcula los datos de la bounding box
 void Collider::calculateValues()
 {
-    Vector2d<float> min;    // La menor X y la menor Y de todas las figuras
-    Vector2d<float> max;    // La mayor X y la mayor Y de todas las figuras
-    bool first = true;
-
-    for(auto it = shapes.begin(); it!=shapes.end(); it++)
+    if(shape!=nullptr)
     {
-        Shape* s = (*it);
-        Vector2d<float> smin = s->getMin() + position;
-        Vector2d<float> smax = s->getMax() + position;
-
-        if(s!=nullptr)
-        {
-            if(first)
-            {
-                min = smin;
-                max = smax;
-                first = false;
-            }else
-            {
-                if(min.x > smin.x) min.x = smin.x;
-                if(min.y > smin.y) min.y = smin.y;
-                if(max.x < smax.x) max.x = smax.x;
-                if(max.y < smax.y) max.y = smax.y;
-            }
-        }
-    }
-    if(!first)
-    {
-        bounds = Bounding_Box(min, max);
+        bounds = Bounding_Box(shape->getMin(), shape->getMax());
     }
 
 }
