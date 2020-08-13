@@ -67,6 +67,7 @@ public:
 
     Intersection* intersectSegment(const Vector2d<float>& a, const Vector2d<float>& b);
 
+
     bool isStatic() const;
     bool isColliding() const;
 
