@@ -23,8 +23,9 @@ public:
         //Entity
     virtual void render(const Vector2d<float>& view_pos = Vector2d<float>()) override;
     virtual void update() override;
-    virtual void updateFromCollider();
-    virtual void interpolate(float rp = 0.0f);
+    virtual void updateFromCollider() override;
+    virtual void interpolate(float rp = 0.0f) override;
+    virtual void collision(void * ent) override;
         //Character
         //Combat_Character
     virtual void attack();
@@ -39,6 +40,7 @@ public:
         //Character
         //Combat_Character
     virtual void addWeapon(Weapon* wp);
+    virtual void removeWeapon(Weapon* wp);
     virtual void equipWeapon(size_t index);
 
     // Getters

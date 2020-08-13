@@ -36,6 +36,8 @@ public:
     virtual void updateFromCollider();
     virtual void interpolate(float rp = 0.0f);
 
+    virtual void collision(void * ent);
+
     // Setters
     virtual void setSprite(Sprite* spr);
     virtual void setPosition(const Vector2d<float>& pos);

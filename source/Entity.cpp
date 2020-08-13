@@ -3,6 +3,7 @@
 
 #include "Game.h"
 
+using std::placeholders::_1;
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
@@ -14,6 +15,7 @@ Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
     if(c!=nullptr)
     {
         c->setCreator(this);
+        c->setCallback(std::bind(&Entity::collision, this, _1));
     }
 }
 
@@ -84,6 +86,18 @@ void Entity::interpolate(float rp)
     
 }
 
+void Entity::collision(void * ent)
+{
+    if(ent!=nullptr)
+    {
+        Entity* e = static_cast<Entity*>(ent);
+        if(e->getClassId()==Class_Id::e_none)
+        {
+            return;
+        }
+    }
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -126,6 +140,7 @@ void Entity::setBody(Collider* c)
     if(body!=nullptr)
     {
         body->setCreator(this);
+        body->setCallback(std::bind(&Entity::collision, this, _1));
     }
 }
 

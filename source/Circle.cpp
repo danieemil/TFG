@@ -40,34 +40,40 @@ Circle& Circle::operator= (const Circle& c)
 
 Intersection* Circle::intersect(Shape* s)
 {
-    intersection.intersects = false;
     intersection.A = collider;
     intersection.B = s->getCollider();
+
+    Intersection* i = nullptr;
 
     if(s!=nullptr)
     {
         if(s->getType()==Shape_Type::AABB)
         {
-            return intersect(static_cast<AABB*>(s));
+            i = intersect(static_cast<AABB*>(s));
         }
         if(s->getType()==Shape_Type::Circle)
         {
-            return intersect(static_cast<Circle*>(s));
+            i = intersect(static_cast<Circle*>(s));
         }
         if (s->getType()==Shape_Type::Convex)
         {
-            return intersect(static_cast<Convex*>(s));
+            i = intersect(static_cast<Convex*>(s));
         }
-        
     }
-    return nullptr;
+
+    if(i!=nullptr)
+    {
+        intersection.intersects = true;
+        s->setIntersected(true);
+    }
+
+    return i;
 }
 
 Intersection* Circle::intersect(const Vector2d<float>& a, const Vector2d<float>& b)
 {
     if(collider!=nullptr)
     {
-        intersection.intersects = false;
         intersection.A = collider;
 
         Vector2d<float> position = collider->getPosition();
@@ -83,13 +89,11 @@ Intersection* Circle::intersect(const Vector2d<float>& a, const Vector2d<float>&
 
         if(dA < radius)
         {
-            intersection.intersects = true;
             intersection.position = a;
             return &intersection;
         }
         else if (dB < radius)
         {
-            intersection.intersects = true;
             intersection.position = b;
             return &intersection;
         }
@@ -114,7 +118,6 @@ Intersection* Circle::intersect(const Vector2d<float>& a, const Vector2d<float>&
 
             if(d < radius)
             {
-                intersection.intersects = true;
                 intersection.position = p;
                 return &intersection;
             }
@@ -182,7 +185,6 @@ Intersection* Circle::intersect(AABB* ab)
                     }
                     
                     intersection.fixed_position = center_fixed - center;
-                    intersection.intersects = true;
                     intersection.A = collider;
                     intersection.B = ab_collider;
                     intersection.position = position;
@@ -230,7 +232,6 @@ Intersection* Circle::intersect(Circle* c)
                     Vector2d<float> fixPos = (c_center + (norm*radius_sum)) - center;
 
                     intersection.fixed_position = fixPos;
-                    intersection.intersects = true;
                     intersection.A = collider;
                     intersection.B = c_collider;
                     intersection.position = position;
@@ -275,6 +276,22 @@ Intersection* Circle::intersect(Convex* c)
     return nullptr;
 }
 
+void Circle::update(float dt)
+{
+    Shape::update(dt);
+}
+
+void Circle::render(const Vector2d<float>& view_pos)
+{
+    Shape::render(view_pos);
+}
+
+bool Circle::hasIntersected() const
+{
+    return Shape::hasIntersected();
+}
+
+
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
@@ -305,6 +322,11 @@ void Circle::setGlobalRotation()
 void Circle::setLocalRotation(float a)
 {
     Shape::setLocalRotation(a);
+}
+
+void Circle::setIntersected(bool i)
+{
+    Shape::setIntersected(i);
 }
 
 //=========================================

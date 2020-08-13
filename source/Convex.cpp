@@ -52,36 +52,43 @@ Convex& Convex::operator= (const Convex& c)
 
 Intersection* Convex::intersect(Shape* s)
 {
-    intersection.intersects = false;
     intersection.A = collider;
     intersection.B = s->getCollider();
-    
+
+    Intersection* i = nullptr;
+
     if(s!=nullptr)
     {
         if(s->getType()==Shape_Type::AABB)
         {
-            return intersect(static_cast<AABB*>(s));
+            i = intersect(static_cast<AABB*>(s));
         }
         if(s->getType()==Shape_Type::Circle)
         {
-            return intersect(static_cast<Circle*>(s));
+            i = intersect(static_cast<Circle*>(s));
         }
         if (s->getType()==Shape_Type::Convex)
         {
-            return intersect(static_cast<Convex*>(s));
+            i = intersect(static_cast<Convex*>(s));
         }
     }
-    return nullptr;
+
+    if(i!=nullptr)
+    {
+        intersection.intersects = true;
+        s->setIntersected(true);
+    }
+
+    return i;
 }
 
 Intersection* Convex::intersect(const Vector2d<float>& a, const Vector2d<float>& b)
 {
     if(collider!=nullptr)
     {
-        intersection.intersects = false;
         intersection.A = collider;
 
-        bool inters;
+        bool inters, intersects = false;
         int intersections = 0;
 
         Vector2d<float> pos = b;
@@ -101,7 +108,7 @@ Intersection* Convex::intersect(const Vector2d<float>& a, const Vector2d<float>&
             if(inters)
             {
                 intersections++;
-                intersection.intersects = true;
+                intersects = true;
                 float dif = (p - a).Length();
                 if(dif < dist)
                 {
@@ -116,7 +123,7 @@ Intersection* Convex::intersect(const Vector2d<float>& a, const Vector2d<float>&
             }
         }
 
-        if(intersection.intersects)
+        if(intersects)
         {
             return &intersection;
         }
@@ -182,7 +189,6 @@ Intersection* Convex::intersect(AABB* ab)
                     Vector2d<float> fix_pos = center_pos + (intersection.overlap) - center;
 
                     intersection.fixed_position = fix_pos;
-                    intersection.intersects = true;
                     intersection.position = pos;
                     intersection.A = collider;
                     intersection.B = ab_collider;
@@ -297,7 +303,6 @@ Intersection* Convex::intersect(Circle* c)
 
 
                     intersection.fixed_position = fix_pos;
-                    intersection.intersects = true;
                     intersection.position = pos;
                     intersection.A = collider;
                     intersection.B = c_collider;
@@ -378,7 +383,6 @@ Intersection* Convex::intersect(Convex* c)
 
 
                     intersection.fixed_position = fix_pos;
-                    intersection.intersects = true;
                     intersection.position = pos;
                     intersection.A = collider;
                     intersection.B = c_collider;
@@ -389,6 +393,21 @@ Intersection* Convex::intersect(Convex* c)
         }
     }
     return nullptr;
+}
+
+void Convex::update(float dt)
+{
+    Shape::update(dt);
+}
+
+void Convex::render(const Vector2d<float>& view_pos)
+{
+    Shape::render(view_pos);
+}
+
+bool Convex::hasIntersected() const
+{
+    return Shape::hasIntersected();
 }
 
 
@@ -411,6 +430,11 @@ void Convex::setLocalRotation(float a)
     angle = a;
     calculateRotation();
 
+}
+
+void Convex::setIntersected(bool i)
+{
+    Shape::setIntersected(i);
 }
 
 

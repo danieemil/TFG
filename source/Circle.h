@@ -27,10 +27,15 @@ public:
     Intersection* intersect(Circle* c);
     Intersection* intersect(Convex* c);
 
+    void update(float dt);
+    void render(const Vector2d<float>& view_pos = Vector2d<float>()) override;
+    bool hasIntersected() const;
+
     // Setters
     void setCollider(Collider* pos) override;
     void setGlobalRotation() override;
     void setLocalRotation(float a) override;
+    void setIntersected(bool i) override;
 
     // Getters
     Collider* getCollider() const override;

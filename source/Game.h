@@ -20,6 +20,7 @@ public:
     void loop();
     void processInput();
     bool isRunning();
+    void stopRunning();
 
     // Setters
     void setWorldEntity(Entity* e);

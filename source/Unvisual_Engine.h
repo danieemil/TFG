@@ -26,11 +26,13 @@ namespace unvisual
 
 
     // Renderizado
-
     void drawBegin();
     void drawOnCurrentScreen();
     void prepare2D();
     void drawEnd();
+
+    void drawRectangle(const utilities::Vector2d<float>& pos, float depth, const utilities::Vector2d<float>& dimensions, u8 r, u8 g, u8 b, u8 a);
+    void drawCircle(const utilities::Vector2d<float>& pos, float depth, float radius, u8 r, u8 g, u8 b, u8 a);
 
     void setCurrentScreen(Screen* sc);
     Screen* getCurrentScreen();

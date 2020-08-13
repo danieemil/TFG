@@ -8,15 +8,15 @@ using namespace physics;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f, const CollisionType& t, void* c, int i, float a, const Vector2d<float>& rot_cent, const Vector2d<float>& vel)
-: position(pos), previous_position(pos), flags(f), type(t), creator(c), index(i), angle(a), rotation_center(rot_cent), velocity(vel)
+Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& ft, const CollisionFlag& fi, const CollisionType& t, void* c, Callback cb, int i, float a, const Vector2d<float>& rot_cent, const Vector2d<float>& vel, bool act)
+: position(pos), previous_position(pos), type_flags(ft), interested_flags(fi), type(t), creator(c), callback(cb), index(i), angle(a), rotation_center(rot_cent), velocity(vel), active(act)
 {
     if(s!=nullptr)
     {
         addShape(s);
     }
 
-    if(flags != CollisionFlag::none)
+    if((type_flags != CollisionFlag::none)||(interested_flags != CollisionFlag::none))
     {
         addCollider(this);
     }
@@ -30,12 +30,11 @@ Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& f,
     {
         addDynamic(this);
     }
-    
 
 }
 
 Collider::Collider(const Collider& c)
-: position(c.position), previous_position(c.previous_position), bounds(c.bounds), flags(c.flags), creator(nullptr), index(-1), angle(c.angle), rotation_center(c.rotation_center), velocity(c.velocity)
+: position(c.position), previous_position(c.previous_position), bounds(c.bounds), type_flags(c.type_flags), interested_flags(c.interested_flags), creator(c.creator), callback(c.callback), index(-1), angle(c.angle), rotation_center(c.rotation_center), velocity(c.velocity), active(c.active)
 {
     for (auto it = c.shapes.begin(); it!=c.shapes.end(); it++)
     {
@@ -47,7 +46,7 @@ Collider::Collider(const Collider& c)
         }
     }
 
-    if(flags != CollisionFlag::none)
+    if((type_flags != CollisionFlag::none)||(interested_flags != CollisionFlag::none))
     {
         addCollider(this);
     }
@@ -79,13 +78,17 @@ Collider& Collider::operator= (const Collider& c)
     position = c.position;
     previous_position = c.previous_position;
     bounds = c.bounds;
-    creator = nullptr;
+    creator = c.creator;
+    callback = c.callback;
     index = -1;
     angle = c.angle;
     rotation_center = c.rotation_center;
     velocity = c.velocity;
+    active = c.active;
 
-    setFlags(c.flags);
+    setTypeFlags(c.type_flags);
+    setIntersetedFlags(c.interested_flags);
+
     setType(c.type);
 
     return *this;
@@ -140,7 +143,7 @@ bool Collider::intersectBounds(Collider* c)
     return false;
 }
 
-// Detecta y corrige si las figuras(shapes) intersectan con las de "c".
+// Detecta si las figuras(shapes) intersectan con las de "c".
 Intersection* Collider::intersectShapes(Collider* c)
 {
     if (c!=nullptr)
@@ -214,14 +217,57 @@ bool Collider::isStatic() const
     return (type == CollisionType::col_static);
 }
 
+bool Collider::isColliding() const
+{
+    for (auto &&shape : shapes)
+    {
+        if(shape!=nullptr && shape->hasIntersected())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Collider::update(float dt)
 {
     previous_position = position;
     position = position + velocity * dt;
 
+    for (auto &&shape : shapes)
+    {
+        if(shape!=nullptr)
+        {
+            shape->update(dt);
+        }
+    }
+    
+
     calculateValues();
 }
 
+void Collider::render(const Vector2d<float>& view_pos)
+{
+    if(isColliding())
+    {
+        // Renderizar la bounding box que engloba sus figuras
+        bounds.render(view_pos);
+
+        // Renderizar sus figuras
+        for (auto &&shape : shapes)
+        {
+            shape->render(view_pos);
+        }
+    }
+}
+
+void Collider::callBack(void* e)
+{
+    if(callback!=nullptr)
+    {
+        callback(e);
+    }
+}
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -235,21 +281,46 @@ void Collider::setPosition(const Vector2d<float>& pos)
     calculateValues();
 }
 
-void Collider::setFlags(const CollisionFlag& f)
+void Collider::setTypeFlags(const CollisionFlag& f)
 {
-
-    if(flags != CollisionFlag::none)
+    if(interested_flags == CollisionFlag::none)
     {
-        removeCollider(this);
+        if(type_flags == CollisionFlag::none)
+        {
+            if(f != CollisionFlag::none)
+            {
+                addCollider(this);
+            }
+        }else
+        {
+            if(f == CollisionFlag::none)
+            {
+                removeCollider(this);
+            }
+        }
     }
+    type_flags = f;
+}
 
-    flags = f;
-
-    if(flags != CollisionFlag::none)
+void Collider::setIntersetedFlags(const CollisionFlag& f)
+{
+    if(type_flags == CollisionFlag::none)
     {
-        addCollider(this);
+        if(interested_flags == CollisionFlag::none)
+        {
+            if(f != CollisionFlag::none)
+            {
+                addCollider(this);
+            }
+        }else
+        {
+            if(f == CollisionFlag::none)
+            {
+                removeCollider(this);
+            }
+        }
     }
-
+    interested_flags = f;
 }
 
 void Collider::setType(const CollisionType& t)
@@ -280,6 +351,11 @@ void Collider::setType(const CollisionType& t)
 void Collider::setCreator(void* c)
 {
     creator = c;
+}
+
+void Collider::setCallback(Callback c)
+{
+    callback = c;
 }
 
 void Collider::setIndex(int i)
@@ -322,6 +398,11 @@ void Collider::setVelocity(const Vector2d<float>& vel)
     velocity = vel;
 }
 
+void Collider::setActive(bool a)
+{
+    active = a;
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -342,9 +423,14 @@ const Bounding_Box& Collider::getBounds() const
     return bounds;
 }
 
-const CollisionFlag& Collider::getFlags() const
+const CollisionFlag& Collider::getTypeFlags() const
 {
-    return flags;
+    return type_flags;
+}
+
+const CollisionFlag& Collider::getInterestedFlags() const
+{
+    return interested_flags;
 }
 
 const CollisionType& Collider::getType() const
@@ -377,6 +463,11 @@ const Vector2d<float>& Collider::getVelocity() const
     return velocity;
 }
 
+bool Collider::getActive() const
+{
+    return active;
+}
+
 
 //=========================================
 //=              DESTRUCTOR   	    	  =
@@ -397,7 +488,7 @@ Collider::~Collider()
         shapes.erase(it);
     }
 
-    if(flags != CollisionFlag::none)
+    if((type_flags != CollisionFlag::none)||(interested_flags != CollisionFlag::none))
     {
         removeCollider(this);
     }

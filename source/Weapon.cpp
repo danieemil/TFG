@@ -9,7 +9,7 @@
 //=========================================
 
 Weapon::Weapon(float t_attack, const Vector2d<float>& rel_attack, const Vector2d<float>& rel_pos, Sprite* spr, World* w, Collider* c, Combat_Character* cc)
-: Entity(rel_pos, spr, w, c), character(cc), rel_position(rel_pos), attacking(false), attack_time(t_attack), orig_rel_position(rel_position), attack_rel_position(rel_attack)
+: Entity(rel_pos, spr, w, c), character(cc), rel_position(rel_pos), orig_rel_position(rel_position), attack_rel_position(rel_attack), attacking(false), attack_time(t_attack)
 {
     id = Class_Id::e_weapon;
 
@@ -24,7 +24,7 @@ Weapon::Weapon(float t_attack, const Vector2d<float>& rel_attack, const Vector2d
 }
 
 Weapon::Weapon(const Weapon& w)
-: Entity(w), character(w.character), rel_position(w.rel_position), attacking(false), attack_time(w.attack_time), orig_rel_position(w.orig_rel_position), attack_rel_position(w.attack_rel_position)
+: Entity(w), character(w.character), rel_position(w.rel_position), orig_rel_position(w.orig_rel_position), attack_rel_position(w.attack_rel_position), attacking(false), attack_time(w.attack_time)
 {
     position = rel_position;
 
@@ -100,6 +100,11 @@ void Weapon::interpolate(float rp)
     }
 }
 
+void Weapon::collision(void * ent)
+{
+    Entity::collision(ent);
+}
+
 void Weapon::attack()
 {
     if(!attacking)
@@ -141,9 +146,20 @@ void Weapon::setVelocity(const Vector2d<float>& vel)
 
 void Weapon::setCharacter(Combat_Character* cc)
 {
-    if(cc!=nullptr)
+
+    position = rel_position;
+
+    if(character!=nullptr)
     {
-        character = cc;
+        character->removeWeapon(this);
+    }
+
+    character = cc;
+
+    if(character!=nullptr)
+    {
+        position += character->getPosition();
+        character->addWeapon(this);
     }
 }
 

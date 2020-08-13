@@ -316,7 +316,7 @@ void Tilemap::readBin(const char* file_path)
         file2mem(in, &max.x);
         file2mem(in, &max.y);
 
-        colliders.push_back(new Collider(position, new AABB(min,max), CollisionFlag::none, CollisionType::col_static));
+        colliders.push_back(new Collider(position, new AABB(min,max), CollisionFlag::none, CollisionFlag::none, CollisionType::col_static));
     }
 
     // Círculos
@@ -332,7 +332,7 @@ void Tilemap::readBin(const char* file_path)
 
         file2mem(in, &radius);
 
-        colliders.push_back(new Collider(position, new Circle(center,radius), CollisionFlag::none, CollisionType::col_static));
+        colliders.push_back(new Collider(position, new Circle(center,radius), CollisionFlag::none, CollisionFlag::none, CollisionType::col_static));
     }
 
     // Convexos
@@ -354,6 +354,6 @@ void Tilemap::readBin(const char* file_path)
             vertices.push_back(vertex);
         }
         
-        colliders.push_back(new Collider(position, new Convex(vertices), CollisionFlag::none, CollisionType::col_static));
+        colliders.push_back(new Collider(position, new Convex(vertices), CollisionFlag::none, CollisionFlag::none, CollisionType::col_static));
     }
 }

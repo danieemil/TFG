@@ -4,6 +4,7 @@
 #include "AABB.h"
 #include "Circle.h"
 #include "Convex.h"
+#include <functional>
 
 
 enum class CollisionType
@@ -18,12 +19,15 @@ enum class CollisionType
 enum class CollisionFlag
 {
     none = 0,
-    player = 1 << 0,
-    enemy = 1 << 1,
-    weapon = 1 << 2,
+    player_hit = 1 << 0,
+    player_hurt = 1 << 1,
+    enemy_hit = 1 << 2,
+    enemy_hurt = 1 << 3,
+    weapon = 1 << 4,
 };
 
-// 0101 & 1100 = 1101 (1 | 0 = 1, 1 | 1 = 1, 0 | 0 = 0) 
+// 0+8+0+1 |16+8+0+0 =16+8+0+1 -> simula el comportamiento de una puerta OR
+// 0 1 0 1 | 1 1 0 0 = 1 1 0 1 (1 | 0 = 1, 1 | 1 = 1, 0 | 0 = 0) 
 inline CollisionFlag operator |(const CollisionFlag& a, const CollisionFlag& b)
 {
     return static_cast<CollisionFlag>(static_cast<int>(a) | static_cast<int>(b));
@@ -40,12 +44,15 @@ inline CollisionFlag operator ~(const CollisionFlag& a)
     return static_cast<CollisionFlag>(~static_cast<int>(a));
 }
 
+
+using Callback = std::function<void(void*)>;
+
 class Collider
 {
 
 public:
     // Constructores
-    Collider(const Vector2d<float>& pos, Shape* s = nullptr, const CollisionFlag& f = CollisionFlag::none, const CollisionType& t = CollisionType::col_none, void* c = nullptr, int i = -1, float a = 0.0f, const Vector2d<float>& rot_cent = Vector2d<float>(0,0), const Vector2d<float>& vel = Vector2d<float>());
+    Collider(const Vector2d<float>& pos, Shape* s = nullptr, const CollisionFlag& ft = CollisionFlag::none, const CollisionFlag& fi = CollisionFlag::none, const CollisionType& t = CollisionType::col_none, void* c = nullptr, Callback cb = nullptr, int i = -1, float a = 0.0f, const Vector2d<float>& rot_cent = Vector2d<float>(0,0), const Vector2d<float>& vel = Vector2d<float>(), bool act = true);
     Collider(const Collider& c);
 
     Collider& operator= (const Collider& c);
@@ -61,31 +68,41 @@ public:
     Intersection* intersectSegment(const Vector2d<float>& a, const Vector2d<float>& b);
 
     bool isStatic() const;
+    bool isColliding() const;
 
     void update(float dt);
+    void render(const Vector2d<float>& view_pos = Vector2d<float>());
+
+    void callBack(void* e);
 
     // Setters
     void setPosition(const Vector2d<float>& pos);
-    void setFlags(const CollisionFlag& f);
+    void setTypeFlags(const CollisionFlag& f);
+    void setIntersetedFlags(const CollisionFlag& f);
     void setType(const CollisionType& t);
     void setCreator(void* c);
+    void setCallback(Callback c);
     void setIndex(int i);
     void setGlobalRotation(float a);
     void setLocalsRotation(float a);
     void setRotationCenter(const Vector2d<float>& rot_cent);
     void setVelocity(const Vector2d<float>& vel);
+    void setActive(bool a);
 
     // Getters
     const Vector2d<float>& getPosition() const;
     const Vector2d<float>& getPreviousPosition() const;
     const Bounding_Box& getBounds() const;
-    const CollisionFlag& getFlags() const;
+    const CollisionFlag& getTypeFlags() const;
+    const CollisionFlag& getInterestedFlags() const;
     const CollisionType& getType() const;
     void* getCreator() const;
+    Callback getCallback() const;
     int getIndex() const;
     float getRotation() const;
     const Vector2d<float>& getRotationCenter() const;
     const Vector2d<float>& getVelocity() const;
+    bool getActive() const;
 
     // Destructor
     ~Collider();
@@ -96,13 +113,16 @@ private:
     Vector2d<float> position;
     Vector2d<float> previous_position;
     Bounding_Box bounds;
-    CollisionFlag flags;
+    CollisionFlag type_flags;
+    CollisionFlag interested_flags;
     CollisionType type;
     void* creator;
+    Callback callback;
     int index;
     float angle;
     Vector2d<float> rotation_center;
     Vector2d<float> velocity; // Describe lo que te mueves en X e Y en un segundo
+    bool active; // Indica si tiene habilitadas o inhabilitadas las colisiones
 
     void calculateValues();
 

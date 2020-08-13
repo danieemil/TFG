@@ -69,7 +69,20 @@ Shape& Shape::operator= (const Shape& s)
 //=               MÉTODOS   	    	  =
 //=========================================
 
+void Shape::update(float dt)
+{
+    intersection.intersects = false;
+}
 
+void Shape::render(const Vector2d<float>& view_pos)
+{
+
+}
+
+bool Shape::hasIntersected() const
+{
+    return intersection.intersects;
+}
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -83,6 +96,11 @@ void Shape::setCollider(Collider* c)
 void Shape::setLocalRotation(float a)
 {
     angle = a;
+}
+
+void Shape::setIntersected(bool i)
+{
+    intersection.intersects = i;
 }
 
 //=========================================

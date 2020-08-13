@@ -2,6 +2,7 @@
 #define _WORLD_
 
 #include "Player.h"
+#include "Enemy.h"
 #include "Tilemap.h"
 #include <vector>
 

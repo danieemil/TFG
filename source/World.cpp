@@ -165,6 +165,7 @@ void World::render()
     renderTilemap(view_pos);
     renderEntities(view_pos);
     renderPlayer(view_pos);
+    physics::render(view_pos);
 }
 
 void World::renderTilemap(const Vector2d<float>& view_pos)

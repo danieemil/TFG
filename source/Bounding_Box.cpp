@@ -1,4 +1,5 @@
 #include "Bounding_Box.h"
+#include "Unvisual_Engine.h"
 
 
 //=========================================
@@ -93,6 +94,11 @@ bool Bounding_Box::intersects(const Vector2d<float>& a, const Vector2d<float>& b
     if(intersection) return true;
 
     return false;
+}
+
+void Bounding_Box::render(const Vector2d<float>& view_pos)
+{
+    unvisual::drawRectangle(min - view_pos, 0.0f, size, 0, 255, 0, 100);
 }
 
 
