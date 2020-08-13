@@ -43,26 +43,34 @@ AABB& AABB::operator= (const AABB& ab)
 
 Intersection* AABB::intersect(Shape* s)
 {
-    intersection.intersects = false;
     intersection.A = collider;
     intersection.B = s->getCollider();
-    
+
+    Intersection* i = nullptr;
+
     if(s!=nullptr)
     {
         if(s->getType()==Shape_Type::AABB)
         {
-            return intersect(static_cast<AABB*>(s));
+            i = intersect(static_cast<AABB*>(s));
         }
         if(s->getType()==Shape_Type::Circle)
         {
-            return intersect(static_cast<Circle*>(s));
+            i = intersect(static_cast<Circle*>(s));
         }
         if (s->getType()==Shape_Type::Convex)
         {
-            return intersect(static_cast<Convex*>(s));
+            i = intersect(static_cast<Convex*>(s));
         }
     }
-    return nullptr;
+
+    if(i!=nullptr)
+    {
+        intersection.intersects = true;
+        s->setIntersected(true);
+    }
+
+    return i;
 }
 
 // Devuelve el punto más cercano al inicio
@@ -70,10 +78,9 @@ Intersection* AABB::intersect(const Vector2d<float>& a, const Vector2d<float>& b
 {
     if(collider!=nullptr)
     {
-        intersection.intersects = false;
         intersection.A = collider;
 
-        bool inters;
+        bool inters, intersects = false;
         int intersections = 0;
 
         Vector2d<float> pos = b;
@@ -94,7 +101,7 @@ Intersection* AABB::intersect(const Vector2d<float>& a, const Vector2d<float>& b
             if(inters)
             {
                 intersections++;
-                intersection.intersects = true;
+                intersects = true;
                 float dif = (p - a).Length();
                 if(dif < dist)
                 {
@@ -109,7 +116,7 @@ Intersection* AABB::intersect(const Vector2d<float>& a, const Vector2d<float>& b
             }
         }
 
-        if(intersection.intersects)
+        if(intersects)
         {
             return &intersection;
         }
@@ -184,7 +191,6 @@ Intersection* AABB::intersect(AABB* ab)
                 posY = (posY - halfA.y) - min.y;
 
                 intersection.fixed_position = Vector2d<float>(posX, posY);
-                intersection.intersects = true;
                 intersection.position = pos;
                 intersection.A = collider;
                 intersection.B = ab_collider;
@@ -254,7 +260,6 @@ Intersection* AABB::intersect(Circle* c)
                     Vector2d<float> center_fixed = c_center + (norm * c_radius) + (dir * half);
                     
                     intersection.fixed_position = center_fixed - half - min;
-                    intersection.intersects = true;
                     intersection.A = collider;
                     intersection.B = c_collider;
                     intersection.position = pos;
@@ -315,7 +320,6 @@ Intersection* AABB::intersect(Convex* c)
                     Vector2d<float> fix_pos = center_pos + (d * overlap) - center;
 
                     intersection.fixed_position = fix_pos;
-                    intersection.intersects = true;
                     intersection.position = pos;
                     intersection.A = collider;
                     intersection.B = c_collider;
@@ -329,6 +333,22 @@ Intersection* AABB::intersect(Convex* c)
     }
     return nullptr;
 }
+
+void AABB::update(float dt)
+{
+    Shape::update(dt);
+}
+
+void AABB::render(const Vector2d<float>& view_pos)
+{
+
+}
+
+bool AABB::hasIntersected() const
+{
+    return Shape::hasIntersected();
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -368,6 +388,11 @@ void AABB::setGlobalRotation()
 void AABB::setLocalRotation(float a)
 {
     
+}
+
+void AABB::setIntersected(bool i)
+{
+    Shape::setIntersected(i);
 }
 
 

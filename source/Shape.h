@@ -62,11 +62,16 @@ public:
     // Métodos
     virtual Intersection* intersect(Shape* s) = 0;
     virtual Intersection* intersect(const Vector2d<float>& a, const Vector2d<float>& b) = 0;
+    
+    virtual void update(float dt);
+    virtual void render(const Vector2d<float>& view_pos = Vector2d<float>()) = 0;
+    virtual bool hasIntersected() const;
 
     // Setters
     virtual void setCollider(Collider* c);
     virtual void setGlobalRotation() = 0;
     virtual void setLocalRotation(float a);
+    virtual void setIntersected(bool i);
 
     // Getters
     virtual Collider* getCollider() const;

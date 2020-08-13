@@ -27,6 +27,9 @@ namespace physics
     // Actualizar valores de los cuerpos que se mueven
     void update(float dt);
 
+    // Mostrar las bounding boxes de los colliders(al menos de los que están colisionando)
+    void render(const Vector2d<float>& view_pos = Vector2d<float>());
+
     // Comprobar y corregir colisiones
     void step(float dt);
 

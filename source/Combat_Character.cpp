@@ -71,6 +71,11 @@ void Combat_Character::interpolate(float rp)
     }
 }
 
+void Combat_Character::collision(void* ent)
+{
+    Character::collision(ent);
+}
+
 void Combat_Character::attack()
 {
     if(equipped!=nullptr)
@@ -121,6 +126,27 @@ void Combat_Character::addWeapon(Weapon* wp)
             }
         }
         weapons.emplace_back(wp);
+    }
+}
+
+void Combat_Character::removeWeapon(Weapon* wp)
+{
+    if(wp!=nullptr)
+    {
+        for (auto it = weapons.begin(); it != weapons.end(); it++)
+        {
+            Weapon* w_eapon = (*it);
+            if(w_eapon==wp)
+            {
+                if(w_eapon==equipped)
+                {
+                    equipped = nullptr;
+                }
+                weapons.erase(it);
+                return;
+            }
+        }
+        
     }
 }
 

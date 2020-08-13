@@ -78,6 +78,11 @@ void Character::interpolate(float rp)
     Entity::interpolate(rp);
 }
 
+void Character::collision(void * ent)
+{
+    Entity::collision(ent);
+}
+
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================

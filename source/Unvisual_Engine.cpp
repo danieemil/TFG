@@ -171,6 +171,17 @@ namespace unvisual
 		C3D_FrameEnd(0);
     }
 
+    void drawRectangle(const Vector2d<float>& pos, float depth, const Vector2d<float>& dimensions, u8 r, u8 g, u8 b, u8 a)
+    {
+        C2D_DrawRectSolid(pos.x, pos.y, depth, dimensions.x, dimensions.y, C2D_Color32(r,g,b,a));
+    }
+
+    void drawCircle(const Vector2d<float>& pos, float depth, float radius, u8 r, u8 g, u8 b, u8 a)
+    {
+        C2D_DrawCircleSolid(pos.x, pos.y, depth, radius, C2D_Color32(r,g,b,a));
+    }
+
+
     void setCurrentScreen(Screen* sc)
     {
         current_screen = sc;

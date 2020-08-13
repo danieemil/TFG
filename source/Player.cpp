@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "World.h"
 
+#include "Game.h"
+
 using namespace unvisual;
 
 //=========================================
@@ -49,6 +51,18 @@ void Player::updateFromCollider()
 void Player::interpolate(float rp)
 {
     Combat_Character::interpolate(rp);
+}
+
+void Player::collision(void* ent)
+{
+    if(ent!=nullptr)
+    {
+        Entity* e = static_cast<Entity*>(ent);
+        if(e->getClassId()==Class_Id::e_enemy)
+        {
+            
+        }
+    }
 }
 
 void Player::processInput()
@@ -175,6 +189,11 @@ void Player::setVelocity(const Vector2d<float>& vel)
 void Player::addWeapon(Weapon* wp)
 {
     Combat_Character::addWeapon(wp);
+}
+
+void Player::removeWeapon(Weapon* wp)
+{
+    Combat_Character::removeWeapon(wp);
 }
 
 void Player::equipWeapon(size_t index)

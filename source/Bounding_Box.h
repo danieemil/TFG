@@ -22,6 +22,8 @@ public:
     bool intersects(const Bounding_Box& bb);
     bool intersects(const Vector2d<float>& a, const Vector2d<float>& b);
 
+    void render(const Vector2d<float>& view_pos = Vector2d<float>());
+
     // Setters
     void setPosition(const Vector2d<float>& min_pos);
     void setSize(const Vector2d<float>& bb_size);

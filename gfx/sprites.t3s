@@ -1,3 +1,4 @@
 --atlas -f rgba8888 -z auto
 sprites/P.png
 sprites/Sword.png
+sprites/E.png

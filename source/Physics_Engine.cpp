@@ -15,12 +15,28 @@ namespace physics
         std::vector<Collider*> dynamics;
         std::vector<Collider*> statics;
 
+        // Función que trata con los elementos que han colisionado
         void manifold(Collider* colliderA, Collider* colliderB)
         {
             if (colliderA!=nullptr && colliderB!=nullptr)
             {
-                CollisionFlag flagsA = colliderA->getFlags();
-                CollisionFlag flagsB = colliderB->getFlags();
+                CollisionFlag At = colliderA->getTypeFlags();
+                CollisionFlag Bt = colliderB->getTypeFlags();
+                CollisionFlag Ai = colliderA->getInterestedFlags();
+                CollisionFlag Bi = colliderB->getInterestedFlags();
+
+                if((Ai & Bt) != CollisionFlag::none)
+                {
+                    // A reaciona al colisionar con B.
+                    colliderA->callBack(colliderB->getCreator());
+                }
+
+                if((Bi & At) != CollisionFlag::none)
+                {
+                    // B reaciona al colisionar con A.
+                    colliderB->callBack(colliderA->getCreator());
+                }
+
             }
         }
 
@@ -35,6 +51,7 @@ namespace physics
     void init()
     {
         // Vamos almacenando las colisiones de los sprites de cada tileset
+        // Junto con la id del sprite al que corresponde
         std::map<int, Shape*> tileset_colliders;
         std::string tileset_route;
         std::vector<Vector2d<float>> vertices;
@@ -61,7 +78,13 @@ namespace physics
             Vector2d<float>(0,sY)
         };
         s = new Convex(vertices);
+
         tileset_colliders.insert(pair<int, Shape*>(0,s));
+
+        // Letra "E"
+        s = new AABB(Vector2d<float>(0,0), Vector2d<float>(sX, sY));
+
+        tileset_colliders.insert(pair<int, Shape*>(2,s));
 
         tilesets_colliders.insert(pair<string, std::map<int, Shape*>>(tileset_route, tileset_colliders));
 
@@ -192,6 +215,14 @@ namespace physics
         }
     }
 
+    void render(const Vector2d<float>& view_pos)
+    {
+        for (auto &&col : colliders)
+        {
+            col->render(view_pos);
+        }
+    }
+
     // En esta función se analizan y resuelven todas las colisiones
     void step(float dt)
     {
@@ -207,13 +238,14 @@ namespace physics
             {
                 Collider* colliderB = (*it2);
 
-                if(colliderA!=colliderB)
+                if(colliderA->intersectShapes(colliderB)!=nullptr)
                 {
                     collision_manager(colliderA, colliderB);
                 }
             }
         }
 
+        // Los cuerpos dinámicos comprueban con los estáticos si colisionan o no
         for (auto it = dynamics.begin(); it!=dynamics.end(); it++)
         {
             Collider* colliderA = (*it);
@@ -302,7 +334,7 @@ namespace physics
 
         for (auto &&col : colliders)
         {
-            if((col->getFlags() & f) != CollisionFlag::none)
+            if((col->getTypeFlags() & f) != CollisionFlag::none)
             {
                 Intersection* i = col->intersectSegment(a, b);
                 if(i!=nullptr)
