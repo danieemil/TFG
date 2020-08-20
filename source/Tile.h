@@ -9,7 +9,7 @@ class Tile : public Entity
 
 public:
     // Constructores
-    Tile(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr, Collider* c = nullptr);
+    Tile(const Vector2d<float>& pos = Vector2d<float>(), float angl = 0.0f, Sprite* spr = nullptr, World* w = nullptr, Collider* c = nullptr);
     Tile(const Tile& c);
 
     Tile& operator= (const Tile& c);
@@ -29,6 +29,7 @@ public:
     virtual void setWorld(World* w);
     virtual void setBody(Collider* c);
     virtual void setVelocity(const Vector2d<float>& vel);
+    virtual void setAngle(float angl);
         //Tile
 
     // Getters
@@ -41,6 +42,7 @@ public:
     virtual const Vector2d<float>& getPrePosition() const;
     virtual const Vector2d<float>& getRenderPosition() const;
     virtual const Class_Id& getClassId() const;
+    virtual float getAngle() const;
         //Tile
 
     // Destructor

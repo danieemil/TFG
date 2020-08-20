@@ -46,8 +46,10 @@ void Sprite::drawSprite(const Vector2d<float>& view_pos)
     float h = (float)s->getHeight();
     float w = (float)s->getWidth();
 
+    Vector2d<float> cent = Vector2d<float>(sprite.params.center.x, sprite.params.center.y); 
+
     // Necesario para aplicar scroll 2D personalizado
-    Vector2d<float> p = position - view_pos;
+    Vector2d<float> p = position - view_pos + cent;
     if((p.x + sprite.params.pos.w) > 0.0f && p.x < w)
         if((p.y + sprite.params.pos.h) > 0.0f && p.y < h)
         {
@@ -134,12 +136,21 @@ SpriteManager* Sprite::getManager() const
 
 const Vector2d<float>& Sprite::getPosition() const
 {
-    return position;;
+    return position;
 }
 
 Vector2d<float> Sprite::getCenter() const
 {
     return Vector2d<float>(sprite.params.center.x, sprite.params.center.y);
+}
+
+Vector2d<float> Sprite::getCenterPosition() const
+{
+    Vector2d<float> center_pos = position;
+    
+    center_pos += Vector2d<float>(sprite.params.center.x, sprite.params.center.y);
+
+    return center_pos;
 }
 
 Vector2d<size_t> Sprite::getSize() const

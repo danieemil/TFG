@@ -143,7 +143,7 @@ void Tilemap::generateTiles()
                         tiles[i][j] = nullptr;
                         if(sp!=nullptr)
                         {
-                            tiles[i][j] = new Tile(p,sp);
+                            tiles[i][j] = new Tile(p, 0.0f, sp);
                         }
                         p.x = p.x + tile_size.x;
                     }

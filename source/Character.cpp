@@ -6,9 +6,9 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
+Character::Character(const Vector2d<float>& pos, float angl, Sprite* spr, World* w, Collider* c,
     const Vector2d<float>& max_vel, const Vector2d<float>& accel, const Vector2d<float>& decel)
-: Entity(pos, spr, w, c), max_velocity(max_vel), max_acceleration(accel),
+: Entity(pos, angl, spr, w, c), max_velocity(max_vel), max_acceleration(accel),
     acceleration(Vector2d<float>()), deceleration(decel)
 {
 
@@ -112,6 +112,11 @@ void Character::setVelocity(const Vector2d<float>& vel)
     Entity::setVelocity(vel);
 }
 
+void Character::setAngle(float angl)
+{
+    Entity::setAngle(angl);
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -155,6 +160,11 @@ const Vector2d<float>& Character::getRenderPosition() const
 const Class_Id& Character::getClassId() const
 {
     return Entity::getClassId();
+}
+
+float Character::getAngle() const
+{
+    return Entity::getAngle();
 }
 
 //=========================================

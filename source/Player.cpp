@@ -9,15 +9,16 @@ using namespace unvisual;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Player::Player(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
+Player::Player(const Vector2d<float>& pos, float angl, Sprite* spr, World* w, Collider* c,
     const Vector2d<float>& max_vel, const Vector2d<float>& accel, const Vector2d<float>& decel, Weapon* wp)
-: Combat_Character(pos, spr, w, c, max_vel, accel, decel, wp)
+: Combat_Character(pos, angl, spr, w, c, max_vel, accel, decel, wp)
 {
     id = Class_Id::e_player;
+    orientation = Vector2d<float>(0.0f,-1.0f);
 }
 
 Player::Player(const Player& p)
-: Combat_Character(p)
+: Combat_Character(p), orientation(p.orientation)
 {
 
 }
@@ -25,6 +26,8 @@ Player::Player(const Player& p)
 Player& Player::operator= (const Player& p)
 {
     Combat_Character::operator=(p);
+
+    orientation = p.orientation;
 
     return *this;
 }
@@ -131,9 +134,9 @@ void Player::processInput()
     unvisual::debugger->setColumn(1);
     unvisual::debugger->print("Player position:");
     unvisual::debugger->nextLine();
-    unvisual::debugger->print("X = " + std::to_string(render_position.x));
+    unvisual::debugger->print("X = " + std::to_string(position.x));
     unvisual::debugger->nextLine();
-    unvisual::debugger->print("Y = " + std::to_string(render_position.y));
+    unvisual::debugger->print("Y = " + std::to_string(position.y));
     unvisual::debugger->nextLine();
     unvisual::debugger->print("Vel_X = " + std::to_string(velocity.x));
     unvisual::debugger->nextLine();
@@ -147,9 +150,23 @@ void Player::processInput()
 	    unvisual::debugger->nextLine();
         unvisual::debugger->print("Y = " + std::to_string(equipped->getPosition().y));
         unvisual::debugger->nextLine();
+        unvisual::debugger->print(equipped->getCharacter());
+        unvisual::debugger->nextLine();
     }
 	
+    if(heading!=Vector2d<float>())
+    {
+        orientation = heading;
+    }
 
+    if(orientation.x!=0.0f)
+    {
+        setAngle((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y));
+    }
+    else
+    {
+        setAngle(90.0f + 90.0f*orientation.y);
+    }
 }
 
 
@@ -184,6 +201,11 @@ void Player::setBody(Collider* c)
 void Player::setVelocity(const Vector2d<float>& vel)
 {
     Combat_Character::setVelocity(vel);
+}
+
+void Player::setAngle(float angl)
+{
+    Combat_Character::setAngle(angl);
 }
 
 void Player::addWeapon(Weapon* wp)
@@ -240,6 +262,16 @@ const Vector2d<float>& Player::getRenderPosition() const
     return Combat_Character::getRenderPosition();
 }
 
+const Class_Id& Player::getClassId() const
+{
+    return Combat_Character::getClassId();
+}
+
+float Player::getAngle() const
+{
+    return Combat_Character::getAngle();
+}
+
 const std::vector<Weapon*>& Player::getWeapons() const
 {
     return Combat_Character::getWeapons();
@@ -248,11 +280,6 @@ const std::vector<Weapon*>& Player::getWeapons() const
 Weapon* Player::getWeaponEquipped() const
 {
     return Combat_Character::getWeaponEquipped();
-}
-
-const Class_Id& Player::getClassId() const
-{
-    return Combat_Character::getClassId();
 }
 
 //=========================================

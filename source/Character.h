@@ -9,7 +9,7 @@ class Character : public Entity
 
 public:
     // Constructores
-    Character(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr,
+    Character(const Vector2d<float>& pos = Vector2d<float>(), float angl = 0.0f, Sprite* spr = nullptr, World* w = nullptr,
         Collider* c = nullptr, const Vector2d<float>& max_vel = Vector2d<float>(0.0f,0.0f),
         const Vector2d<float>& accel = Vector2d<float>(0.0f,0.0f),
         const Vector2d<float>& decel = Vector2d<float>(0.0f,0.0f));
@@ -33,6 +33,7 @@ public:
     virtual void setWorld(World* w);
     virtual void setBody(Collider* c);
     virtual void setVelocity(const Vector2d<float>& vel);
+    virtual void setAngle(float angl);
         //Character
 
     // Getters
@@ -45,6 +46,7 @@ public:
     virtual const Vector2d<float>& getPrePosition() const;
     virtual const Vector2d<float>& getRenderPosition() const;
     virtual const Class_Id& getClassId() const;
+    virtual float getAngle() const;
         //Character
 
     // Destructor

@@ -95,7 +95,7 @@ void Game::init()
 	Vector2d<float> enemy_max_vel = Vector2d<float>(40.0f,40.0f);
 	Vector2d<float> enemy_accel = Vector2d<float>(10.0f, 10.0f);
 	Vector2d<float> enemy_decel = Vector2d<float>(10.0f,10.0f);
-	Enemy* enemy = new Enemy(enemy_position, enemy_sprite, world, enemy_body, enemy_max_vel, enemy_accel, enemy_decel);
+	Enemy* enemy = new Enemy(enemy_position, 0.0f, enemy_sprite, world, enemy_body, enemy_max_vel, enemy_accel, enemy_decel);
 	world->addEntity(enemy);
 
 	// Creamos al jugador
@@ -103,25 +103,31 @@ void Game::init()
 
 		// Gráficos del jugador
 	Sprite* player_sprite = manager->createSprite(0);
+    player_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
 
 		// Colisiones del jugador
 	Shape* player_shape = physics::getSpriteShape(player_sprite->getManager()->getPath(), player_sprite->getIndex());
 	Collider* player_body = new Collider(player_position, player_shape, CollisionFlag::player_hit, CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt, CollisionType::col_dynamic);
+    Vector2d<float> player_center = player_sprite->getCenter();
+    player_body->setRotationCenter(player_center);
+
 
 		// Otros atributos del jugador
 	Vector2d<float> player_max_vel = Vector2d<float>(40.0f,40.0f);
 	Vector2d<float> player_accel = Vector2d<float>(10.0f, 10.0f);
 	Vector2d<float> player_decel = Vector2d<float>(10.0f,10.0f);
-	Player* player = new Player(player_position, player_sprite, world, player_body, player_max_vel, player_accel, player_decel);
+	Player* player = new Player(player_position, 0.0f, player_sprite, world, player_body, player_max_vel, player_accel, player_decel);
 	world->setPlayer(player);
 
         // Arma del jugador
         Sprite* weapon_sprite = manager->createSprite(1);
+        auto w_s = weapon_sprite->getSize();
+        weapon_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
 
         Shape* weapon_shape = physics::getSpriteShape(weapon_sprite->getManager()->getPath(), weapon_sprite->getIndex());
-        Collider* weapon_body = nullptr;
-        Weapon* player_weapon = new Weapon(1.0f, Vector2d<float>(0.0f, -10.0f), Vector2d<float>(), weapon_sprite, nullptr, weapon_body);
-        player_weapon->setCharacter(player);
+        Collider* weapon_body = new Collider(player_position, weapon_shape, CollisionFlag::player_hurt, CollisionFlag::enemy_hit, CollisionType::col_none);
+        weapon_body->setActive(false);
+        Weapon* player_weapon = new Weapon(0.2f, Vector2d<float>(0.0f, -10.0f), 0.0f, weapon_sprite, nullptr, weapon_body, player);
         player->equipWeapon(0);
 
     // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
@@ -151,11 +157,13 @@ void Game::update()
         if(world!=nullptr)
         {
             world->updateEntities();
+            world->updateEntitiesCollisions();
         }
     }
     if(world!=nullptr)
     {
         world->updatePlayer();
+        world->updatePlayerCollisions();
     }
     
 }
@@ -200,16 +208,6 @@ void Game::loop()
 		debug->setRow(17);
 		debug->print("Delta Time:");
 		debug->print(dt);
-		debug->nextLine();
-        debug->setColumn(1);
-		debug->setRow(18);
-        debug->print("Screen x:");
-		debug->print(unvisual::getCurrentScreen()->getPosition().x);
-		debug->nextLine();
-        debug->setColumn(1);
-		debug->setRow(19);
-        debug->print("Screen y:");
-		debug->print(unvisual::getCurrentScreen()->getPosition().y);
 		debug->nextLine();
 
 

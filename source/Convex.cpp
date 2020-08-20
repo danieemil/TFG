@@ -632,7 +632,7 @@ void Convex::calculateRotation()
 
     if(collider!=nullptr)
     {
-        float d = collider->getRotation();
+        float d = utilities::toRadians(collider->getRotation());
 
         Vector2d<float> cent = collider->getRotationCenter();
 
@@ -656,7 +656,7 @@ void Convex::calculateRotation()
     
     calculateCenter();
 
-    return;
+    
 
     float s = sin(angle);
     float c = cos(angle);

@@ -6,9 +6,9 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Enemy::Enemy(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
+Enemy::Enemy(const Vector2d<float>& pos, float angl, Sprite* spr, World* w, Collider* c,
     const Vector2d<float>& max_vel, const Vector2d<float>& accel, const Vector2d<float>& decel, Weapon* wp)
-: Combat_Character(pos, spr, w, c, max_vel, accel, decel, wp)
+: Combat_Character(pos, angl, spr, w, c, max_vel, accel, decel, wp)
 {
     id = Class_Id::e_enemy;
 }
@@ -90,6 +90,11 @@ void Enemy::setVelocity(const Vector2d<float>& vel)
     Combat_Character::setVelocity(vel);
 }
 
+void Enemy::setAngle(float angl)
+{
+    Combat_Character::setAngle(angl);
+}
+
 void Enemy::addWeapon(Weapon* wp)
 {
     Combat_Character::addWeapon(wp);
@@ -147,6 +152,11 @@ const Vector2d<float>& Enemy::getRenderPosition() const
 const Class_Id& Enemy::getClassId() const
 {
     return Combat_Character::getClassId();
+}
+
+float Enemy::getAngle() const
+{
+    return Combat_Character::getAngle();
 }
 
 const std::vector<Weapon*>& Enemy::getWeapons() const

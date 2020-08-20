@@ -5,8 +5,8 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Tile::Tile(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
-: Entity(pos, spr, w, c)
+Tile::Tile(const Vector2d<float>& pos, float angl, Sprite* spr, World* w, Collider* c)
+: Entity(pos, angl, spr, w, c)
 {
     if(spr!=nullptr)
     {
@@ -83,6 +83,11 @@ void Tile::setVelocity(const Vector2d<float>& vel)
     Entity::setVelocity(vel);
 }
 
+void Tile::setAngle(float angl)
+{
+    Entity::setAngle(angl);
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -126,6 +131,11 @@ const Vector2d<float>& Tile::getRenderPosition() const
 const Class_Id& Tile::getClassId() const
 {
     return Entity::getClassId();
+}
+
+float Tile::getAngle() const
+{
+    return Entity::getAngle();
 }
 
 //=========================================

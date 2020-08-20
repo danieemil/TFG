@@ -9,18 +9,24 @@ using std::placeholders::_1;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c)
-: world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c), velocity(), id(Class_Id::e_none)
+Entity::Entity(const Vector2d<float>& pos, float angl, Sprite* spr, World* w, Collider* c)
+: world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c), velocity(), id(Class_Id::e_none), angle(angl)
 {
-    if(c!=nullptr)
+    if(body!=nullptr)
     {
-        c->setCreator(this);
-        c->setCallback(std::bind(&Entity::collision, this, _1));
+        body->setCreator(this);
+        body->setCallback(std::bind(&Entity::collision, this, _1));
+        body->setPosition(position);
+        body->setGlobalRotation(angle);
+    }
+    if(sprite!=nullptr)
+    {
+        sprite->setRotation(angle);
     }
 }
 
 Entity::Entity(const Entity& e) :
-world(nullptr), sprite(nullptr), position(e.position), render_position(e.render_position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity), id(e.id)
+world(nullptr), sprite(nullptr), position(e.position), render_position(e.render_position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity), id(e.id), angle(e.angle)
 {
     
 }
@@ -36,6 +42,7 @@ Entity& Entity::operator= (const Entity& e)
     pre_position = e.pre_position;
     velocity = e.velocity;
     id = e.id;
+    angle = e.angle;
     
     return *this;
 }
@@ -112,12 +119,17 @@ void Entity::setSprite(Sprite* spr)
     }
 
     sprite = spr;
+    sprite->setRotation(angle);
 
 }
 
 void Entity::setPosition(const Vector2d<float>& pos)
 {
     position = pos;
+    if(body!=nullptr)
+    {
+        body->setPosition(position);
+    }
 }
 
 void Entity::setWorld(World* w)
@@ -141,12 +153,28 @@ void Entity::setBody(Collider* c)
     {
         body->setCreator(this);
         body->setCallback(std::bind(&Entity::collision, this, _1));
+        body->setPosition(position);
+        body->setGlobalRotation(angle);
     }
 }
 
 void Entity::setVelocity(const Vector2d<float>& vel)
 {
     velocity = vel;
+}
+
+void Entity::setAngle(float angl)
+{
+    angle = angl;
+    if(sprite!=nullptr)
+    {
+        sprite->setRotation(angle);
+    }
+    if(body!=nullptr)
+    {
+        body->setGlobalRotation(angle);
+    }
+    
 }
 
 
@@ -192,6 +220,21 @@ const Vector2d<float>& Entity::getRenderPosition() const
 const Class_Id& Entity::getClassId() const
 {
     return id;
+}
+
+float Entity::getAngle() const
+{
+    return angle;
+}
+
+Vector2d<float> Entity::getCenter() const
+{
+    Vector2d<float> cent = position;
+    if(sprite!=nullptr)
+    {
+        cent += sprite->getCenter();
+    }
+    return cent;
 }
 
 

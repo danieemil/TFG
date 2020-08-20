@@ -366,7 +366,7 @@ void AABB::setGlobalRotation()
     {
         Vector2d<float> half = (max - min)/2.0f;
 
-        float angl = collider->getRotation();
+        float angl = utilities::toRadians(collider->getRotation());
         Vector2d<float> cent = collider->getRotationCenter();
         Vector2d<float> dist = model_center - cent;
 

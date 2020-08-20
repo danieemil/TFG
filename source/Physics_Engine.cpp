@@ -78,12 +78,14 @@ namespace physics
             Vector2d<float>(0,sY)
         };
         s = new Convex(vertices);
-
         tileset_colliders.insert(pair<int, Shape*>(0,s));
+
+        // Arma temporal
+        s = new AABB(Vector2d<float>(-15,-20), Vector2d<float>(15,1));
+        tileset_colliders.insert(pair<int, Shape*>(1,s));
 
         // Letra "E"
         s = new AABB(Vector2d<float>(0,0), Vector2d<float>(sX, sY));
-
         tileset_colliders.insert(pair<int, Shape*>(2,s));
 
         tilesets_colliders.insert(pair<string, std::map<int, Shape*>>(tileset_route, tileset_colliders));

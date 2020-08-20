@@ -10,7 +10,7 @@ class Weapon : public Entity
 
 public:
     // Constructores
-    Weapon(float t_attack, const Vector2d<float>& rel_attack, const Vector2d<float>& rel_pos = Vector2d<float>(), Sprite* spr = nullptr,
+    Weapon(float t_attack, const Vector2d<float>& rel_attack, float angl = 0.0f, Sprite* spr = nullptr,
             World* w = nullptr, Collider* c = nullptr, Combat_Character* cc = nullptr);
     Weapon(const Weapon& w);
 
@@ -33,6 +33,7 @@ public:
     virtual void setWorld(World* w);
     virtual void setBody(Collider* c);
     virtual void setVelocity(const Vector2d<float>& vel);
+    virtual void setAngle(float angl);
         //Weapon
     virtual void setCharacter(Combat_Character* cc);
 
@@ -46,6 +47,7 @@ public:
     virtual const Vector2d<float>& getPrePosition() const;
     virtual const Vector2d<float>& getRenderPosition() const;
     virtual const Class_Id& getClassId() const;
+    virtual float getAngle() const;
         //Weapon
     virtual Combat_Character* getCharacter() const;
     virtual const Vector2d<float>& getRelativePosition() const;
@@ -55,8 +57,6 @@ public:
 protected:
 
     Combat_Character* character;
-    Vector2d<float> rel_position;
-    Vector2d<float> orig_rel_position;
     Vector2d<float> attack_rel_position;
 
     bool attacking;

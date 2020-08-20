@@ -1,6 +1,7 @@
 #include "Weapon.h"
 #include "Combat_Character.h"
 #include "World.h"
+#include "Unvisual_Engine.h"
 
 
 
@@ -8,12 +9,12 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Weapon::Weapon(float t_attack, const Vector2d<float>& rel_attack, const Vector2d<float>& rel_pos, Sprite* spr, World* w, Collider* c, Combat_Character* cc)
-: Entity(rel_pos, spr, w, c), character(cc), rel_position(rel_pos), orig_rel_position(rel_position), attack_rel_position(rel_attack), attacking(false), attack_time(t_attack)
+Weapon::Weapon(float t_attack, const Vector2d<float>& rel_attack, float angl, Sprite* spr, World* w, Collider* c, Combat_Character* cc)
+: Entity(rel_attack, angl, spr, w, c), character(cc), attack_rel_position(rel_attack), attacking(false), attack_time(t_attack)
 {
     id = Class_Id::e_weapon;
 
-    position = rel_position;
+    position = attack_rel_position;
 
     if(character!=nullptr)
     {
@@ -24,9 +25,9 @@ Weapon::Weapon(float t_attack, const Vector2d<float>& rel_attack, const Vector2d
 }
 
 Weapon::Weapon(const Weapon& w)
-: Entity(w), character(w.character), rel_position(w.rel_position), orig_rel_position(w.orig_rel_position), attack_rel_position(w.attack_rel_position), attacking(false), attack_time(w.attack_time)
+: Entity(w), character(w.character), attack_rel_position(w.attack_rel_position), attacking(false), attack_time(w.attack_time)
 {
-    position = rel_position;
+    position = attack_rel_position;
 
     if(character!=nullptr)
     {
@@ -47,8 +48,6 @@ Weapon& Weapon::operator= (const Weapon& w)
 
     attacking = false;
     attack_time = w.attack_time;
-    rel_position = w.rel_position;
-    orig_rel_position = w.orig_rel_position;
     attack_rel_position = w.attack_rel_position;
 
     return *this;
@@ -61,25 +60,67 @@ Weapon& Weapon::operator= (const Weapon& w)
 void Weapon::render(const Vector2d<float>& view_pos)
 {
     Entity::render(view_pos);
+
+    if(body!=nullptr)
+    {
+        body->setPosition(character->getCenter());
+    }
 }
 
 void Weapon::update()
 {
-    rel_position = orig_rel_position;
+
+    position = Vector2d<float>();
 
     if(attacking)
     {
-        rel_position += attack_rel_position;
-
-        if (time_attacking.getElapsed() > attack_time)
+        if (time_attacking.getElapsed()>attack_time)
         {
             attacking = false;
+            if(body!=nullptr)
+            {
+                body->setActive(false);
+            }
+        }else
+        {
+            position += attack_rel_position;
         }
     }
 
-    if (character!=nullptr)
+    if(character!=nullptr)
     {
-        position = character->getPosition() + rel_position;
+        position += character->getPosition();
+        setAngle(character->getAngle());
+
+        // Ponemos el centro del sprite del arma en el centro de su portador
+        // De esta forma puede rotar alrededor de su portador
+
+        if(sprite!=nullptr)
+        {
+            Vector2d<float> spr_size((float)sprite->getSize().x, (float)sprite->getSize().y);
+
+            Sprite* spr = character->getSprite();
+            Vector2d<float> cent(0.5,0.5);
+
+            if(spr!=nullptr)
+            {
+                Vector2d<float> spr_pos = spr->getCenterPosition();
+                Vector2d<float> rel_cent = spr_pos - position;
+
+                cent = rel_cent / spr_size;
+
+                //unvisual::debugger->clear();
+                //unvisual::debugger->print("X = " + std::to_string(cent.x));
+	            //unvisual::debugger->nextLine();
+                //unvisual::debugger->print("Y = " + std::to_string(cent.y));
+                //unvisual::debugger->nextLine();
+                //unvisual::debugger->breakpoint();
+            }
+
+            
+
+            sprite->setCenter(cent);
+        }
     }
 
     Entity::update();
@@ -87,12 +128,17 @@ void Weapon::update()
 
 void Weapon::updateFromCollider()
 {
-    Entity::updateFromCollider();
+    
 }
 
 void Weapon::interpolate(float rp)
 {
-    render_position = rel_position;
+    render_position = Vector2d<float>();
+    
+    if(attacking)
+    {
+        render_position = attack_rel_position;
+    }
 
     if(character!=nullptr)
     {
@@ -102,7 +148,7 @@ void Weapon::interpolate(float rp)
 
 void Weapon::collision(void * ent)
 {
-    Entity::collision(ent);
+    
 }
 
 void Weapon::attack()
@@ -111,6 +157,10 @@ void Weapon::attack()
     {
         attacking = true;
         time_attacking.reset();
+        if(body!=nullptr)
+        {
+            body->setActive(true);
+        }
     }
 }
 
@@ -144,10 +194,20 @@ void Weapon::setVelocity(const Vector2d<float>& vel)
     Entity::setVelocity(vel);
 }
 
+void Weapon::setAngle(float angl)
+{
+    Entity::setAngle(angl);
+}
+
 void Weapon::setCharacter(Combat_Character* cc)
 {
 
-    position = rel_position;
+    position = Vector2d<float>();
+
+    if(attacking)
+    {
+        position += attack_rel_position;
+    }
 
     if(character!=nullptr)
     {
@@ -203,6 +263,16 @@ const Vector2d<float>& Weapon::getRenderPosition() const
     return Entity::getRenderPosition();
 }
 
+const Class_Id& Weapon::getClassId() const
+{
+    return Entity::getClassId();
+}
+
+float Weapon::getAngle() const
+{
+    return Entity::getAngle();
+}
+
 Combat_Character* Weapon::getCharacter() const
 {
     return character;
@@ -210,12 +280,7 @@ Combat_Character* Weapon::getCharacter() const
 
 const Vector2d<float>& Weapon::getRelativePosition() const
 {
-    return rel_position;
-}
-
-const Class_Id& Weapon::getClassId() const
-{
-    return Entity::getClassId();
+    return attack_rel_position;
 }
 
 //=========================================

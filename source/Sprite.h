@@ -36,6 +36,7 @@ public:
     SpriteManager* getManager() const;
     const Vector2d<float>& getPosition() const;
     Vector2d<float> getCenter() const;
+    Vector2d<float> getCenterPosition() const;
     Vector2d<size_t> getSize() const;
 
     // Destructor
