@@ -108,13 +108,6 @@ void Weapon::update()
                 Vector2d<float> rel_cent = spr_pos - position;
 
                 cent = rel_cent / spr_size;
-
-                //unvisual::debugger->clear();
-                //unvisual::debugger->print("X = " + std::to_string(cent.x));
-	            //unvisual::debugger->nextLine();
-                //unvisual::debugger->print("Y = " + std::to_string(cent.y));
-                //unvisual::debugger->nextLine();
-                //unvisual::debugger->breakpoint();
             }
 
             

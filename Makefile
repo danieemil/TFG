@@ -89,7 +89,8 @@ CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 PICAFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.v.pica)))
 SHLISTFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.shlist)))
-GFXFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.t3s)))
+TSXFILES 	:= 	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.tsx)))
+GFXFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.t3s))) $(patsubst %.tsx, %.t3s, $(TSXFILES))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 TMXFILES	:= 	$(foreach dir,$(MAPS),$(notdir $(wildcard $(dir)/*.tmx)))
 
@@ -169,7 +170,6 @@ MPFILES		:=	$(patsubst %.tmx, $(MAPSBUILD)/%.mp, $(TMXFILES))
 #---------------------------------------------------------------------------------
 # Process .tsx files to generate .t3s files and images with Python
 #---------------------------------------------------------------------------------
-TSXFILES = $(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.tsx)))
 TSXFILESDIR = $(foreach dir,$(GRAPHICS), $(wildcard $(dir)/*.tsx))
 TILESETNAMES = $(patsubst %.tsx, %, $(TSXFILES))
 TILESETDIRS = $(addprefix $(GRAPHICS)/, $(TILESETNAMES))
@@ -183,7 +183,7 @@ T3SFILES = $(patsubst %.tsx, %.t3s, $(TSXFILESDIR))
 
 
 
-all: graphics $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES)
+all: graphics $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 
@@ -244,7 +244,7 @@ $(TILESETDIRS):
 #---------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------
-$(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s
+$(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	$(GRAPHICS)/%.t3s
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@tex3ds -i $< -H $(BUILD)/$*.h -d $(DEPSDIR)/$*.d -o $(GFXBUILD)/$*.t3x
