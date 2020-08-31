@@ -10,10 +10,13 @@ class Player : public Combat_Character
 
 public:
     // Constructores
-    Player(const Vector2d<float>& pos = Vector2d<float>(), float angl = 0.0f, Sprite* spr = nullptr, World* w = nullptr,
-        Collider* c = nullptr, const Vector2d<float>& max_vel = Vector2d<float>(0.0f,0.0f),
-        const Vector2d<float>& accel = Vector2d<float>(0.0f,0.0f),
-        const Vector2d<float>& decel = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr);
+    Player(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+        World* w = nullptr, Collider* c = nullptr,
+        const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
+        const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
+        const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
+        const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
+        float st_time = 0.0f);
     Player(const Player& p);
 
     Player& operator= (const Player& p);
@@ -27,6 +30,8 @@ public:
     void collision(void * ent) override;
         //Character
         //Combat_Character
+    void attack() override;
+    void die() override;
         //Player
     void processInput();
 
@@ -38,11 +43,17 @@ public:
     void setBody(Collider* c) override;
     void setVelocity(const Vector2d<float>& vel);
     void setAngle(float angl);
+    void setOrientation(const Vector2d<float>& ori);
         //Character
+    void setAcceleration(const Vector2d<float>& accel);
+    void setFriction(const Vector2d<float>& frict);
         //Combat_Character
     void addWeapon(Weapon* wp);
     void removeWeapon(Weapon* wp);
     void equipWeapon(size_t index);
+    void setAttacked(bool at);
+    void setStunned(bool st);
+    void setLife(int l);
         //Player
 
     // Getters
@@ -56,11 +67,19 @@ public:
     const Vector2d<float>& getRenderPosition() const;
     const Class_Id& getClassId() const;
     float getAngle() const;
+    Vector2d<float> getCenter() const;
+    const Vector2d<float>& getOrientation() const;
         //Character
+    const Vector2d<float>& getAcceleration() const;
         //Combat_Character
     const std::vector<Weapon*>& getWeapons() const;
     Weapon* getWeaponEquipped() const;
+    bool getAttacking() const;
+    bool getAttacked() const;
+    bool getStunned() const;
+    int getLife() const;
         //Player
+    const Vector2d<float>& getHeading() const;
 
     // Destructor
     ~Player();
@@ -72,7 +91,7 @@ private:
     // En qué dirección se está apuntando según las teclas pulsadas
     // X: +1=derecha,   0=No,   -1=izquierda
     // Y: +1=abajo,     0=No,   -1=arriba
-    Vector2d<float> heading, orientation;
+    Vector2d<float> heading;
 
 };
 

@@ -89,13 +89,15 @@ void Game::init()
 		// Posibles colisiones de la entidad(Probando)
 	Vector2d<size_t> enemy_size = enemy_sprite->getSize();
 	Shape* enemy_shape = physics::getSpriteShape(enemy_sprite->getManager()->getPath(), enemy_sprite->getIndex());
-	Collider* enemy_body = new Collider(enemy_position, enemy_shape, CollisionFlag::enemy_hit, CollisionFlag::player_hurt, CollisionType::col_none);
+	Collider* enemy_body = new Collider(enemy_position, enemy_shape, CollisionFlag::enemy_hit, CollisionFlag::player_hurt, CollisionType::col_dynamic);
 	
     // Otros atributos del enemigo
-	Vector2d<float> enemy_max_vel = Vector2d<float>(40.0f,40.0f);
-	Vector2d<float> enemy_accel = Vector2d<float>(10.0f, 10.0f);
-	Vector2d<float> enemy_decel = Vector2d<float>(10.0f,10.0f);
-	Enemy* enemy = new Enemy(enemy_position, 0.0f, enemy_sprite, world, enemy_body, enemy_max_vel, enemy_accel, enemy_decel);
+    int enemy_life = 30;
+	Vector2d<float> enemy_max_vel = Vector2d<float>(INFINITY,INFINITY);
+	Vector2d<float> enemy_max_accel = Vector2d<float>(INFINITY, INFINITY);
+	Vector2d<float> enemy_friction = Vector2d<float>(20.0f,20.0f);
+    Vector2d<float> enemy_init_orientation = Vector2d<float>(0.0f,-1.0f);
+	Enemy* enemy = new Enemy(enemy_life, enemy_position, enemy_sprite, world, enemy_body, enemy_init_orientation, enemy_max_vel, enemy_max_accel, enemy_friction, nullptr, 1.0f);
 	world->addEntity(enemy);
 
 	// Creamos al jugador
@@ -113,10 +115,12 @@ void Game::init()
 
 
 		// Otros atributos del jugador
+    int player_life = 100;
 	Vector2d<float> player_max_vel = Vector2d<float>(40.0f,40.0f);
-	Vector2d<float> player_accel = Vector2d<float>(10.0f, 10.0f);
-	Vector2d<float> player_decel = Vector2d<float>(10.0f,10.0f);
-	Player* player = new Player(player_position, 0.0f, player_sprite, world, player_body, player_max_vel, player_accel, player_decel);
+	Vector2d<float> player_max_accel = Vector2d<float>(INFINITY, INFINITY); // Máximo de fuerza que se le puede aplicar a un cuerpo
+	Vector2d<float> player_frict = Vector2d<float>(20.0f,20.0f);
+    Vector2d<float> player_init_orientation = Vector2d<float>(0.0f,-1.0f);
+	Player* player = new Player(player_life, player_position, player_sprite, world, player_body, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, 1.0f);
 	world->setPlayer(player);
 
         // Arma del jugador
@@ -126,8 +130,12 @@ void Game::init()
 
         Shape* weapon_shape = physics::getSpriteShape(weapon_sprite->getManager()->getPath(), weapon_sprite->getIndex());
         Collider* weapon_body = new Collider(player_position, weapon_shape, CollisionFlag::player_hurt, CollisionFlag::enemy_hit, CollisionType::col_none);
-        weapon_body->setActive(false);
-        Weapon* player_weapon = new Weapon(0.2f, Vector2d<float>(0.0f, -10.0f), 0.0f, weapon_sprite, nullptr, weapon_body, player);
+
+        int weapon_damage = 10;
+        float weapon_knockback = 200.0f;
+        float weapon_time_attack = 0.2f;
+        Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
+        Weapon* player_weapon = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_body, player_init_orientation, player);
         player->equipWeapon(0);
 
     // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
@@ -190,26 +198,6 @@ void Game::loop()
 		
 		dt = delta_time.getElapsed();
 		delta_time.reset();
-		
-        Debugger* debug = unvisual::debugger;
-
-		debug->setColumn(1);
-		debug->setRow(14);
-		debug->print("Time: ");
-		debug->print(std::to_string(svcGetSystemTick()));
-		debug->nextLine();
-        debug->setColumn(1);
-		debug->setRow(15);
-		debug->print("Max :  ");
-		debug->print("18446744073709551615");
-		debug->nextLine();
-		debug->nextLine();
-        debug->setColumn(1);
-		debug->setRow(17);
-		debug->print("Delta Time:");
-		debug->print(dt);
-		debug->nextLine();
-
 
 		// Escaneamos las teclas pulsadas(Inputs de la N3DS)
 		IM_scan();

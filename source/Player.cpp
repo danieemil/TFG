@@ -9,16 +9,16 @@ using namespace unvisual;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Player::Player(const Vector2d<float>& pos, float angl, Sprite* spr, World* w, Collider* c,
-    const Vector2d<float>& max_vel, const Vector2d<float>& accel, const Vector2d<float>& decel, Weapon* wp)
-: Combat_Character(pos, angl, spr, w, c, max_vel, accel, decel, wp)
+Player::Player(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
+    const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
+    const Vector2d<float>& frict, Weapon* wp, float st_time)
+: Combat_Character(l, pos, spr, w, c, ori, max_vel, max_accel, frict, wp, st_time)
 {
     id = Class_Id::e_player;
-    orientation = Vector2d<float>(0.0f,-1.0f);
 }
 
 Player::Player(const Player& p)
-: Combat_Character(p), orientation(p.orientation)
+: Combat_Character(p)
 {
 
 }
@@ -26,8 +26,6 @@ Player::Player(const Player& p)
 Player& Player::operator= (const Player& p)
 {
     Combat_Character::operator=(p);
-
-    orientation = p.orientation;
 
     return *this;
 }
@@ -43,6 +41,10 @@ void Player::render(const Vector2d<float>& view_pos)
 
 void Player::update()
 {
+
+    // Moverse en la dirección en la que se controla al personaje
+    acceleration = Vector2d<float>(40.0f, 40.0f) * heading;
+
     Combat_Character::update();
 }
 
@@ -66,6 +68,16 @@ void Player::collision(void* ent)
             
         }
     }
+}
+
+void Player::attack()
+{
+    Combat_Character::attack();
+}
+
+void Player::die()
+{
+    Combat_Character::die();
 }
 
 void Player::processInput()
@@ -115,21 +127,6 @@ void Player::processInput()
         attack();
     }
 
-
-    acceleration = max_acceleration * heading;
-
-    // Si no se está moviendo en un eje, le aplicamos fricción a ese eje
-
-    if(heading.x == 0)
-    {
-        acceleration.x = clamp(0.0f, abs(velocity.x), deceleration.x) * sign(velocity.x) * (-1);
-    }
-
-    if(heading.y == 0)
-    {
-        acceleration.y = clamp(0.0f, abs(velocity.y), deceleration.y) * sign(velocity.y) * (-1);
-    }
-
     unvisual::debugger->setRow(6);
     unvisual::debugger->setColumn(1);
     unvisual::debugger->print("Player position:");
@@ -142,30 +139,18 @@ void Player::processInput()
     unvisual::debugger->nextLine();
     unvisual::debugger->print("Vel_Y = " + std::to_string(velocity.y));
     unvisual::debugger->nextLine();
-    if(equipped!=nullptr)
-    {
-        unvisual::debugger->print("Weapon position:");
-        unvisual::debugger->nextLine();
-	    unvisual::debugger->print("X = " + std::to_string(equipped->getPosition().x));
-	    unvisual::debugger->nextLine();
-        unvisual::debugger->print("Y = " + std::to_string(equipped->getPosition().y));
-        unvisual::debugger->nextLine();
-        unvisual::debugger->print(equipped->getCharacter());
-        unvisual::debugger->nextLine();
-    }
-	
+    unvisual::debugger->print("Player orientation:");
+    unvisual::debugger->nextLine();
+    unvisual::debugger->print("X = " + std::to_string(orientation.x));
+    unvisual::debugger->nextLine();
+    unvisual::debugger->print("Y = " + std::to_string(orientation.y));
+    unvisual::debugger->nextLine();
+    unvisual::debugger->print("Angle = " + std::to_string((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y)));
+    unvisual::debugger->nextLine();
+
     if(heading!=Vector2d<float>())
     {
         orientation = heading;
-    }
-
-    if(orientation.x!=0.0f)
-    {
-        setAngle((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y));
-    }
-    else
-    {
-        setAngle(90.0f + 90.0f*orientation.y);
     }
 }
 
@@ -205,7 +190,32 @@ void Player::setVelocity(const Vector2d<float>& vel)
 
 void Player::setAngle(float angl)
 {
-    Combat_Character::setAngle(angl);
+    if(angle == angl) return;
+
+    angle = angl;
+    if(sprite!=nullptr)
+    {
+        sprite->setRotation(angle);
+    }
+    if(body!=nullptr)
+    {
+        body->setGlobalRotation(angle);
+    }
+}
+
+void Player::setOrientation(const Vector2d<float>& ori)
+{
+    Combat_Character::setOrientation(ori);
+}
+
+void Player::setAcceleration(const Vector2d<float>& accel)
+{
+    Combat_Character::setAcceleration(accel);
+}
+
+void Player::setFriction(const Vector2d<float>& frict)
+{
+    Combat_Character::setFriction(frict);
 }
 
 void Player::addWeapon(Weapon* wp)
@@ -221,6 +231,21 @@ void Player::removeWeapon(Weapon* wp)
 void Player::equipWeapon(size_t index)
 {
     Combat_Character::equipWeapon(index);
+}
+
+void Player::setAttacked(bool at)
+{
+    Combat_Character::setAttacked(at);
+}
+
+void Player::setStunned(bool st)
+{
+    Combat_Character::setStunned(st);
+}
+
+void Player::setLife(int l)
+{
+    Combat_Character::setLife(l);
 }
 
 //=========================================
@@ -272,6 +297,21 @@ float Player::getAngle() const
     return Combat_Character::getAngle();
 }
 
+Vector2d<float> Player::getCenter() const
+{
+    return Combat_Character::getCenter();
+}
+
+const Vector2d<float>& Player::getOrientation() const
+{
+    return Combat_Character::getOrientation();
+}
+
+const Vector2d<float>& Player::getAcceleration() const
+{
+    return Combat_Character::getAcceleration();
+}
+
 const std::vector<Weapon*>& Player::getWeapons() const
 {
     return Combat_Character::getWeapons();
@@ -280,6 +320,31 @@ const std::vector<Weapon*>& Player::getWeapons() const
 Weapon* Player::getWeaponEquipped() const
 {
     return Combat_Character::getWeaponEquipped();
+}
+
+bool Player::getAttacking() const
+{
+    return Combat_Character::getAttacking();
+}
+
+bool Player::getAttacked() const
+{
+    return Combat_Character::getAttacked();
+}
+
+bool Player::getStunned() const
+{
+    return Combat_Character::getStunned();
+}
+
+int Player::getLife() const
+{
+    return Combat_Character::getLife();
+}
+
+const Vector2d<float>& Player::getHeading() const
+{
+    return heading;
 }
 
 //=========================================

@@ -9,26 +9,38 @@ using std::placeholders::_1;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Entity::Entity(const Vector2d<float>& pos, float angl, Sprite* spr, World* w, Collider* c)
-: world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c), velocity(), id(Class_Id::e_none), angle(angl)
+Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, const Vector2d<float>& ori)
+: world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c), velocity(), id(Class_Id::e_none), angle(0.0f), orientation(ori)
 {
     if(body!=nullptr)
     {
         body->setCreator(this);
         body->setCallback(std::bind(&Entity::collision, this, _1));
         body->setPosition(position);
-        body->setGlobalRotation(angle);
     }
-    if(sprite!=nullptr)
+
+    if(orientation.x!=0.0f)
     {
-        sprite->setRotation(angle);
+        setAngle((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y));
     }
+    else
+    {
+        setAngle(90.0f + 90.0f*orientation.y);
+    }
+
 }
 
 Entity::Entity(const Entity& e) :
-world(nullptr), sprite(nullptr), position(e.position), render_position(e.render_position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity), id(e.id), angle(e.angle)
+world(nullptr), sprite(nullptr), position(e.position), render_position(e.render_position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity), id(e.id), angle(e.angle), orientation(e.orientation)
 {
-    
+    if(orientation.x!=0.0f)
+    {
+        setAngle((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y));
+    }
+    else
+    {
+        setAngle(90.0f + 90.0f*orientation.y);
+    }
 }
 
 Entity& Entity::operator= (const Entity& e)
@@ -43,6 +55,16 @@ Entity& Entity::operator= (const Entity& e)
     velocity = e.velocity;
     id = e.id;
     angle = e.angle;
+    orientation = e.orientation;
+
+    if(orientation.x!=0.0f)
+    {
+        setAngle((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y));
+    }
+    else
+    {
+        setAngle(90.0f + 90.0f*orientation.y);
+    }
     
     return *this;
 }
@@ -66,7 +88,22 @@ void Entity::update()
     pre_position = position;
     if(body!=nullptr)
     {
-        body->setVelocity(velocity);
+        velocity = body->getVelocity();
+        position = body->getPosition();
+    }
+    else
+    {
+        position = position + velocity;
+    }
+    
+    // Obtener el ángulo a partir de la orientación
+    if(orientation.x!=0.0f)
+    {
+        setAngle((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y));
+    }
+    else
+    {
+        setAngle(90.0f + 90.0f*orientation.y);
     }
     
 }
@@ -154,6 +191,7 @@ void Entity::setBody(Collider* c)
         body->setCreator(this);
         body->setCallback(std::bind(&Entity::collision, this, _1));
         body->setPosition(position);
+        body->setVelocity(velocity);
         body->setGlobalRotation(angle);
     }
 }
@@ -161,10 +199,16 @@ void Entity::setBody(Collider* c)
 void Entity::setVelocity(const Vector2d<float>& vel)
 {
     velocity = vel;
+    if(body!=nullptr)
+    {
+        body->setVelocity(velocity);
+    }
 }
 
 void Entity::setAngle(float angl)
 {
+    if(angle == angl) return;
+
     angle = angl;
     if(sprite!=nullptr)
     {
@@ -174,7 +218,11 @@ void Entity::setAngle(float angl)
     {
         body->setGlobalRotation(angle);
     }
-    
+}
+
+void Entity::setOrientation(const Vector2d<float>& ori)
+{
+    orientation = ori;
 }
 
 
@@ -235,6 +283,11 @@ Vector2d<float> Entity::getCenter() const
         cent += sprite->getCenter();
     }
     return cent;
+}
+
+const Vector2d<float>& Entity::getOrientation() const
+{
+    return orientation;
 }
 
 

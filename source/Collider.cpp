@@ -8,8 +8,26 @@ using namespace physics;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& ft, const CollisionFlag& fi, const CollisionType& t, void* c, Callback cb, int i, float a, const Vector2d<float>& rot_cent, const Vector2d<float>& vel, bool act)
-: position(pos), previous_position(pos), type_flags(ft), interested_flags(fi), type(t), creator(c), callback(cb), index(i), angle(a), rotation_center(rot_cent), velocity(vel), active(act)
+Collider::Collider(const Vector2d<float>& pos, Shape* s,
+const CollisionFlag& ft, const CollisionFlag& fi,
+const CollisionType& t, void* c, Callback cb, int i, float a,
+const Vector2d<float>& rot_cent,
+const Vector2d<float>& vel, bool act,
+const Vector2d<float>& m_vel,
+const Vector2d<float>& accel,
+const Vector2d<float>& m_accel,
+const Vector2d<float>& frict,
+const Vector2d<float>& imp)
+: position(pos), previous_position(pos),
+type_flags(ft), interested_flags(fi),
+type(t), creator(c), callback(cb), index(i), angle(a),
+rotation_center(rot_cent),
+velocity(vel), active(act),
+max_velocity(m_vel),
+acceleration(accel),
+max_acceleration(m_accel),
+friction(frict),
+impulse(imp)
 {
     if(s!=nullptr)
     {
@@ -34,7 +52,17 @@ Collider::Collider(const Vector2d<float>& pos, Shape* s, const CollisionFlag& ft
 }
 
 Collider::Collider(const Collider& c)
-: position(c.position), previous_position(c.previous_position), bounds(c.bounds), type_flags(c.type_flags), interested_flags(c.interested_flags), creator(c.creator), callback(c.callback), index(-1), angle(c.angle), rotation_center(c.rotation_center), velocity(c.velocity), active(c.active)
+: position(c.position), previous_position(c.previous_position), bounds(c.bounds),
+type_flags(c.type_flags), interested_flags(c.interested_flags),
+creator(c.creator), callback(c.callback), index(-1), angle(c.angle),
+rotation_center(c.rotation_center),
+velocity(c.velocity), active(c.active),
+max_velocity(c.max_velocity),
+acceleration(c.acceleration),
+max_acceleration(c.max_acceleration),
+friction(c.friction),
+impulse(c.impulse)
+
 {
     for (auto it = c.shapes.begin(); it!=c.shapes.end(); it++)
     {
@@ -85,6 +113,11 @@ Collider& Collider::operator= (const Collider& c)
     rotation_center = c.rotation_center;
     velocity = c.velocity;
     active = c.active;
+    max_velocity = c.max_velocity;
+    acceleration = c.acceleration;
+    max_acceleration = c.max_acceleration;
+    friction = c.friction;
+    impulse = c.impulse;
 
     setTypeFlags(c.type_flags);
     setIntersetedFlags(c.interested_flags);
@@ -232,6 +265,57 @@ bool Collider::isColliding() const
 void Collider::update(float dt)
 {
     previous_position = position;
+
+    Vector2d<int> ori = Vector2d<int>(sign(velocity.x),sign(velocity.y));
+    Vector2d<float> v_abs = Vector2d<float>(velocity.x * ori.x, velocity.y * ori.y);
+
+    Vector2d<float> s_frict;
+
+    // Aplicar fricción
+    s_frict.x = utilities::clamp(0.0f, friction.x, v_abs.x) * ori.x * (-1);
+    s_frict.y = utilities::clamp(0.0f, friction.y, v_abs.y) * ori.y * (-1);
+
+    Vector2d<float> accel = acceleration + s_frict + impulse;
+
+    // El impulso solo se aplica una vez
+    impulse = Vector2d<float>();
+
+    Vector2d<int> a_ori = Vector2d<int>(sign(accel.x),sign(accel.y));
+    Vector2d<float> a_abs = Vector2d<float>(accel.x * a_ori.x, accel.y * a_ori.y);
+
+    // No sobrepasar la aceleración máxima permitida, también conocida fuerza total máxima permitida
+    if(a_abs.x > max_acceleration.x)
+    {
+        accel.x = max_acceleration.x * a_ori.x;
+        a_abs.x = accel.x * a_ori.x;
+    }
+    if(a_abs.y > max_acceleration.y)
+    {
+        accel.y = max_acceleration.y * a_ori.y;
+        a_abs.y = accel.y * a_ori.y;
+    }
+
+    // Aplicar fuerzas
+    velocity = velocity + accel;
+
+
+    ori = Vector2d<int>(sign(velocity.x),sign(velocity.y));
+    v_abs = Vector2d<float>(velocity.x * ori.x, velocity.y * ori.y);
+
+    // No sobrepasar la velocidad máxima permitida(como en los coches)
+    
+    if(v_abs.x > max_velocity.x)
+    {
+        velocity.x = max_velocity.x * ori.x;
+        v_abs.x = velocity.x * ori.x;
+    }
+    if(v_abs.y > max_velocity.y)
+    {
+        velocity.y = max_velocity.y * ori.y;
+        v_abs.y = velocity.y * ori.y;
+    }
+
+    // Aplicar velocidad
     position = position + velocity * dt;
 
     for (auto &&shape : shapes)
@@ -241,7 +325,6 @@ void Collider::update(float dt)
             shape->update(dt);
         }
     }
-    
 
     calculateValues();
 }
@@ -403,6 +486,31 @@ void Collider::setActive(bool a)
     active = a;
 }
 
+void Collider::setMaxVelocity(const Vector2d<float>& m_vel)
+{
+    max_velocity = m_vel;
+}
+
+void Collider::setAcceleration(const Vector2d<float>& accel)
+{
+    acceleration = accel;
+}
+
+void Collider::setMaxAcceleration(const Vector2d<float>& m_accel)
+{
+    max_acceleration = m_accel;
+}
+
+void Collider::setFriction(const Vector2d<float>& frict)
+{
+    friction = frict;
+}
+
+void Collider::setImpulse(const Vector2d<float>& force)
+{
+    impulse = force;
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -466,6 +574,23 @@ const Vector2d<float>& Collider::getVelocity() const
 bool Collider::getActive() const
 {
     return active;
+}
+
+const Vector2d<float>& Collider::getMaxVelocity() const
+{
+    return max_velocity;
+}
+const Vector2d<float>& Collider::getAcceleration() const
+{
+    return acceleration;
+}
+const Vector2d<float>& Collider::getMaxAcceleration() const
+{
+    return max_acceleration;
+}
+const Vector2d<float>& Collider::getFriction() const
+{
+    return friction;
 }
 
 

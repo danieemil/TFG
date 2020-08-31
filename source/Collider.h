@@ -52,7 +52,16 @@ class Collider
 
 public:
     // Constructores
-    Collider(const Vector2d<float>& pos, Shape* s = nullptr, const CollisionFlag& ft = CollisionFlag::none, const CollisionFlag& fi = CollisionFlag::none, const CollisionType& t = CollisionType::col_none, void* c = nullptr, Callback cb = nullptr, int i = -1, float a = 0.0f, const Vector2d<float>& rot_cent = Vector2d<float>(0,0), const Vector2d<float>& vel = Vector2d<float>(), bool act = true);
+    Collider(const Vector2d<float>& pos, Shape* s = nullptr,
+    const CollisionFlag& ft = CollisionFlag::none, const CollisionFlag& fi = CollisionFlag::none,
+    const CollisionType& t = CollisionType::col_none, void* c = nullptr, Callback cb = nullptr,
+    int i = -1, float a = 0.0f, const Vector2d<float>& rot_cent = Vector2d<float>(0,0),
+    const Vector2d<float>& vel = Vector2d<float>(), bool act = true,
+    const Vector2d<float>& m_vel = Vector2d<float>(INFINITY, INFINITY),
+    const Vector2d<float>& accel = Vector2d<float>(),
+    const Vector2d<float>& m_accel = Vector2d<float>(INFINITY, INFINITY),
+    const Vector2d<float>& frict = Vector2d<float>(),
+    const Vector2d<float>& imp = Vector2d<float>());
     Collider(const Collider& c);
 
     Collider& operator= (const Collider& c);
@@ -89,6 +98,11 @@ public:
     void setRotationCenter(const Vector2d<float>& rot_cent);
     void setVelocity(const Vector2d<float>& vel);
     void setActive(bool a);
+    void setMaxVelocity(const Vector2d<float>& m_vel);
+    void setAcceleration(const Vector2d<float>& accel);
+    void setMaxAcceleration(const Vector2d<float>& m_accel);
+    void setFriction(const Vector2d<float>& frict);
+    void setImpulse(const Vector2d<float>& imp);
 
     // Getters
     const Vector2d<float>& getPosition() const;
@@ -104,6 +118,10 @@ public:
     const Vector2d<float>& getRotationCenter() const;
     const Vector2d<float>& getVelocity() const;
     bool getActive() const;
+    const Vector2d<float>& getMaxVelocity() const;
+    const Vector2d<float>& getAcceleration() const;
+    const Vector2d<float>& getMaxAcceleration() const;
+    const Vector2d<float>& getFriction() const;
 
     // Destructor
     ~Collider();
@@ -124,6 +142,13 @@ private:
     Vector2d<float> rotation_center;
     Vector2d<float> velocity; // Describe lo que te mueves en X e Y en un segundo
     bool active; // Indica si tiene habilitadas o inhabilitadas las colisiones
+
+    // Variables para el movimiento de los cuerpos
+    Vector2d<float> max_velocity;
+    Vector2d<float> acceleration;
+    Vector2d<float> max_acceleration;
+    Vector2d<float> friction;
+    Vector2d<float> impulse;
 
     void calculateValues();
 

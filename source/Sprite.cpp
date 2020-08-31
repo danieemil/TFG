@@ -139,6 +139,11 @@ const Vector2d<float>& Sprite::getPosition() const
     return position;
 }
 
+Vector2d<float> Sprite::getSpritePosition() const
+{
+    return Vector2d<float>(sprite.params.pos.x, sprite.params.pos.y);
+}
+
 Vector2d<float> Sprite::getCenter() const
 {
     return Vector2d<float>(sprite.params.center.x, sprite.params.center.y);

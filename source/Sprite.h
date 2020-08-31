@@ -35,6 +35,7 @@ public:
     size_t getIndex() const;
     SpriteManager* getManager() const;
     const Vector2d<float>& getPosition() const;
+    Vector2d<float> getSpritePosition() const;
     Vector2d<float> getCenter() const;
     Vector2d<float> getCenterPosition() const;
     Vector2d<size_t> getSize() const;

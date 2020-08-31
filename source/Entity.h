@@ -25,7 +25,8 @@ class Entity
 
 public:
     // Constructores
-    Entity(const Vector2d<float>& pos = Vector2d<float>(), float angl = 0.0f, Sprite* spr = nullptr, World* w = nullptr, Collider* c = nullptr);
+    Entity(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+    World* w = nullptr, Collider* c = nullptr, const Vector2d<float>& ori = Vector2d<float>(0,-1));
     Entity(const Entity& e);
 
     Entity& operator= (const Entity& e);
@@ -45,6 +46,7 @@ public:
     virtual void setBody(Collider* c);
     virtual void setVelocity(const Vector2d<float>& vel);
     virtual void setAngle(float angl);
+    virtual void setOrientation(const Vector2d<float>& ori);
 
     // Getters
     virtual Sprite* getSprite() const;
@@ -57,6 +59,7 @@ public:
     virtual const Class_Id& getClassId() const;
     virtual float getAngle() const;
     virtual Vector2d<float> getCenter() const;
+    virtual const Vector2d<float>& getOrientation() const;
 
     // Destructor
     virtual ~Entity();
@@ -73,6 +76,7 @@ protected:
     Class_Id id;
 
     float angle;
+    Vector2d<float> orientation;
 
 
 private:

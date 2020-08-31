@@ -11,10 +11,13 @@ class Combat_Character : public Character
 
 public:
     // Constructores
-    Combat_Character(const Vector2d<float>& pos = Vector2d<float>(), float angl = 0.0f, Sprite* spr = nullptr, World* w = nullptr,
-        Collider* c = nullptr, const Vector2d<float>& max_vel = Vector2d<float>(0.0f,0.0f),
-        const Vector2d<float>& accel = Vector2d<float>(0.0f,0.0f),
-        const Vector2d<float>& decel = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr);
+    Combat_Character(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+        World* w = nullptr, Collider* c = nullptr,
+        const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
+        const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
+        const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
+        const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
+        float st_time = 0.0f);
     Combat_Character(const Combat_Character& cc);
 
     Combat_Character& operator= (const Combat_Character& cc);
@@ -29,6 +32,7 @@ public:
         //Character
         //Combat_Character
     virtual void attack();
+    virtual void die();
 
     // Setters
         //Entity
@@ -38,11 +42,17 @@ public:
     virtual void setBody(Collider* c);
     virtual void setVelocity(const Vector2d<float>& vel);
     virtual void setAngle(float angl);
+    virtual void setOrientation(const Vector2d<float>& ori);
         //Character
+    virtual void setAcceleration(const Vector2d<float>& accel);
+    virtual void setFriction(const Vector2d<float>& frict);
         //Combat_Character
     virtual void addWeapon(Weapon* wp);
     virtual void removeWeapon(Weapon* wp);
     virtual void equipWeapon(size_t index);
+    virtual void setAttacked(bool at);
+    virtual void setStunned(bool st);
+    virtual void setLife(int l);
 
     // Getters
         //Entity
@@ -55,10 +65,17 @@ public:
     virtual const Vector2d<float>& getRenderPosition() const;
     virtual const Class_Id& getClassId() const;
     virtual float getAngle() const;
+    virtual Vector2d<float> getCenter() const;
+    virtual const Vector2d<float>& getOrientation() const;
         //Character
+    virtual const Vector2d<float>& getAcceleration() const;
         //Combat_Character
     virtual const std::vector<Weapon*>& getWeapons() const;
     virtual Weapon* getWeaponEquipped() const;
+    virtual bool getAttacking() const;
+    virtual bool getAttacked() const;
+    virtual bool getStunned() const;
+    virtual int getLife() const;
 
     // Destructor
     ~Combat_Character();
@@ -67,6 +84,17 @@ protected:
 
     std::vector<Weapon*> weapons;
     Weapon* equipped;
+
+    bool attacked;
+
+    // Mecánica de aturdimiento
+    bool stunned;
+    float stun_time;
+    Timepoint stun_timing;
+
+    // Atributos de personaje
+    int life;
+
 
 private:
 

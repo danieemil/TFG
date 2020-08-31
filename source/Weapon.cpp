@@ -9,12 +9,12 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Weapon::Weapon(float t_attack, const Vector2d<float>& rel_attack, float angl, Sprite* spr, World* w, Collider* c, Combat_Character* cc)
-: Entity(rel_attack, angl, spr, w, c), character(cc), attack_rel_position(rel_attack), attacking(false), attack_time(t_attack)
+Weapon::Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
+    Sprite* spr, World* w, Collider* c, const Vector2d<float>& ori, Combat_Character* cc)
+: Entity(rel_attack, spr, w, c, ori), character(cc), attack_rel_position(rel_attack),
+    attacking(false), attack_time(t_attack), damage(dam), knockback(knock)
 {
     id = Class_Id::e_weapon;
-
-    position = attack_rel_position;
 
     if(character!=nullptr)
     {
@@ -22,10 +22,16 @@ Weapon::Weapon(float t_attack, const Vector2d<float>& rel_attack, float angl, Sp
         character->addWeapon(this);
     }
 
+    if(body!=nullptr)
+    {
+        body->setActive(false);
+    }
+
 }
 
 Weapon::Weapon(const Weapon& w)
-: Entity(w), character(w.character), attack_rel_position(w.attack_rel_position), attacking(false), attack_time(w.attack_time)
+: Entity(w), character(w.character), attack_rel_position(w.attack_rel_position), attacking(false),
+    attack_time(w.attack_time), damage(w.damage), knockback(w.knockback)
 {
     position = attack_rel_position;
 
@@ -41,8 +47,11 @@ Weapon& Weapon::operator= (const Weapon& w)
     this->Entity::operator=(w);
     character = w.character;
 
+    position = attack_rel_position;
+
     if(character!=nullptr)
     {
+        position += character->getPosition();
         character->addWeapon(this);
     }
 
@@ -50,8 +59,12 @@ Weapon& Weapon::operator= (const Weapon& w)
     attack_time = w.attack_time;
     attack_rel_position = w.attack_rel_position;
 
+    damage = w.damage;
+    knockback = w.knockback;
+
     return *this;
 }
+
 
 //=========================================
 //=               MÉTODOS   	    	  =
@@ -60,6 +73,17 @@ Weapon& Weapon::operator= (const Weapon& w)
 void Weapon::render(const Vector2d<float>& view_pos)
 {
     Entity::render(view_pos);
+
+    Debugger* debug = unvisual::debugger;
+
+    debug->setColumn(1);
+    debug->setRow(17);
+    debug->print("Weapon: ");
+    debug->nextLine();
+    debug->print("X : " + std::to_string(sprite->getSpritePosition().x));
+    debug->nextLine();
+    debug->print("Y : " + std::to_string(sprite->getSpritePosition().y));
+    debug->nextLine();
 
     if(body!=nullptr)
     {
@@ -90,7 +114,7 @@ void Weapon::update()
     if(character!=nullptr)
     {
         position += character->getPosition();
-        setAngle(character->getAngle());
+        setOrientation(character->getOrientation());
 
         // Ponemos el centro del sprite del arma en el centro de su portador
         // De esta forma puede rotar alrededor de su portador
@@ -110,8 +134,6 @@ void Weapon::update()
                 cent = rel_cent / spr_size;
             }
 
-            
-
             sprite->setCenter(cent);
         }
     }
@@ -121,7 +143,7 @@ void Weapon::update()
 
 void Weapon::updateFromCollider()
 {
-    
+    return;
 }
 
 void Weapon::interpolate(float rp)
@@ -192,6 +214,11 @@ void Weapon::setAngle(float angl)
     Entity::setAngle(angl);
 }
 
+void Weapon::setOrientation(const Vector2d<float>& ori)
+{
+    Entity::setOrientation(ori);
+}
+
 void Weapon::setCharacter(Combat_Character* cc)
 {
 
@@ -214,6 +241,26 @@ void Weapon::setCharacter(Combat_Character* cc)
         position += character->getPosition();
         character->addWeapon(this);
     }
+}
+
+void Weapon::setRelativePosition(const Vector2d<float>& rl_pos)
+{
+    attack_rel_position = rl_pos;
+}
+
+void Weapon::setAttackingTime(float at_time)
+{
+    attack_time = at_time;
+}
+
+void Weapon::setDamage(int dam)
+{
+    damage = dam;
+}
+
+void Weapon::setKnockback(float knock)
+{
+    knockback = knock;
 }
 
 
@@ -266,6 +313,16 @@ float Weapon::getAngle() const
     return Entity::getAngle();
 }
 
+Vector2d<float> Weapon::getCenter() const
+{
+    return Entity::getCenter();
+}
+
+const Vector2d<float>& Weapon::getOrientation() const
+{
+    return Entity::getOrientation();
+}
+
 Combat_Character* Weapon::getCharacter() const
 {
     return character;
@@ -275,6 +332,22 @@ const Vector2d<float>& Weapon::getRelativePosition() const
 {
     return attack_rel_position;
 }
+
+bool Weapon::getAttacking() const
+{
+    return attacking;
+}
+
+int Weapon::getDamage() const
+{
+    return damage;
+}
+
+float Weapon::getKnockback() const
+{
+    return knockback;
+}
+
 
 //=========================================
 //=              DESTRUCTOR   	    	  =

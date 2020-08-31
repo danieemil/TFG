@@ -656,10 +656,10 @@ void Convex::calculateRotation()
     
     calculateCenter();
 
-    
+    float a = utilities::toRadians(angle);
 
-    float s = sin(angle);
-    float c = cos(angle);
+    float s = sin(a);
+    float c = cos(a);
 
     for (size_t v = 0; v!=rotated_vertices.size(); v++)
     {
