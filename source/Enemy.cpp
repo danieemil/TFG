@@ -1,5 +1,6 @@
 #include "Enemy.h"
-#include "World.h"
+
+#include "Game.h"
 
 
 //=========================================
@@ -8,14 +9,14 @@
 
 Enemy::Enemy(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
     const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
-    const Vector2d<float>& frict, Weapon* wp, float st_time)
-: Combat_Character(l, pos, spr, w, c, ori, max_vel, max_accel, frict, wp, st_time)
+    const Vector2d<float>& frict, Weapon* wp, float st_time, BinaryTree* bt)
+: Combat_Character(l, pos, spr, w, c, ori, max_vel, max_accel, frict, wp, st_time), b_tree(bt)
 {
     id = Class_Id::e_enemy;
 }
 
 Enemy::Enemy(const Enemy& cc)
-: Combat_Character(cc)
+: Combat_Character(cc), b_tree(cc.b_tree)
 {
     id = Class_Id::e_enemy;
 }
@@ -23,6 +24,7 @@ Enemy::Enemy(const Enemy& cc)
 Enemy& Enemy::operator= (const Enemy& cc)
 {
     Combat_Character::operator=(cc);
+    b_tree = cc.b_tree;
     
     return *this;
 }
@@ -38,6 +40,22 @@ void Enemy::render(const Vector2d<float>& view_pos)
 
 void Enemy::update()
 {
+
+    if(b_tree!=nullptr)
+    {
+        b_tree->update(this);
+    }
+    
+    /* Árbol binario embebido
+    if(checkNearPlayer(60.0f))
+    {
+        if(checkFarPlayer(40.0f))
+            actionTowardsPlayer();
+        else actionStop();
+    } else actionStop();
+    */
+        
+
     Combat_Character::update();
 }
 
@@ -75,6 +93,70 @@ void Enemy::die()
     Combat_Character::die();
 }
 
+bool Enemy::checkNearPlayer(float distance)
+{
+    Player* p = Game::Instance()->getPlayer();
+
+    if(p!=nullptr)
+    {
+        Vector2d<float> dist = p->getPosition() - position;
+        if(dist.Length() < distance)
+            return true;
+    }
+
+    return false;
+}
+
+bool Enemy::checkFarPlayer(float distance)
+{
+    Player* p = Game::Instance()->getPlayer();
+
+    if(p!=nullptr)
+    {
+        Vector2d<float> dist = p->getPosition() - position;
+        if(dist.Length() > distance)
+            return true;
+    }
+
+    return false;
+}
+
+void Enemy::actionTowardsPlayer()
+{
+
+    Player* p = Game::Instance()->getPlayer();
+
+    if(p!=nullptr)
+    {
+        Vector2d<float> dist = p->getPosition() - position;
+
+        Vector2d<float> dir = dist;
+        dir.Normalize();
+
+        Vector2d<int> ori = Vector2d<int>(sign(dir.x), sign(dir.y));
+
+        if((dir.x * ori.x) > 0.5f) dir.x = 1.0f * ori.x;
+        else dir.x = 0.0f;
+
+        if((dir.y * ori.y) > 0.5f) dir.y = 1.0f * ori.y;
+        else dir.y = 0.0f;
+
+        orientation = dir;
+
+        float accel = 20.0f;
+
+        dir.Normalize();
+        acceleration = dir * accel;
+
+    }
+}
+
+void Enemy::actionStop()
+{
+    acceleration = Vector2d<float>(0.0f, 0.0f);
+}
+
+
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -107,7 +189,7 @@ void Enemy::setVelocity(const Vector2d<float>& vel)
 
 void Enemy::setAngle(float angl)
 {
-    Combat_Character::setAngle(angl);
+    //Combat_Character::setAngle(angl);
 }
 
 void Enemy::setOrientation(const Vector2d<float>& ori)

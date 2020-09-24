@@ -8,7 +8,7 @@ namespace unvisual
     namespace
     {
         aptHookCookie* hc = nullptr;
-    };
+    }
 
     ////////////////////////////
     //  Gestión de librerías  //

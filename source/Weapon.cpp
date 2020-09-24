@@ -73,18 +73,7 @@ Weapon& Weapon::operator= (const Weapon& w)
 void Weapon::render(const Vector2d<float>& view_pos)
 {
     Entity::render(view_pos);
-
-    Debugger* debug = unvisual::debugger;
-
-    debug->setColumn(1);
-    debug->setRow(17);
-    debug->print("Weapon: ");
-    debug->nextLine();
-    debug->print("X : " + std::to_string(sprite->getSpritePosition().x));
-    debug->nextLine();
-    debug->print("Y : " + std::to_string(sprite->getSpritePosition().y));
-    debug->nextLine();
-
+    
     if(body!=nullptr)
     {
         body->setPosition(character->getCenter());

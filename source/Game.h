@@ -33,6 +33,7 @@ public:
     float getDeltaTime() const;
     float getUpdateTime() const;
     const float getUpd() const;
+    Player* getPlayer() const;
 
     static Game* Instance(); 
 

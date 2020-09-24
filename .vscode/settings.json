@@ -69,7 +69,13 @@
         "map": "cpp",
         "__tree": "cpp",
         "cinttypes": "cpp",
-        "__functional_03": "cpp"
+        "__functional_03": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "unordered_set": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "set": "cpp"
     },
     "python.pythonPath": "env/bin/python3.6"
 }

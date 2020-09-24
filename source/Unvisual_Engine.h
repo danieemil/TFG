@@ -86,10 +86,8 @@ namespace unvisual
         utilities::Vector2d<u16> getPositionTouched();
 
         void IM_deInit();
-
     }
 
-
-
 }
+
 #endif

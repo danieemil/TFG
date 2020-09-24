@@ -88,6 +88,14 @@ void World::eraseEntity(Entity* e)
     }
 }
 
+void World::erasePlayer(Player* p)
+{
+    if(player == p)
+    {
+        player = nullptr;
+    }
+}
+
 void World::processInput()
 {
     if(player!=nullptr)

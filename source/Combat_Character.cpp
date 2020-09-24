@@ -70,7 +70,7 @@ void Combat_Character::update()
                 body->setActive(true);
             }
         }
-    }else
+    }else if((equipped==nullptr || !equipped->getAttacking()))
     {
         Character::update();
     }
@@ -117,6 +117,8 @@ void Combat_Character::collision(void* ent)
             if(body!=nullptr)
             {
                 body->setImpulse(dir * w->getKnockback());
+                body->setVelocity(Vector2d<float>(0.0f,0.0f));
+                body->setAcceleration(Vector2d<float>(0.0f, 0.0f));
                 body->setActive(false);
             }
             stun_timing.reset();
@@ -136,9 +138,14 @@ void Combat_Character::attack()
     {
         if(equipped!=nullptr)
         {
+            if(body!=nullptr)
+            {
+                body->setVelocity(Vector2d<float>(0.0f,0.0f));
+                body->setAcceleration(Vector2d<float>(0.0f, 0.0f));
+            }
             equipped->attack();
         }
-    } 
+    }
 }
 
 void Combat_Character::die()

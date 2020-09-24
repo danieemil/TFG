@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "AI_Engine.h"
 
 
 int main(int argc, char* argv[])
@@ -8,6 +9,7 @@ int main(int argc, char* argv[])
 	unvisual::init();
 	unvisual::initDebugger();
 	physics::init();
+	AI::init();
 
 	Game* game = Game::Instance();
 	game->loop();
@@ -16,6 +18,7 @@ int main(int argc, char* argv[])
 	// Deinicializar todo(si no se hace, habrán memory leaks)
 	unvisual::deInit();
 	physics::deInit();
+	AI::deInit();
 
 }
 

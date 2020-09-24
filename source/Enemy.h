@@ -3,7 +3,7 @@
 
 #include "Combat_Character.h"
 #include "Weapon.h"
-#include "vector"
+#include "BinaryTree.h"
 
 
 class Enemy : public Combat_Character
@@ -16,7 +16,7 @@ public:
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
-        float st_time = 0.0f);
+        float st_time = 0.0f, BinaryTree* bt = nullptr);
     Enemy(const Enemy& cc);
 
     Enemy& operator= (const Enemy& cc);
@@ -33,6 +33,10 @@ public:
     virtual void attack() override;
     virtual void die() override;
         //Enemy
+    virtual bool checkNearPlayer(float distance);
+    virtual bool checkFarPlayer(float distance);
+    virtual void actionTowardsPlayer();
+    virtual void actionStop();
 
     // Setters
         //Entity
@@ -84,6 +88,7 @@ public:
 
 protected:
 
+    BinaryTree* b_tree;
 
 private:
 

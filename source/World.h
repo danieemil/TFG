@@ -22,6 +22,8 @@ public:
     void deleteEntity(Entity* e);
     void eraseEntity(Entity* e);
 
+    void erasePlayer(Player* p);
+
     void processInput();
 
     Vector2d<float> scroll2D();

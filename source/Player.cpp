@@ -65,9 +65,42 @@ void Player::collision(void* ent)
         Entity* e = static_cast<Entity*>(ent);
         if(e->getClassId()==Class_Id::e_enemy)
         {
-            
+            Enemy* en = static_cast<Enemy*>(e);
+
+            // El jugador ha colisionado con un enemigo
+
+            Vector2d<float> dist = position - en->getPosition();
+
+            Vector2d<float> dir = dist;
+            dir.Normalize();
+
+            Vector2d<int> ori = Vector2d<int>(sign(dir.x), sign(dir.y));
+
+            if((dir.x * ori.x) > 0.5f) dir.x = 1.0f * ori.x;
+            else dir.x = 0.0f;
+
+            if((dir.y * ori.y) > 0.5f) dir.y = 1.0f * ori.y;
+            else dir.y = 0.0f;
+
+            // Se orienta en dirección al enemigo
+            setOrientation(dir*(-1));
+
+            if(body!=nullptr)
+            {
+                body->setImpulse(dir * 290.0f);
+                body->setVelocity(Vector2d<float>(0.0f,0.0f));
+                body->setAcceleration(Vector2d<float>(0.0f, 0.0f));
+                body->setActive(false);
+            }
+            stun_timing.reset();
+            stunned = true;
+            attacked = true;
+
+            life = life - 10.0f;
         }
     }
+
+    Combat_Character::collision(ent);
 }
 
 void Player::attack()
@@ -77,6 +110,8 @@ void Player::attack()
 
 void Player::die()
 {
+    Game::Instance()->stopRunning();
+
     Combat_Character::die();
 }
 
@@ -147,8 +182,12 @@ void Player::processInput()
     unvisual::debugger->nextLine();
     unvisual::debugger->print("Angle = " + std::to_string((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y)));
     unvisual::debugger->nextLine();
+    unvisual::debugger->nextLine();
+    unvisual::debugger->print("Player life = " + std::to_string(life));
+    unvisual::debugger->nextLine();
 
-    if(heading!=Vector2d<float>())
+    // Si ha girado, no está aturdido y no está atacando, puede cambiar de orientación
+    if(heading!=Vector2d<float>() && !stunned && (equipped==nullptr || !equipped->getAttacking()))
     {
         orientation = heading;
     }
@@ -353,5 +392,8 @@ const Vector2d<float>& Player::getHeading() const
 
 Player::~Player()
 {
-    
+    if(world!=nullptr)
+    {
+        world->erasePlayer(this);
+    }
 }

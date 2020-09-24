@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Colliders_data.h"
+#include "AI_Engine.h"
 
 using namespace std;
 using namespace unvisual::input;
@@ -93,11 +94,16 @@ void Game::init()
 	
     // Otros atributos del enemigo
     int enemy_life = 30;
-	Vector2d<float> enemy_max_vel = Vector2d<float>(INFINITY,INFINITY);
+	Vector2d<float> enemy_max_vel = Vector2d<float>(500.0f,500.0f);
 	Vector2d<float> enemy_max_accel = Vector2d<float>(INFINITY, INFINITY);
 	Vector2d<float> enemy_friction = Vector2d<float>(20.0f,20.0f);
     Vector2d<float> enemy_init_orientation = Vector2d<float>(0.0f,-1.0f);
-	Enemy* enemy = new Enemy(enemy_life, enemy_position, enemy_sprite, world, enemy_body, enemy_init_orientation, enemy_max_vel, enemy_max_accel, enemy_friction, nullptr, 1.0f);
+    float enemy_stunned_time = 0.5f;
+
+    // Comportamiento del enemigo
+    BinaryTree* bt = AI::getBehaviour(AI::bt_types::enemy_agressive);
+
+	Enemy* enemy = new Enemy(enemy_life, enemy_position, enemy_sprite, world, enemy_body, enemy_init_orientation, enemy_max_vel, enemy_max_accel, enemy_friction, nullptr, enemy_stunned_time, bt);
 	world->addEntity(enemy);
 
 	// Creamos al jugador
@@ -116,11 +122,12 @@ void Game::init()
 
 		// Otros atributos del jugador
     int player_life = 100;
-	Vector2d<float> player_max_vel = Vector2d<float>(40.0f,40.0f);
+	Vector2d<float> player_max_vel = Vector2d<float>(400.0f,400.0f);
 	Vector2d<float> player_max_accel = Vector2d<float>(INFINITY, INFINITY); // Máximo de fuerza que se le puede aplicar a un cuerpo
-	Vector2d<float> player_frict = Vector2d<float>(20.0f,20.0f);
+	Vector2d<float> player_frict = Vector2d<float>(40.0f,40.0f);
     Vector2d<float> player_init_orientation = Vector2d<float>(0.0f,-1.0f);
-	Player* player = new Player(player_life, player_position, player_sprite, world, player_body, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, 1.0f);
+    float player_stunned_time = 0.5f;
+	Player* player = new Player(player_life, player_position, player_sprite, world, player_body, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
 	world->setPlayer(player);
 
         // Arma del jugador
@@ -330,6 +337,17 @@ float Game::getUpdateTime() const
 const float Game::getUpd() const
 {
     return upd;
+}
+
+Player* Game::getPlayer() const
+{
+
+    if(world!=nullptr)
+    {
+        return world->getPlayer();
+    }
+
+    return nullptr;
 }
 
 //=========================================

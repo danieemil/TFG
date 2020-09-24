@@ -141,7 +141,7 @@ private:
     float angle;
     Vector2d<float> rotation_center;
     Vector2d<float> velocity; // Describe lo que te mueves en X e Y en un segundo
-    bool active; // Indica si tiene habilitadas o inhabilitadas las colisiones
+    bool active; // Indica si tiene habilitadas o inhabilitadas las colisiones por flags
 
     // Variables para el movimiento de los cuerpos
     Vector2d<float> max_velocity;
