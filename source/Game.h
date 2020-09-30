@@ -1,8 +1,7 @@
 #ifndef _GAME_
 #define _GAME_
 
-#include "World.h"
-#include "SpriteManager.h"
+#include "Game_Playing.h"
 
 //Clase Singleton para que todos puedan acceder a las variables de Game
 class Game
@@ -22,18 +21,33 @@ public:
     bool isRunning();
     void stopRunning();
 
+    template<class S>
+    void stateTransition()
+    {
+        Game_State* s = new S();
+        if(state!=nullptr)
+        {
+            prev_state = state->getStateType();
+            post_state = s->getStateType();
+            state->deInit();
+        }else
+        {
+            prev_state = state_type::none;
+        }
+        state = s;
+        state->init();
+        return;
+    }
+
     // Setters
-    void setWorldEntity(Entity* e);
-    void setWorldPlayer(Player* p);
-    void setSpriteManager(const char* spr_path);
+    
 
     // Getters
-    World* getWorld() const;
-    SpriteManager* getSpriteManager() const;
     float getDeltaTime() const;
-    float getUpdateTime() const;
-    const float getUpd() const;
     Player* getPlayer() const;
+    state_type getPrevState() const;
+    Game_State* getActualState() const;
+    state_type getPostState() const;
 
     static Game* Instance(); 
 
@@ -50,19 +64,17 @@ protected:
 
 private:
 
-    World* world;
-    SpriteManager* manager;
     Screen screen;
 
     bool running;
     float dt;
-    const float upd = 15.0f/60.0f;
-    //const float upd = 0.0166;
-
-	Timepoint delta_time;
-    Timepoint update_time;
+    Timepoint delta_time;
 
     static Game* p_instance;
+
+    state_type prev_state;
+    Game_State* state;
+    state_type post_state;
 
 };
 

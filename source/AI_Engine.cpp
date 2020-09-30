@@ -27,6 +27,8 @@ namespace AI
 
         // Nivel 2
         Node* n3 = agressive->createCheckNode(std::bind(&Enemy::checkFarPlayer, _1, 40.0f), n1, n2);
+        
+        // Nivel 3
         Node* n4 = agressive->createCheckNode(std::bind(&Enemy::checkNearPlayer, _1, 80.0f), n3, n2);
         
         agressive->setInitialNode(n4);

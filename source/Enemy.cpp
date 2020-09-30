@@ -44,17 +44,7 @@ void Enemy::update()
     if(b_tree!=nullptr)
     {
         b_tree->update(this);
-    }
-    
-    /* Árbol binario embebido
-    if(checkNearPlayer(60.0f))
-    {
-        if(checkFarPlayer(40.0f))
-            actionTowardsPlayer();
-        else actionStop();
-    } else actionStop();
-    */
-        
+    }   
 
     Combat_Character::update();
 }
@@ -95,13 +85,16 @@ void Enemy::die()
 
 bool Enemy::checkNearPlayer(float distance)
 {
+
     Player* p = Game::Instance()->getPlayer();
 
     if(p!=nullptr)
     {
         Vector2d<float> dist = p->getPosition() - position;
         if(dist.Length() < distance)
+        {
             return true;
+        }   
     }
 
     return false;

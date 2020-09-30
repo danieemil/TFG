@@ -35,6 +35,7 @@ namespace unvisual
     void drawCircle(const utilities::Vector2d<float>& pos, float depth, float radius, u8 r, u8 g, u8 b, u8 a);
 
     void setCurrentScreen(Screen* sc);
+    void setCurrentScreenTarget(const utilities::Vector2d<float>* t_pos);
     Screen* getCurrentScreen();
 
 

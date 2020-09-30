@@ -187,6 +187,14 @@ namespace unvisual
         current_screen = sc;
     }
 
+    void setCurrentScreenTarget(const utilities::Vector2d<float>* t_pos)
+    {
+        if(current_screen!=nullptr)
+        {
+            current_screen->setTargetPosition(t_pos);
+        }
+    }
+
     Screen* getCurrentScreen()
     {
         return current_screen;
