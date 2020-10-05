@@ -60,49 +60,6 @@ void Game::init()
 	
 }
 
-void Game::render()
-{
-
-}
-
-void Game::update()
-{
-
-}
-
-void Game::updateCollisions()
-{
-    
-}
-
-void Game::interpolate()
-{
-    
-}
-
-void Game::loop()
-{
-
-    // Main loop
-	while (aptMainLoop() && running)
-	{
-		
-		dt = delta_time.getElapsed();
-		delta_time.reset();
-		
-        
-        // Escaneamos las teclas pulsadas(Inputs de la N3DS)
-	    IM_scan();
-
-		processInput();
-
-        if(state!=nullptr)
-        {
-            state->loop();
-        }
-	}
-}
-
 void Game::processInput()
 {
 
@@ -146,6 +103,54 @@ void Game::processInput()
         unvisual::debugger->print("He pulsado la B " + std::to_string(unvisual::debugger->getRow()) + " veces");
         unvisual::debugger->nextLine();
     }
+
+    if(state!=nullptr)
+    {
+        state->processInput();
+    }
+
+}
+
+void Game::render()
+{
+    if(state!=nullptr)
+    {
+        state->render();
+    }
+}
+
+void Game::update()
+{
+    if(state!=nullptr)
+    {
+        state->update();
+    }
+}
+
+void Game::loop()
+{
+    // Main loop
+	while (aptMainLoop() && running)
+	{
+		
+		dt = delta_time.getElapsed();
+		delta_time.reset();
+        
+        // Escaneamos las teclas pulsadas(Inputs de la N3DS)
+	    IM_scan();
+
+        processInput();
+
+        update();
+
+        unvisual::drawBegin();
+        unvisual::drawOnCurrentScreen();
+
+        // Renderizamos el juego entero en la patnalla seleccionada
+        render();
+
+        unvisual::drawEnd();
+	}
 }
 
 bool Game::isRunning()
@@ -156,6 +161,21 @@ bool Game::isRunning()
 void Game::stopRunning()
 {
     running = false;
+}
+
+// Cambiar de estado de juego sin transiciones(deInit() y init())
+void Game::setState(Game_State* s)
+{
+    if(state!=nullptr)
+    {
+        prev_state = state->getStateType();
+        delete state;
+    }
+    state = s;
+    if(state!=nullptr)
+    {
+        post_state = state->getStateType();
+    }
 }
 
 

@@ -8,12 +8,13 @@
 
 Game_State::Game_State()
 {
-
+    
 }
 
 Game_State::Game_State(const Game_State& gs)
+: type(gs.type)
 {
-    type = gs.type;
+
 }
 
 Game_State& Game_State::operator= (const Game_State& gs)

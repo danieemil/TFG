@@ -34,6 +34,8 @@ namespace unvisual
     void drawRectangle(const utilities::Vector2d<float>& pos, float depth, const utilities::Vector2d<float>& dimensions, u8 r, u8 g, u8 b, u8 a);
     void drawCircle(const utilities::Vector2d<float>& pos, float depth, float radius, u8 r, u8 g, u8 b, u8 a);
 
+    void drawData(void* data, size_t data_size);
+
     void setCurrentScreen(Screen* sc);
     void setCurrentScreenTarget(const utilities::Vector2d<float>* t_pos);
     Screen* getCurrentScreen();

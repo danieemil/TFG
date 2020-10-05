@@ -4,6 +4,7 @@
 #include "Game_State.h"
 #include "World.h"
 #include "SpriteManager.h"
+#include "LevelFactory.h"
 
 class Game_Playing : public Game_State
 {
@@ -17,25 +18,26 @@ public:
 
     // Métodos
     void init() override;
-
-    void loop() override;
-        void processInput();
-        void update();
-        void updateCollisions();
-        void interpolate();
-        void render();
-    
+    void processInput() override;
+    void update() override;
+    void render() override;
     void deInit() override;
 
+    void updateCollisions();
+    void interpolate();
+
+    void resetLevel();
+
     // Setters
+    void setLevel(int l);
 
     // Getters
     state_type getStateType() const override;
     World* getWorld() const;
-    SpriteManager* getSpriteManager() const;
     float getUpdateTime() const;
     const float getUpd() const;
     Player* getPlayer() const;
+    int getLevel() const;
 
 
     // Destructor
@@ -44,12 +46,14 @@ public:
 protected:
 
     World* world;
-    SpriteManager* manager;
 
     const float upd = 15.0f/60.0f;
     //const float upd = 0.0166;
 
     Timepoint update_time;
+
+    LevelFactory level_factory;
+    int level;
 
 private:
 

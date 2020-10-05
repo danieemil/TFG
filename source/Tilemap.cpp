@@ -7,21 +7,24 @@ using namespace std;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Tilemap::Tilemap(const char* spr_sheet, const char* tilemap)
+Tilemap::Tilemap(const char* tileset, const Vector2d<int>& n_tiles, int** tilemap, const Vector2d<int>& s_tiles)
 {
-    if(spr_sheet!=nullptr)
+    if(tileset!=nullptr)
     {
-        manager.setSprites(spr_sheet);
+        manager.setSprites(tileset);
     }
 
-    tiles = nullptr;
+    num_tiles = n_tiles;
+    level = tilemap;
+    tile_size = s_tiles;
 
-    level = nullptr;
+    map_size = num_tiles * tile_size;
 
-    if(tilemap!=nullptr)
+    if(level!=nullptr)
     {
-        loadTilemap(tilemap);
+        generateTiles();
     }
+
 }
 
 Tilemap::Tilemap(const Tilemap& d)
@@ -29,6 +32,7 @@ Tilemap::Tilemap(const Tilemap& d)
     manager = d.manager;
 
     tiles = nullptr;
+    level = d.level;
 
     tile_size = d.tile_size;
     map_size = d.map_size;
@@ -98,20 +102,20 @@ void Tilemap::update(const Vector2d<float>& pos_dif)
             collider->setPosition(collider->getPosition() + pos_dif);
         }
     }
-    
 }
 
-void Tilemap::loadTilemap(const char* tilemap)
+void Tilemap::generateTilemap()
 {
     destroyLevel();
     destroyTilemap();
     destroyPhysics();
 
-    readBin(tilemap);
-
-    generateTiles();
+    if(level!=nullptr)
+    {
+        generateTiles();
+    }
+    
     update(position);
-
 }
 
 void Tilemap::generateTiles()
@@ -122,14 +126,7 @@ void Tilemap::generateTiles()
         {
             if(num_tiles.x > 0 && num_tiles.y > 0)
             {
-
-                map_size.x = num_tiles.x * tile_size.x;
-                map_size.y = num_tiles.y * tile_size.y;
-
-                Vector2d<float> p;
-
-                p.x = position.x;
-                p.y = position.y;
+                Vector2d<float> p = position;
 
                 tiles = new Tile**[num_tiles.y];
                 for (int i = 0; i < num_tiles.y; i++)
@@ -199,21 +196,26 @@ void Tilemap::destroyPhysics()
     colliders.clear();
 }
 
+void Tilemap::addCollider(Collider* c)
+{
+    colliders.push_back(c);
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
 
-void Tilemap::setTileset(const char* spr_sheet)
+void Tilemap::setTileset(const char* tileset)
 {
 
     destroyTilemap();
 
     tiles = nullptr;
 
-    if(spr_sheet!=nullptr)
+    if(tileset!=nullptr)
     {
-        manager.setSprites(spr_sheet);
+        manager.setSprites(tileset);
     }
 
     if(level!=nullptr)
@@ -263,97 +265,4 @@ Tilemap::~Tilemap()
     destroyLevel();
     destroyTilemap();
     destroyPhysics();
-}
-
-
-//=========================================
-//=               PRIVATE   	    	  =
-//=========================================
-void Tilemap::readBin(const char* file_path)
-{
-    // Tiles
-
-    ifstream in(file_path, std::ios::binary | std::ios::ate);
-    in.seekg(0, std::ios::beg);
-
-    file2mem(in, &num_tiles.x);
-    file2mem(in, &num_tiles.y);
-
-    file2mem(in, &tile_size.x);
-    file2mem(in, &tile_size.y);
-
-    level = new int*[num_tiles.y];
-
-    for (int i = 0; i < num_tiles.y; i++)
-    {
-        level[i] = new int[num_tiles.x];
-    }
-
-    for (int i = 0; i < num_tiles.y; i++)
-    {
-        for (int j = 0; j < num_tiles.x; j++)
-        {
-            file2mem(in, &level[i][j]);
-        }
-    }
-
-    // Físicas
-    int c_number = 0;
-    Vector2d<float> position, center, max, min;
-    float radius = 0.0f;
-
-    // Rectángulos
-    file2mem(in, &c_number);
-
-    for (int i = 0; i < c_number; i++)
-    {
-        file2mem(in, &position.x);
-        file2mem(in, &position.y);
-
-        file2mem(in, &min.x);
-        file2mem(in, &min.y);
-
-        file2mem(in, &max.x);
-        file2mem(in, &max.y);
-
-        colliders.push_back(new Collider(position, new AABB(min,max), CollisionFlag::none, CollisionFlag::none, CollisionType::col_static));
-    }
-
-    // Círculos
-    file2mem(in, &c_number);
-
-    for (int i = 0; i < c_number; i++)
-    {
-        file2mem(in, &position.x);
-        file2mem(in, &position.y);
-
-        file2mem(in, &center.x);
-        file2mem(in, &center.y);
-
-        file2mem(in, &radius);
-
-        colliders.push_back(new Collider(position, new Circle(center,radius), CollisionFlag::none, CollisionFlag::none, CollisionType::col_static));
-    }
-
-    // Convexos
-    file2mem(in, &c_number);
-    for (int i = 0; i < c_number; i++)
-    {
-        file2mem(in, &position.x);
-        file2mem(in, &position.y);
-
-        int s_number = 0;
-        file2mem(in, &s_number);
-
-        std::vector<Vector2d<float>> vertices;
-        Vector2d<float> vertex;
-        for (int j = 0; j < s_number; j++)
-        {
-            file2mem(in, &vertex.x);
-            file2mem(in, &vertex.y);
-            vertices.push_back(vertex);
-        }
-        
-        colliders.push_back(new Collider(position, new Convex(vertices), CollisionFlag::none, CollisionFlag::none, CollisionType::col_static));
-    }
 }

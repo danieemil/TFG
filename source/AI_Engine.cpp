@@ -31,7 +31,7 @@ namespace AI
         // Nivel 3
         Node* n4 = agressive->createCheckNode(std::bind(&Enemy::checkNearPlayer, _1, 80.0f), n3, n2);
         
-        agressive->setInitialNode(n4);
+        agressive->setInitialNode(n3);
 
         b_trees.emplace(make_pair<bt_types, BinaryTree*>(bt_types::enemy_agressive, std::move(agressive)));
 

@@ -110,9 +110,7 @@ void Player::attack()
 
 void Player::die()
 {
-    Game::Instance()->stopRunning();
-
-    Combat_Character::die();
+    Game::Instance()->stateTransition<Game_MainMenu>();
 }
 
 void Player::processInput()
@@ -124,36 +122,24 @@ void Player::processInput()
     ||
         input::isHeld(input::N3DS_buttons::Key_DUp))
     {
-        unvisual::debugger->setRow(1);
-        unvisual::debugger->setColumn(1);
-        unvisual::debugger->print("Up");;
         heading.y += -1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DRight)
     ||
         input::isHeld(input::N3DS_buttons::Key_DRight))
     {
-        unvisual::debugger->setRow(2);
-        unvisual::debugger->setColumn(1);
-        unvisual::debugger->print("Right");
         heading.x += 1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DDown)
     ||
         input::isHeld(input::N3DS_buttons::Key_DDown))
     {
-        unvisual::debugger->setRow(3);
-        unvisual::debugger->setColumn(1);
-        unvisual::debugger->print("Down");
         heading.y += 1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DLeft)
     ||
         input::isHeld(input::N3DS_buttons::Key_DLeft))
     {
-        unvisual::debugger->setRow(4);
-        unvisual::debugger->setColumn(1);
-        unvisual::debugger->print("Left");
         heading.x += -1.0f;
     }
 
@@ -161,30 +147,6 @@ void Player::processInput()
     {
         attack();
     }
-
-    unvisual::debugger->setRow(6);
-    unvisual::debugger->setColumn(1);
-    unvisual::debugger->print("Player position:");
-    unvisual::debugger->nextLine();
-    unvisual::debugger->print("X = " + std::to_string(position.x));
-    unvisual::debugger->nextLine();
-    unvisual::debugger->print("Y = " + std::to_string(position.y));
-    unvisual::debugger->nextLine();
-    unvisual::debugger->print("Vel_X = " + std::to_string(velocity.x));
-    unvisual::debugger->nextLine();
-    unvisual::debugger->print("Vel_Y = " + std::to_string(velocity.y));
-    unvisual::debugger->nextLine();
-    unvisual::debugger->print("Player orientation:");
-    unvisual::debugger->nextLine();
-    unvisual::debugger->print("X = " + std::to_string(orientation.x));
-    unvisual::debugger->nextLine();
-    unvisual::debugger->print("Y = " + std::to_string(orientation.y));
-    unvisual::debugger->nextLine();
-    unvisual::debugger->print("Angle = " + std::to_string((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y)));
-    unvisual::debugger->nextLine();
-    unvisual::debugger->nextLine();
-    unvisual::debugger->print("Player life = " + std::to_string(life));
-    unvisual::debugger->nextLine();
 
     // Si ha girado, no está aturdido y no está atacando, puede cambiar de orientación
     if(heading!=Vector2d<float>() && !stunned && (equipped==nullptr || !equipped->getAttacking()))

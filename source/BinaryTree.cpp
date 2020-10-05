@@ -45,9 +45,11 @@ CheckNode* BinaryTree::createCheckNode(Check check, Node* trueNode, Node* falseN
     return ch;
 }
 
-ActionNode* BinaryTree::createActionNode(Action action)
+ActionNode* BinaryTree::createActionNode(Action action, Node* next)
 {
-    return new ActionNode(action);
+    ActionNode* an = new ActionNode(action, next);
+    treeNodes.push_back(an);
+    return an;
 }
 
 void BinaryTree::deleteNode(Node* n)

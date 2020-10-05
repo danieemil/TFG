@@ -181,6 +181,12 @@ namespace unvisual
         C2D_DrawCircleSolid(pos.x, pos.y, depth, radius, C2D_Color32(r,g,b,a));
     }
 
+    void drawData(void* data, size_t data_size)
+    {
+        u8* fb = gfxGetFramebuffer(current_screen->getRenderer()->screen, current_screen->getRenderer()->side, NULL, NULL);
+        memcpy(fb,data, data_size);
+    }
+
 
     void setCurrentScreen(Screen* sc)
     {

@@ -2,6 +2,8 @@
 #define _GAME_
 
 #include "Game_Playing.h"
+#include "Game_MainMenu.h"
+#include "Game_Paused.h"
 
 //Clase Singleton para que todos puedan acceder a las variables de Game
 class Game
@@ -34,10 +36,12 @@ public:
         {
             prev_state = state_type::none;
         }
+        s->init();
         state = s;
-        state->init();
         return;
     }
+
+    void setState(Game_State* s);
 
     // Setters
     

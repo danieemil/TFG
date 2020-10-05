@@ -13,7 +13,7 @@ class Tilemap
 
 public:
     // Constructores
-    Tilemap(const char* tileset = nullptr, const char* tilemap = nullptr);
+    Tilemap(const char* tileset = nullptr, const Vector2d<int>& n_tiles = Vector2d<int>(), int** tilemap = nullptr, const Vector2d<int>& s_tiles = Vector2d<int>());
     Tilemap(const Tilemap&);
 
     Tilemap& operator= (const Tilemap&);
@@ -21,14 +21,15 @@ public:
     // Métodos
     void render(const Vector2d<float>& view_pos = Vector2d<float>());
     void update(const Vector2d<float>& pos_dif);
-    void loadTilemap(const char* tilemap);
+    void generateTilemap();
     void generateTiles();
     void destroyTilemap();
     void destroyLevel();
     void destroyPhysics();
+    void addCollider(Collider* c);
 
     // Setters
-    void setTileset(const char* spr_sheet);
+    void setTileset(const char* tileset);
     void setPosition(const Vector2d<float>& pos);
 
     // Getters
@@ -52,21 +53,6 @@ private:
     Vector2d<int> num_tiles;
 
     Vector2d<float> position;
-
-
-
-
-    void readBin(const char* file_path);
-
-    template<class T>
-    void file2mem(ifstream &in, T* n)
-    {
-        unsigned long hSize = sizeof(T);
-        char* buffer = new char[hSize];
-        in.read(buffer, hSize);
-
-        memcpy(n,buffer,hSize);
-    }
 
 };
 

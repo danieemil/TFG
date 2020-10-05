@@ -5,14 +5,14 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-ActionNode::ActionNode(Action action)
-: Node(), actionCallback(action)
+ActionNode::ActionNode(Action action, Node* next)
+: Node(), actionCallback(action), nextNode(next)
 {
 
 }
 
 ActionNode::ActionNode(const ActionNode& an)
-: Node(an), actionCallback(an.actionCallback)
+: Node(an), actionCallback(an.actionCallback), nextNode(an.nextNode)
 {
 
 }
@@ -22,6 +22,7 @@ ActionNode& ActionNode::operator= (const ActionNode& an)
     Node::operator=(an);
     
     actionCallback = an.actionCallback;
+    nextNode = an.nextNode;
 
     return *this;
 }
@@ -37,6 +38,11 @@ void ActionNode::update(Enemy* e)
     {
         actionCallback(e);
     }
+
+    if(nextNode!=nullptr)
+    {
+        nextNode->update(e);
+    }
 }
 
 
@@ -47,6 +53,11 @@ void ActionNode::update(Enemy* e)
 void ActionNode::setActionFunction(Action action)
 {
     actionCallback = action;
+}
+
+void ActionNode::setNextNode(Node* next)
+{
+    nextNode = next;
 }
 
 

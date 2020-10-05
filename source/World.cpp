@@ -1,24 +1,19 @@
 #include "World.h"
-
+#include "Game.h"
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-World::World(const char* tileset_path, Player* p)
+World::World(const char* tileset_map, Player* p, const char* tileset_ent)
+: player(p), tilemap(nullptr), manager(nullptr), scroll_vel(4.0f, 4.0f)
 {
-    player = p;
-    tilemap = new Tilemap(tileset_path);
 
-    scroll_vel = Vector2d<float>(4.0f,4.0f);
 }
 
 World::World(const World& w)
+: player(w.player), tilemap(w.tilemap), manager(w.manager), scroll_vel(w.scroll_vel)
 {
-    player = nullptr;
-    tilemap = nullptr;
-
-    scroll_vel = w.scroll_vel;
 
 }
 
@@ -27,6 +22,9 @@ World& World::operator= (const World& w)
 
     player = nullptr;
     tilemap = nullptr;
+    manager = w.manager;
+    scroll_vel = w.scroll_vel;
+
     return *this;
 
 }
@@ -98,6 +96,11 @@ void World::erasePlayer(Player* p)
 
 void World::processInput()
 {
+    if(unvisual::input::isPressed(unvisual::input::N3DS_buttons::Key_R))
+    {
+        Game::Instance()->stateTransition<Game_Paused>();
+    }
+
     if(player!=nullptr)
     {
         player->processInput();
@@ -281,7 +284,41 @@ void World::updatePlayerCollisions()
     {
         player->updateFromCollider();
     }
-    
+}
+
+void World::eraseWorld()
+{
+    if(tilemap!=nullptr)
+    {
+        delete tilemap;
+        tilemap = nullptr;
+    }
+
+    auto entity = entities.begin();
+
+    while (entity!=entities.end())
+    {
+        Entity* e = (*entity);
+
+        if(e!=nullptr)
+        {
+            delete e;
+        }
+    }
+
+    entities.clear();
+
+    if(player!=nullptr)
+    {
+        delete player;
+        player = nullptr;
+    }
+
+    if (manager!=nullptr)
+    {
+        delete manager;
+        manager = nullptr;
+    }
 }
 
 
@@ -289,10 +326,14 @@ void World::updatePlayerCollisions()
 //=               SETTERS   	    	  =
 //=========================================
 
-void World::setTilemap(const char* tileset_path, const char* tilemap_path)
+void World::setTilemap(Tilemap* t)
 {
-    tilemap->setTileset(tileset_path);
-    tilemap->loadTilemap(tilemap_path);
+    if(tilemap!=nullptr)
+    {
+        delete tilemap;
+    }
+
+    tilemap = t;
 }
 
 void World::setEntities(const std::vector<Entity*>& v)
@@ -307,6 +348,16 @@ void World::setPlayer(Player* p)
         delete player;
     }
     player = p;
+}
+
+void World::setSpriteManager(const char* tileset)
+{
+    if (manager==nullptr)
+    {
+        manager = new SpriteManager();
+    }
+    
+    manager->setSprites(tileset);
 }
 
 
@@ -329,6 +380,11 @@ Player* World::getPlayer() const
     return player;
 }
 
+SpriteManager* World::getSpriteManager() const
+{
+    return manager;
+}
+
 
 //=========================================
 //=              DESTRUCTOR   	    	  =
@@ -336,26 +392,5 @@ Player* World::getPlayer() const
 
 World::~World()
 {
-
-    if(tilemap!=nullptr)
-    {
-        delete tilemap;
-    }
-
-    auto entity = entities.begin();
-
-    while (entity!=entities.end())
-    {
-        Entity* e = (*entity);
-
-        if(e!=nullptr)
-        {
-            delete e;
-        }
-    }
-
-    if(player!=nullptr)
-    {
-        delete player;
-    }
+    eraseWorld();
 }

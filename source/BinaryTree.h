@@ -20,7 +20,7 @@ public:
     void update(Enemy* e);
 
     CheckNode* createCheckNode(Check check, Node* trueNode, Node* falseNode);
-    ActionNode* createActionNode(Action action);
+    ActionNode* createActionNode(Action action, Node* next = nullptr);
 
     void deleteNode(Node* n);
 

@@ -10,7 +10,7 @@ class ActionNode : public Node
 
 public:
     // Constructores
-    ActionNode(Action action = nullptr);
+    ActionNode(Action action = nullptr, Node* next = nullptr);
     ActionNode(const ActionNode& cn);
 
     ActionNode& operator= (const ActionNode& cn);
@@ -20,6 +20,7 @@ public:
 
     // Setters
     void setActionFunction(Action action);
+    void setNextNode(Node* next);
 
     // Getters
 
@@ -29,6 +30,8 @@ public:
 private:
 
     Action actionCallback;
+    Node* nextNode;
+
 };
 
 #endif

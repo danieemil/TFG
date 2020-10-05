@@ -24,7 +24,9 @@ public:
 
     // Métodos
     virtual void init() = 0;
-    virtual void loop() = 0;
+    virtual void processInput() = 0;
+    virtual void update() = 0;
+    virtual void render() = 0;
     virtual void deInit() = 0;
 
     // Setters
