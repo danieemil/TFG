@@ -29,8 +29,8 @@ Game* Game::Instance()
 Game::Game()
 {
 
-    state = new Game_Playing();
-
+    state = new Game_MainMenu();
+    
     init();
 }
 

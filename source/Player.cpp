@@ -200,7 +200,7 @@ void Player::setAngle(float angl)
     }
     if(body!=nullptr)
     {
-        body->setGlobalRotation(angle);
+        //body->setGlobalRotation(angle);
     }
 }
 

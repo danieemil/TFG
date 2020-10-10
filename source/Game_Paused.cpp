@@ -48,7 +48,7 @@ void Game_Paused::processInput()
     }
     if(unvisual::input::isPressed(unvisual::input::N3DS_buttons::Key_R))
     {
-        playingState->resetLevel();
+        //playingState->resetLevel();
         Game::Instance()->setState(playingState);
     }
 }

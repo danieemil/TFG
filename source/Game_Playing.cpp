@@ -8,7 +8,7 @@ using namespace unvisual::input;
 //=========================================
 
 Game_Playing::Game_Playing()
-: Game_State(), world(new World()), update_time(), level_factory(world), level(0)
+: Game_State(), world(new World()), update_time(), level_factory(world), level(1)
 {
     type = state_type::playing;
 
@@ -51,7 +51,7 @@ void Game_Playing::init()
 void Game_Playing::processInput()
 {
     // Botón para resetear el nivel
-    if(isPressed(N3DS_buttons::Key_L) || isHeld(N3DS_buttons::Key_L))
+    if(isPressed(N3DS_buttons::Key_L))
     {
         resetLevel();
     }
