@@ -35,6 +35,8 @@ protected:
 
 private:
 
+    Text menu_title;
+
 };
 
 #endif

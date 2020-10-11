@@ -1,21 +1,27 @@
 #include "GUI_Button.h"
+#include "Unvisual_Engine.h"
 
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-GUI_Button::GUI_Button(const Vector2d<float>& pos, const Vector2d<float>& s, Sprite* spr, Call cb)
-: GUI_Element(pos, s), sprite(spr), pressed(false), selected(false), enabled(true), active(false), callback(cb)
+GUI_Button::GUI_Button(const Vector2d<float>& pos, const Vector2d<float>& s, Sprite* spr, Call cb,
+const char* t, size_t t_size)
+: GUI_Element(pos, s), sprite(spr), pressed(false), selected(false), enabled(true), active(false),
+callback(cb),text(Vector2d<float>(pos.x, pos.y),t,t_size, s.y)
 {
     if(sprite!=nullptr)
     {
         sprite->setPosition(position);
     }
+    Vector2d<float> padding = Vector2d<float>(2.0f, 3.0f);
+    text.setPosition(position + padding);
+    text.setHeight(s.y - padding.y*3.0f);
 }
 
 GUI_Button::GUI_Button(const GUI_Button& ge)
-: GUI_Button(ge.position, ge.size, ge.sprite, ge.callback)
+: GUI_Button(ge.position, ge.size, ge.sprite, ge.callback, ge.text.getText(), ge.text.getTextBufferSize())
 {
 
 }
@@ -35,6 +41,8 @@ GUI_Button& GUI_Button::operator= (const GUI_Button& ge)
     active = ge.active;
     callback = ge.callback;
 
+    text = ge.text;
+
     return *this;
 }
 
@@ -45,16 +53,20 @@ GUI_Button& GUI_Button::operator= (const GUI_Button& ge)
 
 void GUI_Button::update()
 {
-    if (pressed)
+    if(pressed)
     {
         active = true;
+        selected = true;
+        if(unvisual::input::isReleased(unvisual::input::N3DS_buttons::Key_Touch))
+        {
+            auto pos = unvisual::input::getLastPositionTouched();
+            if(checkPressed(Vector2d<float>((float)pos.x, (float)pos.y)))
+            {
+                activate();
+            }
+            else active = false;
+        }
     }
-    else if(active)
-    {
-        active = false;
-        activate();
-    }
-    pressed = false;
 }
 
 void GUI_Button::render()
@@ -63,11 +75,13 @@ void GUI_Button::render()
     {
         sprite->drawSprite();
     }
+
+    text.render();
 }
 
 bool GUI_Button::checkPressed(const Vector2d<float>& pos)
 {
-    if(GUI_Element::checkPressed(pos))
+    if(enabled && GUI_Element::checkPressed(pos))
     {
         pressed = true;
         return pressed;
@@ -132,6 +146,16 @@ void GUI_Button::setCallback(Call cb)
     callback = cb;
 }
 
+void GUI_Button::setText(const char* t)
+{
+    text.setText(t);
+}
+
+void GUI_Button::setTextColor(u8 r, u8 g, u8 b, u8 a)
+{
+    text.setColor(r, g, b, a);
+}
+
 
 
 //=========================================
@@ -171,6 +195,11 @@ bool GUI_Button::getEnabled() const
 Call GUI_Button::getCallback() const
 {
     return callback;
+}
+
+const char* GUI_Button::getText() const
+{
+    return text.getText();
 }
 
 

@@ -358,4 +358,14 @@ Player::~Player()
     {
         world->erasePlayer(this);
     }
+
+    auto sc = unvisual::getCurrentScreen();
+    if(sc!=nullptr)
+    {
+        auto tp = sc->getTargetPosition();
+        if(tp == (&position))
+        {
+            sc->setTargetPosition(nullptr);
+        }
+    }
 }

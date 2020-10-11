@@ -326,6 +326,7 @@ namespace unvisual
         namespace
         {
             touchPosition t_position;
+            touchPosition t_prev_position;
 
             std::map<N3DS_buttons,u32> key_mapping = 
             {
@@ -357,7 +358,15 @@ namespace unvisual
 
         void IM_scan()
         {
+            
             hidScanInput();
+
+            hidTouchRead(&t_position);
+            if (!isReleased(N3DS_buttons::Key_Touch))
+            {
+                t_prev_position = t_position;
+            }
+            
         }
 
         bool isPressed(N3DS_buttons key)
@@ -387,8 +396,12 @@ namespace unvisual
 
         Vector2d<u16> getPositionTouched()
         {
-            hidTouchRead(&t_position);
             return Vector2d<u16>(t_position.px,t_position.py);
+        }
+
+        Vector2d<u16> getLastPositionTouched()
+        {
+            return Vector2d<u16>(t_prev_position.px,t_prev_position.py);
         }
 
         void IM_deInit()

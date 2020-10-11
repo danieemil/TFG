@@ -16,6 +16,7 @@ Sprite::Sprite(SpriteManager* man, size_t collection_index, const Vector2d<float
     if(manager!=nullptr)
     {
         C2D_SpriteFromSheet(&sprite, manager->getSpriteCollection(), index);
+        setDepth(-0.9);
     }
 }
 

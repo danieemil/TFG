@@ -36,6 +36,8 @@ namespace unvisual
 
     void drawData(void* data, size_t data_size);
 
+    
+
     void setCurrentScreen(Screen* sc);
     void setCurrentScreenTarget(const utilities::Vector2d<float>* t_pos);
     Screen* getCurrentScreen();
@@ -87,6 +89,7 @@ namespace unvisual
         bool isReleased(N3DS_buttons key);
 
         utilities::Vector2d<u16> getPositionTouched();
+        utilities::Vector2d<u16> getLastPositionTouched();
 
         void IM_deInit();
     }
