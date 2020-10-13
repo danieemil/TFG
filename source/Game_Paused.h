@@ -2,6 +2,8 @@
 #define _GAME_PAUSED_
 
 #include "Game_Playing.h"
+#include "GUI_Button.h"
+#include "GUI_Element_List.h"
 
 class Game_Paused : public Game_State
 {
@@ -29,7 +31,10 @@ public:
     ~Game_Paused();
 
 protected:
+    GUI_Element_List gui_elements;
+    SpriteManager gui_sprite_manager;
 
+    Text menu_title;
 
 private:
 

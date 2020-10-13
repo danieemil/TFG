@@ -3,6 +3,7 @@
 
 #include "Game_State.h"
 #include "GUI_Button.h"
+#include "GUI_Element_List.h"
 
 class Game_MainMenu : public Game_State
 {
@@ -30,12 +31,14 @@ public:
     ~Game_MainMenu();
 
 protected:
-    std::vector<GUI_Element*> gui_elements;
+    GUI_Element_List gui_elements;
     SpriteManager gui_sprite_manager;
+
+    Text menu_title;
 
 private:
 
-    Text menu_title;
+    
 
 };
 

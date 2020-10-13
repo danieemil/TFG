@@ -45,7 +45,6 @@ void Game::init()
 
     // Creamos una "Ventana" para dibujos en 3D y la ubicamos en la pantalla de abajo
 	screen.setScreen(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN, N3DS_screenV::N3DS_BOTTOM);
-	screen.setBackground(u8(255),u8(255),u8(255),u8(255));
 	unvisual::setCurrentScreen(&screen);
 
     // Delta time

@@ -30,8 +30,8 @@ Text& Text::operator= (const Text& t)
     position = t.position;
     size = t.size;
 
-    setText(t.text_data);
     setTextBufferSize(t.getTextBufferSize());
+    setText(t.text_data);
     
     color = t.color;
 
@@ -49,7 +49,7 @@ void Text::render(const Vector2d<float>& view_pos)
 {
 
     Vector2d<float> pos = (position - view_pos) - padding;
-    C2D_DrawText(&text, C2D_WithColor, pos.x, pos.y, 1.0f, size.x, size.y, C2D_Color32(0,0,0,255));
+    C2D_DrawText(&text, C2D_WithColor, pos.x, pos.y, 1.0f, size.x, size.y, color);
 }
 
 
@@ -67,6 +67,7 @@ void Text::setText(const char* t)
     C2D_TextBufClear(text_buf);
     text_data = t;
     C2D_TextParse(&text, text_buf, t);
+    C2D_TextOptimize(&text);
 }
 
 void Text::setTextBufferSize(size_t text_buf_size)

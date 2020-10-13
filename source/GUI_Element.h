@@ -18,10 +18,15 @@ public:
     GUI_Element& operator= (const GUI_Element& ge);
 
     // Métodos
+    virtual void processInput();
     virtual void update() = 0;
     virtual void render() = 0;
 
     virtual bool checkPressed(const Vector2d<float>& pos);
+
+    virtual void select();
+    virtual void unSelect();
+    virtual void activate() = 0;
 
     // Setters
     virtual void setPosition(const Vector2d<float>& pos);
@@ -30,6 +35,7 @@ public:
     // Getters
     virtual const Vector2d<float>& getPosition() const;
     virtual const Vector2d<float>& getSize() const;
+    virtual bool getPressed() const;
 
     // Destructor
     ~GUI_Element();
@@ -38,6 +44,8 @@ protected:
 
     Vector2d<float> position;
     Vector2d<float> size;
+
+    bool pressed, selected;
 
 };
 

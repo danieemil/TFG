@@ -8,7 +8,7 @@
 
 GUI_Button::GUI_Button(const Vector2d<float>& pos, const Vector2d<float>& s, Sprite* spr, Call cb,
 const char* t, size_t t_size)
-: GUI_Element(pos, s), sprite(spr), pressed(false), selected(false), enabled(true), active(false),
+: GUI_Element(pos, s), sprite(spr), enabled(true), active(false),
 callback(cb),text(Vector2d<float>(pos.x, pos.y),t,t_size, s.y)
 {
     if(sprite!=nullptr)
@@ -51,20 +51,34 @@ GUI_Button& GUI_Button::operator= (const GUI_Button& ge)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void GUI_Button::update()
+void GUI_Button::processInput()
 {
     if(pressed)
     {
-        active = true;
-        selected = true;
         if(unvisual::input::isReleased(unvisual::input::N3DS_buttons::Key_Touch))
         {
             auto pos = unvisual::input::getLastPositionTouched();
             if(checkPressed(Vector2d<float>((float)pos.x, (float)pos.y)))
             {
-                activate();
+                active = true;
             }
             else active = false;
+        }
+    }
+    else
+    {
+        GUI_Element::processInput();
+    }
+}
+
+
+void GUI_Button::update()
+{
+    if(active)
+    {
+        if(callback!=nullptr)
+        {
+            callback();
         }
     }
 }
@@ -81,7 +95,7 @@ void GUI_Button::render()
 
 bool GUI_Button::checkPressed(const Vector2d<float>& pos)
 {
-    if(enabled && GUI_Element::checkPressed(pos))
+    if(GUI_Element::checkPressed(pos))
     {
         pressed = true;
         return pressed;
@@ -92,10 +106,7 @@ bool GUI_Button::checkPressed(const Vector2d<float>& pos)
 
 void GUI_Button::activate()
 {
-    if(callback!=nullptr)
-    {
-        callback();
-    }
+    active = true;
 }
 
 
@@ -117,6 +128,18 @@ void GUI_Button::setSize(const Vector2d<float>& s)
     GUI_Element::setSize(s);
 }
 
+void GUI_Button::select()
+{
+    GUI_Element::select();
+    text.setColor(255,0,0,255);
+}
+
+void GUI_Button::unSelect()
+{
+    GUI_Element::unSelect();
+    text.setColor(0,0,0,255);
+}
+
 void GUI_Button::setSprite(Sprite* spr)
 {
     sprite = spr;
@@ -129,11 +152,6 @@ void GUI_Button::setSprite(Sprite* spr)
 void GUI_Button::setPressed(bool p)
 {
     pressed = p;
-}
-
-void GUI_Button::setSelected(bool s)
-{
-    selected = s;
 }
 
 void GUI_Button::setEnabled(bool e)

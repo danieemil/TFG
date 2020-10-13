@@ -8,7 +8,7 @@ using namespace unvisual::input;
 //=========================================
 
 Game_Playing::Game_Playing()
-: Game_State(), world(new World()), update_time(), level_factory(world), level(1)
+: Game_State(), world(nullptr), update_time(), level_factory(), level(1)
 {
     type = state_type::playing;
 
@@ -42,8 +42,11 @@ Game_Playing& Game_Playing::operator= (const Game_Playing& gp)
 
 void Game_Playing::init()
 {
-    if(world!=nullptr)
+    unvisual::getCurrentScreen()->setBackgroundColor(255,255,255,255);
+    if(world==nullptr)
     {
+        world = new World();
+        level_factory.setWorld(world);
         level_factory.init(level);
     }
 }

@@ -22,19 +22,21 @@ public:
     GUI_Button& operator= (const GUI_Button& gb);
 
     // Métodos
+    void processInput() override;
     void update() override;
     void render() override;
 
     bool checkPressed(const Vector2d<float>& pos) override;
 
-    void activate();
+    void activate() override;
 
     // Setters
     void setPosition(const Vector2d<float>& pos) override;
     void setSize(const Vector2d<float>& s) override;
+    void select() override;
+    void unSelect() override;
     void setSprite(Sprite* spr);
     void setPressed(bool p);
-    void setSelected(bool s);
     void setEnabled(bool e);
     void setCallback(Call cb);
     void setText(const char* t);
@@ -43,8 +45,8 @@ public:
     // Getters
     const Vector2d<float>& getPosition() const override;
     const Vector2d<float>& getSize() const override;
+    bool getPressed() const override;
     Sprite* getSprite() const;
-    bool getPressed() const;
     bool getSelected() const;
     bool getEnabled() const;
     Call getCallback() const;
@@ -57,7 +59,7 @@ private:
 
     Sprite* sprite;
 
-    bool pressed, selected, enabled, active;
+    bool enabled, active;
 
     Call callback;
 

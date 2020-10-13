@@ -14,7 +14,7 @@ class Text
 
 public:
     // Constructores
-    Text(const Vector2d<float>& pos, const char* t = nullptr, size_t text_buf_size = 100, float height = 15.0f, u8 r = 0, u8 g = 0, u8 b = 0, u8 a = 255);
+    Text(const Vector2d<float>& pos = Vector2d<float>(), const char* t = nullptr, size_t text_buf_size = 100, float height = 15.0f, u8 r = 0, u8 g = 0, u8 b = 0, u8 a = 255);
     Text(const Text& t);
 
     Text& operator= (const Text& t);

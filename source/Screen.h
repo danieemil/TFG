@@ -28,7 +28,7 @@ public:
 
     // Setters
     void setScreen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch = N3DS_screenH::N3DS_LEFT);
-    void setBackground(u8 r, u8 g, u8 b, u8 a);
+    void setBackgroundColor(u8 r, u8 g, u8 b, u8 a);
     void setPosition(const utilities::Vector2d<float>& pos);
     void setTargetPosition(const utilities::Vector2d<float>* t_pos);
 
@@ -36,7 +36,7 @@ public:
     C3D_RenderTarget* getRenderer() const;
     int getWidth() const;
     int getHeight() const;
-    u32 getBackground() const;
+    u32 getBackgroundColor() const;
     const utilities::Vector2d<float>& getPosition() const;
     const utilities::Vector2d<float>* getTargetPosition() const;
 

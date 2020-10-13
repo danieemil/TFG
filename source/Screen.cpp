@@ -51,7 +51,7 @@ void Screen::setScreen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH
 	C3D_RenderTargetSetOutput(renderer, (gfxScreen_t)(scv), (gfx3dSide_t)(sch), DISPLAY_TRANSFER_FLAGS);
 }
 
-void Screen::setBackground(u8 r, u8 g, u8 b, u8 a)
+void Screen::setBackgroundColor(u8 r, u8 g, u8 b, u8 a)
 {
     background_color = C2D_Color32(r,g,b,a);
 }
@@ -85,7 +85,7 @@ int Screen::getHeight() const
     return height;
 }
 
-u32 Screen::getBackground() const
+u32 Screen::getBackgroundColor() const
 {
     return background_color;
 }

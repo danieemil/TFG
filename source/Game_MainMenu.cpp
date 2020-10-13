@@ -7,7 +7,7 @@
 //=========================================
 
 Game_MainMenu::Game_MainMenu()
-: Game_State(), menu_title(Vector2d<float>(94.0f,32.0f), "MENU PRINCIPAL", 16, 10.0f)
+: Game_State()
 {
     type = state_type::menu;
 
@@ -36,6 +36,11 @@ Game_MainMenu& Game_MainMenu::operator= (const Game_MainMenu& gmm)
 void Game_MainMenu::init()
 {
 
+    unvisual::getCurrentScreen()->setBackgroundColor(255,255,255,255);
+
+    // Título
+    menu_title = Text(Vector2d<float>(94.0f,32.0f), "MENU PRINCIPAL", 16, 10.0f);
+
     const char* gui_sprites_path = "romfs:/gfx/gui.t3x";
 
     gui_sprite_manager.setSprites(gui_sprites_path);
@@ -58,7 +63,51 @@ void Game_MainMenu::init()
     Call callback_b1 = [](){Game::Instance()->stateTransition<Game_Playing>();};
 
     b1 = new GUI_Button(position_b1, size_b1, spr_b1, callback_b1, "Nueva partida");
-    gui_elements.push_back(b1);
+    gui_elements.addElement(b1);
+
+
+    // Botón de continuar partida
+    GUI_Button* b2;
+    Sprite* spr_b2 = gui_sprite_manager.createSprite(0);
+    Vector2d<float> position_b2 = Vector2d<float>(160.0f, 134.0f);
+
+    Vector2d<size_t> size_spr_b2;
+
+    if(spr_b2!=nullptr)
+    {
+        spr_b2->setScale(Vector2d<float>(1.0f, 1.0f));
+        size_spr_b2 = spr_b2->getSize();
+    }
+
+    Vector2d<float> size_b2 = Vector2d<float>((float)size_spr_b2.x, (float)size_spr_b2.y);
+
+    Call callback_b2 = [](){Game::Instance()->stateTransition<Game_Playing>();};
+
+    b2 = new GUI_Button(position_b2, size_b2, spr_b2, callback_b2, "Continuar partida");
+    gui_elements.addElement(b2);
+
+
+    // Botón de salir del juego
+    GUI_Button* b3;
+    Sprite* spr_b3 = gui_sprite_manager.createSprite(0);
+    Vector2d<float> position_b3 = Vector2d<float>(160.0f, 164.0f);
+
+    Vector2d<size_t> size_spr_b3;
+
+    if(spr_b3!=nullptr)
+    {
+        spr_b3->setScale(Vector2d<float>(0.6f, 1.0f));
+        size_spr_b3 = spr_b3->getSize();
+    }
+
+    Vector2d<float> size_b3 = Vector2d<float>((float)size_spr_b3.x, (float)size_spr_b3.y);
+
+    Call callback_b3 = [](){Game::Instance()->stopRunning();};
+
+    b3 = new GUI_Button(position_b3, size_b3, spr_b3, callback_b3, "Salir");
+    gui_elements.addElement(b3);
+
+
 
     unvisual::debugger->setColumn(1);
     unvisual::debugger->setRow(1);
@@ -74,43 +123,17 @@ void Game_MainMenu::processInput()
         return;
     }
 
-    if (unvisual::input::isPressed(unvisual::input::N3DS_buttons::Key_Touch))
-    {
-        auto t =  unvisual::input::getPositionTouched();
-        Vector2d<float> pos = Vector2d<float>((float)t.x, (float)t.y);
-        unvisual::debugger->setRow(9);
-        unvisual::debugger->print("Position pressed: ");
-        unvisual::debugger->nextLine();
-        unvisual::debugger->print("X : " + std::to_string(pos.x));
-        unvisual::debugger->nextLine();
-        unvisual::debugger->print("Y : " + std::to_string(pos.y));
-        unvisual::debugger->nextLine();
-        for (auto &&element : gui_elements)
-        {
-            element->checkPressed(pos);
-        }
-    }
+    gui_elements.processInput();
 }
 
 void Game_MainMenu::update()
 {
-    Game* g = Game::Instance();
-    for (auto &&element : gui_elements)
-    {
-        element->update();
-        if (g->getActualState()!=this)
-        {
-            return;
-        }
-    }
+    gui_elements.update();
 }
 
 void Game_MainMenu::render()
 {
-    for (auto &&element : gui_elements)
-    {
-        element->render();
-    }
+    gui_elements.render();
 
     menu_title.render();
 }

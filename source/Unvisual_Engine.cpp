@@ -149,7 +149,7 @@ namespace unvisual
         if(current_screen!=nullptr)
         {
             C3D_FrameDrawOn(current_screen->getRenderer());
-		    C3D_RenderTargetClear(current_screen->getRenderer(),C3D_CLEAR_ALL, current_screen->getBackground(), 0);
+		    C3D_RenderTargetClear(current_screen->getRenderer(),C3D_CLEAR_ALL, current_screen->getBackgroundColor(), 0);
         }
     }
 
