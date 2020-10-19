@@ -8,7 +8,8 @@ using namespace unvisual::input;
 //=========================================
 
 Game_Playing::Game_Playing()
-: Game_State(), world(nullptr), update_time(), level_factory(), level(1)
+: Game_State(), world(nullptr), update_time(), level_factory(), level(1),
+hud(nullptr, "romfs:/gfx/hud.t3x")
 {
     type = state_type::playing;
 
@@ -48,6 +49,10 @@ void Game_Playing::init()
         world = new World();
         level_factory.setWorld(world);
         level_factory.init(level);
+        if(world!=nullptr)
+        {
+            hud.setPlayer(world->getPlayer());
+        }
     }
 }
 
@@ -79,6 +84,7 @@ void Game_Playing::update()
     if(world!=nullptr)
     {
         world->updatePlayer();
+        if(Game::Instance()->getPlayer()==nullptr) return;
         world->updatePlayerCollisions();
     }
 
@@ -108,6 +114,8 @@ void Game_Playing::render()
     {
         world->render();
     }
+
+    hud.render();
 }
 
 
@@ -123,8 +131,22 @@ void Game_Playing::resetLevel()
 {
     level_factory.deInit();
     level_factory.init(level);
+    if(world!=nullptr)
+    {
+        hud.setPlayer(world->getPlayer());
+    }
 }
 
+void Game_Playing::erasePlayer()
+{
+    if(world!=nullptr)
+    {
+        world->erasePlayer();
+    }
+
+    hud.setPlayer(nullptr);
+
+}
 
 
 //=========================================
@@ -153,7 +175,8 @@ World* Game_Playing::getWorld() const
 float Game_Playing::getUpdateTime() const
 {
     float u = update_time.getElapsed();
-    if(u>upd) u = upd;
+    if(u>upd)
+        return upd;
     return u;
 }
 
@@ -167,9 +190,7 @@ Player* Game_Playing::getPlayer() const
     if(world!=nullptr)
     {
         return world->getPlayer();
-
     }
-
     return nullptr;
 }
 

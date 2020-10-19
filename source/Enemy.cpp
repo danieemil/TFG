@@ -230,6 +230,12 @@ void Enemy::setLife(int l)
     Combat_Character::setLife(l);
 }
 
+void Enemy::setMaxLife(int l)
+{
+    Combat_Character::setMaxLife(l);
+}
+
+
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
@@ -322,6 +328,11 @@ bool Enemy::getStunned() const
 int Enemy::getLife() const
 {
     return Combat_Character::getLife();
+}
+
+int Enemy::getMaxLife() const
+{
+    return Combat_Character::getMaxLife();
 }
 
 //=========================================

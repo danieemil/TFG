@@ -2,6 +2,7 @@
 #define _GUI_ELEMENT_
 
 #include "Utilities.h"
+#include "Unvisual_Engine.h"
 
 using namespace utilities;
 
@@ -24,8 +25,8 @@ public:
 
     virtual bool checkPressed(const Vector2d<float>& pos);
 
-    virtual void select();
-    virtual void unSelect();
+    virtual void select(u32 color);
+    virtual void unSelect(u32 color);
     virtual void activate() = 0;
 
     // Setters

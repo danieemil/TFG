@@ -21,6 +21,7 @@ public:
 
     // Métodos
     void drawSprite(const Vector2d<float>& view_pos = Vector2d<float>());
+    void drawTintedSprite(u32 color, float strength, const Vector2d<float>& view_pos = Vector2d<float>());
 
     // Setters
     void setSprite(SpriteManager* man, size_t collection_index);
@@ -49,6 +50,8 @@ private:
     Vector2d<float> position;
     SpriteManager* manager;
     C2D_Sprite sprite;
+
+    bool viewPositioning(const Vector2d<float>& view_pos);
     
 
 };

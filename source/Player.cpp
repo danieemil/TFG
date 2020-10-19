@@ -249,6 +249,12 @@ void Player::setLife(int l)
     Combat_Character::setLife(l);
 }
 
+void Player::setMaxLife(int l)
+{
+    Combat_Character::setMaxLife(l);
+}
+
+
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
@@ -343,6 +349,11 @@ int Player::getLife() const
     return Combat_Character::getLife();
 }
 
+int Player::getMaxLife() const
+{
+    return Combat_Character::getMaxLife();
+}
+
 const Vector2d<float>& Player::getHeading() const
 {
     return heading;
@@ -354,10 +365,7 @@ const Vector2d<float>& Player::getHeading() const
 
 Player::~Player()
 {
-    if(world!=nullptr)
-    {
-        world->erasePlayer(this);
-    }
+    Game::Instance()->erasePlayer();
 
     auto sc = unvisual::getCurrentScreen();
     if(sc!=nullptr)

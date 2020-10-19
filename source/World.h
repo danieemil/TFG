@@ -12,16 +12,16 @@ class World
 public:
     // Constructores
     World(const char* tileset_path = nullptr, Player* p = nullptr, const char* tileset_ent = nullptr);
-    World(const World&);
+    World(const World& w);
 
-    World& operator= (const World&);
+    World& operator= (const World& w);
 
     // Métodos
     void addEntity(Entity* e);
     void deleteEntity(Entity* e);
     void eraseEntity(Entity* e);
 
-    void erasePlayer(Player* p);
+    void erasePlayer();
 
     void processInput();
 

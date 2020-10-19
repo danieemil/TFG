@@ -42,8 +42,7 @@ void Game_Paused::init()
 
     gui_sprite_manager.setSprites(gui_sprites_path);
 
-    menu_title = Text(Vector2d<float>(135.0f,32.0f), "PAUSA", 16, 10.0f);
-    menu_title.setColor(255,255,255,255);
+    menu_title = Text(Vector2d<float>(135.0f,32.0f), "PAUSA", 16, 10.0f, 255, 255, 255, 255);
 
     // Botón de iniciar juego
     GUI_Button* b1;
@@ -84,9 +83,11 @@ void Game_Paused::init()
 
     Call callback_b2 = [](){Game::Instance()->stateTransition<Game_MainMenu>();};
 
-    b2 = new GUI_Button(position_b2, size_b2, spr_b2, callback_b2, "Volver al menú principal");
+    b2 = new GUI_Button(position_b2, size_b2, spr_b2, callback_b2, "Menú principal");
     b2->setTextColor(255,255,255,255);
     gui_elements.addElement(b2);
+
+    gui_elements.setUnselectedColor(255,255,255,255);
 }
 
 void Game_Paused::processInput()

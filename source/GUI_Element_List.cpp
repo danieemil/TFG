@@ -6,19 +6,22 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-GUI_Element_List::GUI_Element_List()
-: selected(-1)
+GUI_Element_List::GUI_Element_List(u32 unsel_color, u32 sel_color)
+: selected(-1), unselected_color(unsel_color), selected_color(sel_color)
 {
 
 }
 
 GUI_Element_List::GUI_Element_List(const GUI_Element_List& gel)
+: selected(-1), unselected_color(gel.selected_color), selected_color(gel.selected_color)
 {
 
 }
 
 GUI_Element_List& GUI_Element_List::operator= (const GUI_Element_List& gel)
 {
+    unselected_color = gel.unselected_color;
+    selected_color = gel.selected_color;
 
     return *this;
 }
@@ -171,6 +174,17 @@ void GUI_Element_List::setSelected(int s)
     selectActual();
 }
 
+void GUI_Element_List::setSelectedColor(u8 r, u8 g, u8 b, u8 a)
+{
+    selected_color = unvisual::getColor2D(r, g, b, a);
+    
+}
+
+void GUI_Element_List::setUnselectedColor(u8 r, u8 g, u8 b, u8 a)
+{
+    unselected_color = unvisual::getColor2D(r, g, b, a);
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -216,7 +230,7 @@ void GUI_Element_List::selectActual()
 {
     if(selected > -1 && selected < (int)elements.size())
     {
-        elements.at(selected)->select();
+        elements.at(selected)->select(selected_color);
     }
 }
 
@@ -224,6 +238,6 @@ void GUI_Element_List::unSelectActual()
 {
     if(selected > -1 && selected < (int)elements.size())
     {
-        elements.at(selected)->unSelect();
+        elements.at(selected)->unSelect(unselected_color);
     }
 }

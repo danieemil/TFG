@@ -162,6 +162,20 @@ void Game::stopRunning()
     running = false;
 }
 
+void Game::erasePlayer()
+{
+    if(state->getStateType()==state_type::playing)
+    {
+        Game_Playing* gp = static_cast<Game_Playing*>(state);
+        gp->erasePlayer();
+    }
+}
+
+
+//=========================================
+//=               SETTERS   	    	  =
+//=========================================
+
 // Cambiar de estado de juego sin transiciones(deInit() y init())
 void Game::setState(Game_State* s)
 {
@@ -176,13 +190,6 @@ void Game::setState(Game_State* s)
         post_state = state->getStateType();
     }
 }
-
-
-//=========================================
-//=               SETTERS   	    	  =
-//=========================================
-
-
 
 
 //=========================================

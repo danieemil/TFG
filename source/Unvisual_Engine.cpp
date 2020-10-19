@@ -187,6 +187,11 @@ namespace unvisual
         memcpy(fb,data, data_size);
     }
 
+    u32 getColor2D(u8 r, u8 g, u8 b, u8 a)
+    {
+        return C2D_Color32(r, g, b, a);
+    }
+
 
     void setCurrentScreen(Screen* sc)
     {

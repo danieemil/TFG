@@ -54,7 +54,7 @@ void Game_MainMenu::init()
 
     if(spr_b1!=nullptr)
     {
-        spr_b1->setScale(Vector2d<float>(0.8f, 1.0f));
+        spr_b1->setScale(Vector2d<float>(1.05f, 1.0f));
         size_spr_b1 = spr_b1->getSize();
     }
 
@@ -75,7 +75,7 @@ void Game_MainMenu::init()
 
     if(spr_b2!=nullptr)
     {
-        spr_b2->setScale(Vector2d<float>(1.0f, 1.0f));
+        spr_b2->setScale(Vector2d<float>(0.8f, 1.0f));
         size_spr_b2 = spr_b2->getSize();
     }
 
@@ -83,7 +83,7 @@ void Game_MainMenu::init()
 
     Call callback_b2 = [](){Game::Instance()->stateTransition<Game_Playing>();};
 
-    b2 = new GUI_Button(position_b2, size_b2, spr_b2, callback_b2, "Continuar partida");
+    b2 = new GUI_Button(position_b2, size_b2, spr_b2, callback_b2, "Continuar");
     gui_elements.addElement(b2);
 
 

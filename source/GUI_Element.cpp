@@ -62,12 +62,12 @@ void GUI_Element::setSize(const Vector2d<float>& s)
     size = s;
 }
 
-void GUI_Element::select()
+void GUI_Element::select(u32 color)
 {
     selected = true;
 }
 
-void GUI_Element::unSelect()
+void GUI_Element::unSelect(u32 color)
 {
     selected = false;
 }

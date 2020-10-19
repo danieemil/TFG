@@ -42,22 +42,22 @@ Sprite& Sprite::operator= (const Sprite& spr)
 
 void Sprite::drawSprite(const Vector2d<float>& view_pos)
 {
-    Screen* s = unvisual::getCurrentScreen();
-    
-    float h = (float)s->getHeight();
-    float w = (float)s->getWidth();
-
-    Vector2d<float> cent = Vector2d<float>(sprite.params.center.x, sprite.params.center.y); 
-
-    // Necesario para aplicar scroll 2D personalizado
-    Vector2d<float> p = position - view_pos + cent;
-    if((p.x + sprite.params.pos.w) > 0.0f && p.x < w)
-        if((p.y + sprite.params.pos.h) > 0.0f && p.y < h)
-        {
-            C2D_SpriteSetPos(&sprite, p.x, p.y);
-            C2D_DrawSprite(&sprite);
-        }
+    if(viewPositioning(view_pos))
+    {
+        C2D_DrawSprite(&sprite);
+    }
 }
+
+void Sprite::drawTintedSprite(u32 color, float strength, const Vector2d<float>& view_pos)
+{
+    if(viewPositioning(view_pos))
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, color, strength);
+        C2D_DrawSpriteTinted(&sprite, &tint);
+    }
+}
+
 
 
 //=========================================
@@ -103,7 +103,7 @@ void Sprite::setPosition(const Vector2d<float>& pos)
 
 void Sprite::setRotation(float angle)
 {
-    C2D_SpriteSetRotationDegrees(&sprite, angle);
+    //C2D_SpriteSetRotationDegrees(&sprite, angle);
 }
 
 void Sprite::setScale(const Vector2d<float>& scale)
@@ -175,4 +175,30 @@ Sprite::~Sprite()
     {
         manager->eraseSprite(this);
     }
+}
+
+
+//=========================================
+//=                PRIVADO       	      =
+//=========================================
+// Actualiza la posición visible del sprite en base a la vista y devuelve si está dentro
+// de la pantalla
+bool Sprite::viewPositioning(const Vector2d<float>& view_pos)
+{
+    Screen* s = unvisual::getCurrentScreen();
+    
+    float h = (float)s->getHeight();
+    float w = (float)s->getWidth();
+
+    Vector2d<float> cent = Vector2d<float>(sprite.params.center.x, sprite.params.center.y); 
+
+    // Necesario para aplicar scroll 2D personalizado
+    Vector2d<float> p = position - view_pos + cent;
+    if((p.x + sprite.params.pos.w) > 0.0f && p.x < w)
+        if((p.y + sprite.params.pos.h) > 0.0f && p.y < h)
+        {
+            C2D_SpriteSetPos(&sprite, p.x, p.y);
+            return true;
+        }
+    return false;
 }

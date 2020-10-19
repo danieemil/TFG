@@ -53,6 +53,7 @@ public:
     virtual void setAttacked(bool at);
     virtual void setStunned(bool st);
     virtual void setLife(int l);
+    virtual void setMaxLife(int l);
 
     // Getters
         //Entity
@@ -76,6 +77,7 @@ public:
     virtual bool getAttacked() const;
     virtual bool getStunned() const;
     virtual int getLife() const;
+    virtual int getMaxLife() const;
 
     // Destructor
     ~Combat_Character();
@@ -94,6 +96,7 @@ protected:
 
     // Atributos de personaje
     int life;
+    int max_life;
 
 
 private:

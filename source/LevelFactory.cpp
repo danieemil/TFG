@@ -1,9 +1,10 @@
 #include "LevelFactory.h"
 #include "AI_Engine.h"
 #include "Game.h"
+#include <unordered_map>
 
 //Mapa conversor de key (int) a la Enemy-Definition correspondiente.
-const std::map<int, const char*> levels_map = 
+const std::unordered_map<int, const char*> levels_map = 
 {
     {0, "romfs:/maps/testMap.mp"},
     {1, "romfs:/maps/testMap2.mp"},
@@ -122,7 +123,7 @@ void LevelFactory::init(int level)
 
 
 		// Otros atributos del jugador
-    int player_life = 30;
+    int player_life = 100;
 	Vector2d<float> player_max_vel = Vector2d<float>(400.0f,400.0f);
 	Vector2d<float> player_max_accel = Vector2d<float>(INFINITY, INFINITY); // Máximo de fuerza que se le puede aplicar a un cuerpo
 	Vector2d<float> player_frict = Vector2d<float>(40.0f,40.0f);

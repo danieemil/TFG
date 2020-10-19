@@ -8,7 +8,7 @@ class GUI_Element_List
 {
 public:
     // Constructores
-    GUI_Element_List();
+    GUI_Element_List(u32 unsel_color = unvisual::getColor2D(0,0,0,255), u32 sel_color = unvisual::getColor2D(255,0,0,255));
     GUI_Element_List(const GUI_Element_List& gel);
 
     GUI_Element_List& operator= (const GUI_Element_List& gel);
@@ -26,6 +26,8 @@ public:
 
     // Setters
     void setSelected(int s);
+    void setSelectedColor(u8 r, u8 g, u8 b, u8 a);
+    void setUnselectedColor(u8 r, u8 g, u8 b, u8 a);
 
     // Getters
     int getSelected() const;
@@ -39,6 +41,9 @@ private:
     std::vector<GUI_Element*> elements;
 
     int selected = -1;
+
+    u32 unselected_color;
+    u32 selected_color;
 
     void selectActual();
     void unSelectActual();

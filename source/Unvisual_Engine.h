@@ -36,6 +36,8 @@ namespace unvisual
 
     void drawData(void* data, size_t data_size);
 
+    u32 getColor2D(u8 r, u8 g, u8 b, u8 a);
+
     
 
     void setCurrentScreen(Screen* sc);

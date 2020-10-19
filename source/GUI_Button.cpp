@@ -15,9 +15,9 @@ callback(cb),text(Vector2d<float>(pos.x, pos.y),t,t_size, s.y)
     {
         sprite->setPosition(position);
     }
-    Vector2d<float> padding = Vector2d<float>(2.0f, 3.0f);
+    Vector2d<float> padding = Vector2d<float>(2.0f, 4.5f);
     text.setPosition(position + padding);
-    text.setHeight(s.y - padding.y*3.0f);
+    text.setHeight(s.y - padding.y*2.0f);
 }
 
 GUI_Button::GUI_Button(const GUI_Button& ge)
@@ -128,16 +128,16 @@ void GUI_Button::setSize(const Vector2d<float>& s)
     GUI_Element::setSize(s);
 }
 
-void GUI_Button::select()
+void GUI_Button::select(u32 color)
 {
-    GUI_Element::select();
-    text.setColor(255,0,0,255);
+    GUI_Element::select(color);
+    text.setColor(color);
 }
 
-void GUI_Button::unSelect()
+void GUI_Button::unSelect(u32 color)
 {
-    GUI_Element::unSelect();
-    text.setColor(0,0,0,255);
+    GUI_Element::unSelect(color);
+    text.setColor(color);
 }
 
 void GUI_Button::setSprite(Sprite* spr)
@@ -171,7 +171,7 @@ void GUI_Button::setText(const char* t)
 
 void GUI_Button::setTextColor(u8 r, u8 g, u8 b, u8 a)
 {
-    text.setColor(r, g, b, a);
+    text.setColor(unvisual::getColor2D(r, g, b, a));
 }
 
 

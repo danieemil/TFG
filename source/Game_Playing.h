@@ -5,6 +5,7 @@
 #include "World.h"
 #include "SpriteManager.h"
 #include "LevelFactory.h"
+#include "HUD.h"
 
 class Game_Playing : public Game_State
 {
@@ -27,6 +28,8 @@ public:
     void interpolate();
 
     void resetLevel();
+
+    void erasePlayer();
 
     // Setters
     void setLevel(int l);
@@ -54,6 +57,8 @@ protected:
 
     LevelFactory level_factory;
     int level;
+
+    HUD hud;
 
 private:
 

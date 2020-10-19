@@ -23,6 +23,8 @@ public:
     bool isRunning();
     void stopRunning();
 
+    void erasePlayer();
+
     template<class S>
     void stateTransition()
     {
@@ -41,10 +43,8 @@ public:
         return;
     }
 
-    void setState(Game_State* s);
-
     // Setters
-    
+    void setState(Game_State* s);
 
     // Getters
     float getDeltaTime() const;
@@ -60,7 +60,7 @@ public:
 
 protected:
 
-    // Constructores
+    // Constructor
     Game();
 
     // Destructor

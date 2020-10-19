@@ -33,8 +33,8 @@ public:
     // Setters
     void setPosition(const Vector2d<float>& pos) override;
     void setSize(const Vector2d<float>& s) override;
-    void select() override;
-    void unSelect() override;
+    void select(u32 color) override;
+    void unSelect(u32 color) override;
     void setSprite(Sprite* spr);
     void setPressed(bool p);
     void setEnabled(bool e);

@@ -11,12 +11,15 @@ using namespace unvisual;
 Text::Text(const Vector2d<float>& pos, const char* t, size_t text_size, float height,
 u8 r, u8 g, u8 b, u8 a)
 : position(pos), text(), text_buf(C2D_TextBufNew(text_size)), text_data(t),
-color(C2D_Color32(r, g, b, a)),
+color(unvisual::getColor2D(r, g, b, a)),
 size(Vector2d<float>((height*2.0f)/TEXT_HEIGH, (height*2.0f)/TEXT_HEIGH)),
 padding(Vector2d<float>(0.0f, 6.0f * size.y))
 {
-    C2D_TextParse(&text, text_buf, t);
-    C2D_TextOptimize(&text);
+    if(t!=nullptr)
+    {
+        C2D_TextParse(&text, text_buf, t);
+        C2D_TextOptimize(&text);
+    }
 }
 
 Text::Text(const Text& t)
@@ -75,9 +78,9 @@ void Text::setTextBufferSize(size_t text_buf_size)
     C2D_TextBufResize(text_buf, text_buf_size);
 }
 
-void Text::setColor(u8 r, u8 g, u8 b, u8 a)
+void Text::setColor(u32 c)
 {
-    color = C2D_Color32(r, g, b, a);
+    color = c;
 }
 
 void Text::setHeight(float height)

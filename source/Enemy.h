@@ -57,6 +57,7 @@ public:
     virtual void setAttacked(bool at);
     virtual void setStunned(bool st);
     virtual void setLife(int l);
+    virtual void setMaxLife(int l);
         //Enemy
 
     // Getters
@@ -81,6 +82,7 @@ public:
     virtual bool getAttacked() const;
     virtual bool getStunned() const;
     virtual int getLife() const;
+    virtual int getMaxLife() const;
         //Enemy
 
     // Destructor

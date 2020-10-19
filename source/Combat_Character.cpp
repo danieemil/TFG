@@ -10,7 +10,7 @@ Combat_Character::Combat_Character(int l, const Vector2d<float>& pos, Sprite* sp
     const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
     const Vector2d<float>& frict, Weapon* wp, float st_time)
 : Character(pos, spr, w, c, ori, max_vel, max_accel, frict), equipped(wp), attacked(false),
-    stunned(false), stun_time(st_time), life(l)
+    stunned(false), stun_time(st_time), life(l), max_life(l)
 {
     if(wp!=nullptr)
     {
@@ -275,7 +275,21 @@ void Combat_Character::setStunned(bool st)
 
 void Combat_Character::setLife(int l)
 {
-    life = l;
+    life = clamp(0, max_life, l);
+}
+
+void Combat_Character::setMaxLife(int l)
+{
+    // La vida máxima no puede ser negativa ni 0
+    if(l > 0)   
+    {
+        // La vida actual no puede superar la vida máxima
+        if(life >= l)
+        {
+            life = l;
+        }
+        max_life = l;
+    }
 }
 
 
@@ -375,6 +389,11 @@ bool Combat_Character::getStunned() const
 int Combat_Character::getLife() const
 {
     return life;
+}
+
+int Combat_Character::getMaxLife() const
+{
+    return max_life;
 }
 
 

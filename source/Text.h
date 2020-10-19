@@ -26,7 +26,7 @@ public:
     void setPosition(const Vector2d<float>& pos);
     void setText(const char* t);
     void setTextBufferSize(size_t text_buf_size);
-    void setColor(u8 r, u8 g, u8 b, u8 a);
+    void setColor(u32 c);
     void setHeight(float height);
 
     // Getters

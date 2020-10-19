@@ -86,12 +86,9 @@ void World::eraseEntity(Entity* e)
     }
 }
 
-void World::erasePlayer(Player* p)
+void World::erasePlayer()
 {
-    if(player == p)
-    {
-        player = nullptr;
-    }
+    player = nullptr;
 }
 
 void World::processInput()
@@ -224,8 +221,8 @@ void World::interpolatePlayer(float rp)
 
 void World::update()
 {
-    updatePlayer();
     updateEntities();
+    updatePlayer();
 }
 
 void World::updateEntities()

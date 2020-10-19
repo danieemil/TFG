@@ -37,47 +37,49 @@ public:
 
     // Setters
         //Entity
-    void setSprite(Sprite* spr);
-    void setPosition(const Vector2d<float>& pos);
-    void setWorld(World* w);
+    void setSprite(Sprite* spr) override;
+    void setPosition(const Vector2d<float>& pos) override;
+    void setWorld(World* w) override;
     void setBody(Collider* c) override;
-    void setVelocity(const Vector2d<float>& vel);
-    void setAngle(float angl);
-    void setOrientation(const Vector2d<float>& ori);
+    void setVelocity(const Vector2d<float>& vel) override;
+    void setAngle(float angl) override;
+    void setOrientation(const Vector2d<float>& ori) override;
         //Character
-    void setAcceleration(const Vector2d<float>& accel);
-    void setFriction(const Vector2d<float>& frict);
+    void setAcceleration(const Vector2d<float>& accel) override;
+    void setFriction(const Vector2d<float>& frict) override;
         //Combat_Character
-    void addWeapon(Weapon* wp);
-    void removeWeapon(Weapon* wp);
-    void equipWeapon(size_t index);
-    void setAttacked(bool at);
-    void setStunned(bool st);
-    void setLife(int l);
+    void addWeapon(Weapon* wp) override;
+    void removeWeapon(Weapon* wp) override;
+    void equipWeapon(size_t index) override;
+    void setAttacked(bool at) override;
+    void setStunned(bool st) override;
+    void setLife(int l) override;
+    void setMaxLife(int l) override;
         //Player
 
     // Getters
         //Entity
-    Sprite* getSprite() const;
-    const Vector2d<float>& getPosition() const;
-    World* getWorld() const;
-    Collider* getBody() const;
-    const Vector2d<float>& getVelocity() const;
-    const Vector2d<float>& getPrePosition() const;
-    const Vector2d<float>& getRenderPosition() const;
-    const Class_Id& getClassId() const;
-    float getAngle() const;
-    Vector2d<float> getCenter() const;
-    const Vector2d<float>& getOrientation() const;
+    Sprite* getSprite() const override;
+    const Vector2d<float>& getPosition() const override;
+    World* getWorld() const override;
+    Collider* getBody() const override;
+    const Vector2d<float>& getVelocity() const override;
+    const Vector2d<float>& getPrePosition() const override;
+    const Vector2d<float>& getRenderPosition() const override;
+    const Class_Id& getClassId() const override;
+    float getAngle() const override;
+    Vector2d<float> getCenter() const override;
+    const Vector2d<float>& getOrientation() const override;
         //Character
-    const Vector2d<float>& getAcceleration() const;
+    const Vector2d<float>& getAcceleration() const override;
         //Combat_Character
-    const std::vector<Weapon*>& getWeapons() const;
-    Weapon* getWeaponEquipped() const;
-    bool getAttacking() const;
-    bool getAttacked() const;
-    bool getStunned() const;
-    int getLife() const;
+    const std::vector<Weapon*>& getWeapons() const override;
+    Weapon* getWeaponEquipped() const override;
+    bool getAttacking() const override;
+    bool getAttacked() const override;
+    bool getStunned() const override;
+    int getLife() const override;
+    int getMaxLife() const override;
         //Player
     const Vector2d<float>& getHeading() const;
 
