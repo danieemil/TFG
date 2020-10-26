@@ -35,6 +35,8 @@ namespace unvisual
 
         // Inicializar el monitor de estados del APT
         initAPT();
+
+        initScreens();
     }
 
     void initAPT()
@@ -77,6 +79,9 @@ namespace unvisual
 
         // Liberar el monitor de estados del APT
         deInitAPT();
+
+        // Inicializar pantallas
+        initScreens();
         
     }
 
@@ -107,11 +112,11 @@ namespace unvisual
     ///////////////////////////
     //       Depurando       //
     ///////////////////////////
-    void initDebugger()
+    void initDebugger(N3DS_screenV sc_place)
     {
         if(debugger==nullptr)
         {
-            debugger = new Debugger(N3DS_screenV::N3DS_TOP);
+            debugger = new Debugger(sc_place);
         }
     }
 
@@ -135,8 +140,22 @@ namespace unvisual
     namespace
     {
         Screen* current_screen = nullptr;
+
+        Screen top_screen;
+        Screen bottom_screen;
     }
 
+    void initScreens()
+    {
+        // Creamos una "Ventana" para dibujar en 2D/3D y la ubicamos en la pantalla superior
+	    top_screen.setScreen(MAX_WIDTH_UP, MAX_HEIGHT_UP, N3DS_screenV::N3DS_TOP);
+
+	    // Creamos una "Ventana" para dibujar en 2D/3D y la ubicamos en la pantalla inferior
+	    bottom_screen.setScreen(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN, N3DS_screenV::N3DS_BOTTOM);
+
+        // Por defecto se empieza renderizando la escena en la pantalla superior
+        current_screen = &top_screen;
+    }
 
     void drawBegin()
     {
@@ -192,10 +211,16 @@ namespace unvisual
         return C2D_Color32(r, g, b, a);
     }
 
-
-    void setCurrentScreen(Screen* sc)
+    void setCurrentScreen(N3DS_screenV sc_place)
     {
-        current_screen = sc;
+        if(sc_place == N3DS_screenV::N3DS_TOP)
+        {
+            current_screen = &top_screen;
+        }
+        else if(sc_place == N3DS_screenV::N3DS_BOTTOM)
+        {
+            current_screen = &bottom_screen;
+        }
     }
 
     void setCurrentScreenTarget(const utilities::Vector2d<float>* t_pos)
@@ -209,6 +234,11 @@ namespace unvisual
     Screen* getCurrentScreen()
     {
         return current_screen;
+    }
+
+    utilities::Vector2d<float> getCurrentScreenSize()
+    {
+        return utilities::Vector2d<float>(current_screen->getWidth(), current_screen->getHeight());
     }
 
 

@@ -123,7 +123,7 @@ void LevelFactory::init(int level)
 
 
 		// Otros atributos del jugador
-    int player_life = 100;
+    int player_life = 11;
 	Vector2d<float> player_max_vel = Vector2d<float>(400.0f,400.0f);
 	Vector2d<float> player_max_accel = Vector2d<float>(INFINITY, INFINITY); // Máximo de fuerza que se le puede aplicar a un cuerpo
 	Vector2d<float> player_frict = Vector2d<float>(40.0f,40.0f);

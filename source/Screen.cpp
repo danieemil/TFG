@@ -12,8 +12,8 @@ Screen::Screen()
     renderer = nullptr;
 }
 
-Screen::Screen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch)
-: width(s_width), height(s_height), position(), target_position(nullptr)
+Screen::Screen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch, const utilities::Vector2d<float>* t_pos)
+: width(s_width), height(s_height), position(), target_position(t_pos)
 {
     renderer = C3D_RenderTargetCreate(height,width,GPU_RB_RGBA8,GPU_RB_DEPTH24_STENCIL8);
 	C3D_RenderTargetSetOutput(renderer, (gfxScreen_t)(scv), (gfx3dSide_t)(sch), DISPLAY_TRANSFER_FLAGS);

@@ -7,33 +7,39 @@
 //=========================================
 
 HUD::HUD(Player* p, const char* sprites_path)
-: player(p), manager(sprites_path), life(manager.createSprite(0))
+: player(p), manager(sprites_path), life_position(10.0f, 10.0f), heart_padding(4.0f),
+heart(manager.createSprite(0)), half_heart(manager.createSprite(1)), no_heart(manager.createSprite(2)),
+weapon_selector(manager.createSprite(3))
 {
-    if(life!=nullptr)
+    if(weapon_selector!=nullptr)
     {
-        auto ls = life->getSize();
-        life->setPosition(Vector2d<float>(24.0f,MAX_HEIGHT_DOWN - (float)ls.y - 24));
+        Vector2d<float> sc_size = unvisual::getCurrentScreenSize();
+        Vector2d<size_t> ws_size = weapon_selector->getSize();
+        weapon_selector->setPosition(sc_size - Vector2d<float>(8,8) - Vector2d<float>(ws_size.x, ws_size.y));
     }
 }
 
 HUD::HUD(const HUD& h)
-: player(h.player), manager(h.manager), life(manager.createSprite(0))
+: player(h.player), manager(h.manager), life_position(h.life_position), heart_padding(h.heart_padding),
+heart(manager.createSprite(0)), half_heart(manager.createSprite(1)), no_heart(manager.createSprite(2)),
+weapon_selector(manager.createSprite(3))
 {
-    if(h.life!=nullptr && life!=nullptr)
-    {
-        life->setPosition(h.life->getPosition());
-    }
+
 }
 
 HUD& HUD::operator= (const HUD& h)
 {
     player = h.player;
     manager = h.manager;
-    life = manager.createSprite(0);
-    if(h.life!=nullptr && life!=nullptr)
-    {
-        life->setPosition(h.life->getPosition());
-    }
+
+    life_position = h.life_position;
+    heart_padding = h.heart_padding;
+
+    heart = manager.createSprite(0);
+    half_heart = manager.createSprite(1);
+    no_heart = manager.createSprite(2);
+    weapon_selector = manager.createSprite(3);
+
     return *this;
 }
 
@@ -46,22 +52,82 @@ void HUD::render()
 {
     if(player!=nullptr)
     {
-        if(life!=nullptr)
+        if(heart!=nullptr)
         {
-            u32 black = C2D_Color32(0,0,0,255);
-            u32 red = C2D_Color32(50,0,0,255);
-            
-            u32 color = black;
+            Vector2d<float> pos = life_position;
 
-            float strength = 1.0f - (player->getLife()/(float)player->getMaxLife());
+            int half_hearts =   player->getLife();
+            int max_hearts  =   player->getMaxLife();
+            int no_hearts = max_hearts - half_hearts;
+            no_hearts = no_hearts + (no_hearts % 2);
 
-            if(strength >= 0.75f)
+
+
+            Sprite* rendering = heart;
+
+            start:
+            while (half_hearts > 0)
             {
-                color = red;
-                strength = strength - 0.1f;
+                
+                if(half_hearts < 2)
+                {
+                    rendering = half_heart;
+                }
+
+                rendering->setPosition(pos);
+                rendering->drawSprite();
+
+                float end_x = rendering->getEndPosition().x;
+                pos.x = end_x + heart_padding;
+
+                half_hearts -= 2;
             }
 
-            life->drawTintedSprite(color, strength);
+            if(no_hearts > 0)
+            {
+                rendering = no_heart;
+                half_hearts = no_hearts;
+                no_hearts = 0.0f;
+                goto start;
+            }
+
+            if(weapon_selector!=nullptr)
+            {
+                weapon_selector->drawSprite();
+
+                Weapon* w = player->getWeaponEquipped();
+                if(w!=nullptr)
+                {
+                    Sprite* w_spr = w->getSprite();
+
+                    if (w_spr!=nullptr)
+                    {
+                        float not_attacking = 0.0f;
+                        u32 white = unvisual::getColor2D(255,255,255,255);
+                        u32 black = unvisual::getColor2D(0,0,0,255);
+
+                        auto temp = weapon_selector->getSize();
+                        Vector2d<float> container_size = Vector2d<float>(temp.x, temp.y);
+                        temp = w_spr->getSize();
+                        Vector2d<float> w_size = Vector2d<float>(temp.x, temp.y);
+                        Vector2d<float> w_pos = w_spr->getPosition();
+                        
+                        Vector2d<float> w_hud_pos = weapon_selector->getPosition() + ((container_size - w_size)/2);
+                        w_spr->setPosition(w_hud_pos);
+                        float w_rot = w_spr->getRotationRadians();
+                        w_spr->setRotationRadians(0.0f);
+
+                        if(player->getAttacking() || player->getStunned())
+                        {
+                            not_attacking = 0.75f;
+                        }
+
+                        w_spr->drawTintedSprite(black, not_attacking);
+                        w_spr->setPosition(w_pos);
+                        w_spr->setRotationRadians(w_rot);
+                    }
+                }
+            }
         }
     }
 }
@@ -80,12 +146,13 @@ void HUD::setTilesetPath(const char* sprites_path)
 {
     manager.setSprites(sprites_path);
 
-    life = manager.createSprite(0);
-    if(life!=nullptr)
-    {
-        auto ls = life->getSize();
-        life->setPosition(Vector2d<float>(24.0f,MAX_HEIGHT_DOWN - (float)ls.y - 24));
-    }
+    heart = manager.createSprite(0);
+
+    half_heart = manager.createSprite(1);
+
+    no_heart = manager.createSprite(2);
+
+    weapon_selector = manager.createSprite(3);
 }
 
 
@@ -111,5 +178,7 @@ const SpriteManager* HUD::getSpriteManager() const
 HUD::~HUD()
 {
     player = nullptr;
-    life = nullptr;
+    heart = nullptr;
+    half_heart = nullptr;
+    no_heart = nullptr;
 }

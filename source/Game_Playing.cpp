@@ -13,8 +13,8 @@ hud(nullptr, "romfs:/gfx/hud.t3x")
 {
     type = state_type::playing;
 
-    unvisual::debugger->print("He creado el estado Jugando");
-    unvisual::debugger->nextLine();
+    //unvisual::debugger->print("He creado el estado Jugando");
+    //unvisual::debugger->nextLine();
 }
 
 Game_Playing::Game_Playing(const Game_Playing& gp)
@@ -212,6 +212,6 @@ Game_Playing::~Game_Playing()
         delete world;
     }
 
-    unvisual::debugger->print("He destruido el estado Jugando");
-    unvisual::debugger->nextLine();
+    //unvisual::debugger->print("He destruido el estado Jugando");
+    //unvisual::debugger->nextLine();
 }

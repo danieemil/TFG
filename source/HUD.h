@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "SpriteManager.h"
+#include "Text.h"
 
 
 class HUD
@@ -34,7 +35,14 @@ private:
     Player* player;
     SpriteManager manager;
 
-    Sprite* life;
+    Vector2d<float> life_position;
+    float heart_padding;
+    
+    Sprite* heart;
+    Sprite* half_heart;
+    Sprite* no_heart;
+
+    Sprite* weapon_selector;
 
 };
 

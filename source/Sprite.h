@@ -8,6 +8,8 @@ using namespace utilities;
 
 class SpriteManager;
 
+#define SPRITE_DEPTH -0.9f
+
 class Sprite
 {
 
@@ -22,12 +24,14 @@ public:
     // Métodos
     void drawSprite(const Vector2d<float>& view_pos = Vector2d<float>());
     void drawTintedSprite(u32 color, float strength, const Vector2d<float>& view_pos = Vector2d<float>());
+    void drawOutlinedSrpite(u32 color = unvisual::getColor2D(255,255,255,255), const Vector2d<float>& view_pos = Vector2d<float>());
 
     // Setters
     void setSprite(SpriteManager* man, size_t collection_index);
     void setRawManager(SpriteManager* man);
     void setPosition(const Vector2d<float>& pos);
     void setRotation(float angle);
+    void setRotationRadians(float radians);
     void setScale(const Vector2d<float>& scale);
     void setCenter(const Vector2d<float>& center);
     void setDepth(float depth);
@@ -36,10 +40,12 @@ public:
     size_t getIndex() const;
     SpriteManager* getManager() const;
     const Vector2d<float>& getPosition() const;
+    float getRotationRadians() const;
     Vector2d<float> getSpritePosition() const;
     Vector2d<float> getCenter() const;
     Vector2d<float> getCenterPosition() const;
     Vector2d<size_t> getSize() const;
+    Vector2d<float> getEndPosition() const;
 
     // Destructor
     ~Sprite();

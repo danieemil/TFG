@@ -42,10 +42,8 @@ void Game::init()
 {
 
     running = true;
-
-    // Creamos una "Ventana" para dibujos en 3D y la ubicamos en la pantalla de abajo
-	screen.setScreen(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN, N3DS_screenV::N3DS_BOTTOM);
-	unvisual::setCurrentScreen(&screen);
+    
+    unvisual::setCurrentScreen(N3DS_screenV::N3DS_TOP);
 
     // Delta time
 	dt = 0.0f;
@@ -78,14 +76,14 @@ void Game::processInput()
     {
         if(unvisual::clockStopped())
         {
-            unvisual::debugger->setRow(20);
-            unvisual::debugger->print(unvisual::getTimeStopped());
+            //unvisual::debugger->setRow(20);
+            //unvisual::debugger->print(unvisual::getTimeStopped());
             unvisual::resumeClock();
         }
         else
         {
-            unvisual::debugger->setRow(20);
-            unvisual::debugger->print(unvisual::getTimeStopped());
+            //unvisual::debugger->setRow(20);
+            //unvisual::debugger->print(unvisual::getTimeStopped());
             unvisual::stopClock();
         }
         
@@ -93,14 +91,14 @@ void Game::processInput()
 
     if(isHeld(N3DS_buttons::Key_A) || isPressed(N3DS_buttons::Key_A))
     {
-        unvisual::debugger->clear();
+        //unvisual::debugger->clear();
     }
     
     if(isPressed(N3DS_buttons::Key_B))
     {
-        unvisual::debugger->setColumn(1);
-        unvisual::debugger->print("He pulsado la B " + std::to_string(unvisual::debugger->getRow()) + " veces");
-        unvisual::debugger->nextLine();
+        //unvisual::debugger->setColumn(1);
+        //unvisual::debugger->print("He pulsado la B " + std::to_string(//unvisual::debugger->getRow()) + " veces");
+        //unvisual::debugger->nextLine();
     }
 
     if(state!=nullptr)
@@ -190,7 +188,6 @@ void Game::setState(Game_State* s)
         post_state = state->getStateType();
     }
 }
-
 
 //=========================================
 //=               GETTERS   	    	  =

@@ -54,10 +54,7 @@ Sprite* SpriteManager::createSprite(size_t collection_index)
         if(collection_index < C2D_SpriteSheetCount(sprite_collection)
         && collection_index >= 0)
         {
-            
             spr = new Sprite(this, collection_index);
-            sprites.push_back(spr);
-            
         }
     }
 

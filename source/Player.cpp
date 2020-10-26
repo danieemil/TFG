@@ -96,7 +96,7 @@ void Player::collision(void* ent)
             stunned = true;
             attacked = true;
 
-            life = life - 10.0f;
+            life = life - 1;
         }
     }
 

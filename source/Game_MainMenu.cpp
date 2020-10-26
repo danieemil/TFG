@@ -11,8 +11,8 @@ Game_MainMenu::Game_MainMenu()
 {
     type = state_type::menu;
 
-    unvisual::debugger->print("He creado el estado Menú Principal");
-    unvisual::debugger->nextLine();
+    //unvisual::debugger->print("He creado el estado Menú Principal");
+    //unvisual::debugger->nextLine();
 }
 
 Game_MainMenu::Game_MainMenu(const Game_MainMenu& gmm)
@@ -38,8 +38,18 @@ void Game_MainMenu::init()
 
     unvisual::getCurrentScreen()->setBackgroundColor(255,255,255,255);
 
+    Vector2d<float> sc_size = unvisual::getCurrentScreenSize();
+    Vector2d<float> sc_center = sc_size / 2;
+
+    Vector2d<float> but_pos = Vector2d<float>(sc_center.x - 10, sc_center.y / 1.5f);
+    Vector2d<float> but_size = Vector2d<float>(107,18);
+    Vector2d<float> but_padding = Vector2d<float>(0, 30);
+
     // Título
-    menu_title = Text(Vector2d<float>(94.0f,32.0f), "MENU PRINCIPAL", 16, 10.0f);
+    Vector2d<float> menu_title_pos = Vector2d<float>(sc_center.x/1.5f,sc_center.y/5);
+    const char* menu_title_text = "MENU PRINCIPAL";
+    float text_height = 10.0f;
+    menu_title = Text(menu_title_pos, menu_title_text, 16, text_height);
 
     const char* gui_sprites_path = "romfs:/gfx/gui.t3x";
 
@@ -48,9 +58,8 @@ void Game_MainMenu::init()
     // Botón de iniciar juego
     GUI_Button* b1;
     Sprite* spr_b1 = gui_sprite_manager.createSprite(0);
-    Vector2d<float> position_b1 = Vector2d<float>(160.0f, 104.0f);
-
-    Vector2d<size_t> size_spr_b1;
+    Vector2d<float> position_b1 = but_pos;
+    Vector2d<size_t> size_spr_b1 = Vector2d<size_t>(but_size.x, but_size.y);
 
     if(spr_b1!=nullptr)
     {
@@ -61,15 +70,16 @@ void Game_MainMenu::init()
     Vector2d<float> size_b1 = Vector2d<float>((float)size_spr_b1.x, (float)size_spr_b1.y);
 
     Call callback_b1 = [](){Game::Instance()->stateTransition<Game_Playing>();};
-
-    b1 = new GUI_Button(position_b1, size_b1, spr_b1, callback_b1, "Nueva partida");
+    const char* text_b1 = "Nueva partida";
+    b1 = new GUI_Button(position_b1, size_b1, spr_b1, callback_b1, text_b1);
     gui_elements.addElement(b1);
 
 
     // Botón de continuar partida
     GUI_Button* b2;
     Sprite* spr_b2 = gui_sprite_manager.createSprite(0);
-    Vector2d<float> position_b2 = Vector2d<float>(160.0f, 134.0f);
+    but_pos += but_padding;
+    Vector2d<float> position_b2 = but_pos;
 
     Vector2d<size_t> size_spr_b2;
 
@@ -90,7 +100,8 @@ void Game_MainMenu::init()
     // Botón de salir del juego
     GUI_Button* b3;
     Sprite* spr_b3 = gui_sprite_manager.createSprite(0);
-    Vector2d<float> position_b3 = Vector2d<float>(160.0f, 164.0f);
+    but_pos += but_padding;
+    Vector2d<float> position_b3 = but_pos;
 
     Vector2d<size_t> size_spr_b3;
 
@@ -107,10 +118,15 @@ void Game_MainMenu::init()
     b3 = new GUI_Button(position_b3, size_b3, spr_b3, callback_b3, "Salir");
     gui_elements.addElement(b3);
 
+    // No se pueden seleccionar los botones con el panel táctil -> (Pantalla de arriba)
+    gui_elements.setUntouchable(true);
+    // La opción de continuar está por defecto seleccionada cuando presionamos EL BOTÓN
+    gui_elements.setSelectedDefault(1);
 
 
-    unvisual::debugger->setColumn(1);
-    unvisual::debugger->setRow(1);
+
+    //unvisual::debugger->setColumn(1);
+    //unvisual::debugger->setRow(1);
 
 
 }
@@ -168,6 +184,6 @@ state_type Game_MainMenu::getStateType() const
 
 Game_MainMenu::~Game_MainMenu()
 {
-    unvisual::debugger->print("He destruido el estado Menú Principal");
-    unvisual::debugger->nextLine();
+    //unvisual::debugger->print("He destruido el estado Menú Principal");
+    //unvisual::debugger->nextLine();
 }

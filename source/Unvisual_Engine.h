@@ -20,12 +20,13 @@ namespace unvisual
     void aptState(APT_HookType hook, void* param);
 
     // Consola de depuración
-    void initDebugger();
+    void initDebugger(N3DS_screenV sc_place);
     void deInitDebugger();
     extern Debugger* debugger;
 
 
     // Renderizado
+    void initScreens();
     void drawBegin();
     void drawOnCurrentScreen();
     void prepare2D();
@@ -38,11 +39,10 @@ namespace unvisual
 
     u32 getColor2D(u8 r, u8 g, u8 b, u8 a);
 
-    
-
-    void setCurrentScreen(Screen* sc);
+    void setCurrentScreen(N3DS_screenV sc_place);
     void setCurrentScreenTarget(const utilities::Vector2d<float>* t_pos);
     Screen* getCurrentScreen();
+    utilities::Vector2d<float> getCurrentScreenSize();
 
 
     // Tiempo

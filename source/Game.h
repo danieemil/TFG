@@ -68,7 +68,8 @@ protected:
 
 private:
 
-    Screen screen;
+    Screen upScreen;
+    Screen downScreen;
 
     bool running;
     float dt;

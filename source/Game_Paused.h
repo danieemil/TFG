@@ -39,6 +39,8 @@ protected:
 private:
 
     Game_Playing* playingState;
+    Vector2d<float> background_position;
+    Vector2d<float> background_size;
 
 };
 

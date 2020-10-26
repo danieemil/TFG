@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 
 	//Inicializamos todo
 	unvisual::init();
-	unvisual::initDebugger();
+	//unvisual::initDebugger(N3DS_screenV::N3DS_TOP);
 	physics::init();
 	AI::init();
 

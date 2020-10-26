@@ -11,26 +11,34 @@ using namespace unvisual;
 //=========================================
 
 Sprite::Sprite(SpriteManager* man, size_t collection_index, const Vector2d<float>& pos)
-: index(collection_index), position(pos), manager(man), sprite()
+: index(collection_index), position(pos), manager(man)
 {
     if(manager!=nullptr)
     {
         C2D_SpriteFromSheet(&sprite, manager->getSpriteCollection(), index);
-        setDepth(-0.9);
+        setDepth(SPRITE_DEPTH);
+        manager->addSprite(this);
     }
 }
 
 Sprite::Sprite(const Sprite& spr)
-: index(spr.index), position(spr.position), manager(nullptr), sprite()
+: Sprite(spr.manager, spr.index, spr.position)
 {
-
+    
 }
 
 Sprite& Sprite::operator= (const Sprite& spr)
 {
     index = spr.index;
     position = spr.position;
-    manager = nullptr;
+    manager = spr.manager;
+
+    if (manager!=nullptr)
+    {
+        C2D_SpriteFromSheet(&sprite, manager->getSpriteCollection(), index);
+        setDepth(SPRITE_DEPTH);
+        manager->addSprite(this);
+    }
     
     return *this;
 }
@@ -58,6 +66,23 @@ void Sprite::drawTintedSprite(u32 color, float strength, const Vector2d<float>& 
     }
 }
 
+void Sprite::drawOutlinedSrpite(u32 color, const Vector2d<float>& view_pos)
+{
+    //Vector2d<float> spr_size1 = Vector2d<float>(sprite.params.pos.w, sprite.params.pos.h);
+    //Vector2d<float> spr_size2 = spr_size1 + Vector2d<float>(2,2);
+    //Vector2d<float> spr_scale = spr_size2 / spr_size1;
+
+    sprite.params.pos.w = 2 + sprite.image.subtex->width;
+	sprite.params.pos.h = 2 + sprite.image.subtex->height;
+    position -= Vector2d<float>(1,1);
+
+    drawTintedSprite(color, 1.0f, view_pos);
+
+    sprite.params.pos.w = sprite.image.subtex->width;
+	sprite.params.pos.h = sprite.image.subtex->height;
+    position += Vector2d<float>(1,1);
+}
+
 
 
 //=========================================
@@ -76,14 +101,15 @@ void Sprite::setSprite(SpriteManager* man, size_t collection_index)
             if(collection_index < C2D_SpriteSheetCount(sprite_collection)
             && collection_index >= 0)
             {
-                C2D_SpriteFromSheet(&sprite, sprite_collection, index);
-
                 if(manager!=nullptr)
                 {
                     manager->eraseSprite(this);
                 }
                 manager = man;
                 index = collection_index;
+                
+                C2D_SpriteFromSheet(&sprite, sprite_collection, index);
+                setDepth(SPRITE_DEPTH);
 
                 manager->addSprite(this);
             }
@@ -91,6 +117,7 @@ void Sprite::setSprite(SpriteManager* man, size_t collection_index)
     }
 }
 
+// Esta función se carga la integridad del juego, pero...
 void Sprite::setRawManager(SpriteManager* man)
 {
     manager = man;
@@ -103,7 +130,12 @@ void Sprite::setPosition(const Vector2d<float>& pos)
 
 void Sprite::setRotation(float angle)
 {
-    //C2D_SpriteSetRotationDegrees(&sprite, angle);
+    C2D_SpriteSetRotationDegrees(&sprite, angle);
+}
+
+void Sprite::setRotationRadians(float radians)
+{
+    sprite.params.angle = radians;
 }
 
 void Sprite::setScale(const Vector2d<float>& scale)
@@ -140,6 +172,11 @@ const Vector2d<float>& Sprite::getPosition() const
     return position;
 }
 
+float Sprite::getRotationRadians() const
+{
+    return sprite.params.angle;
+}
+
 Vector2d<float> Sprite::getSpritePosition() const
 {
     return Vector2d<float>(sprite.params.pos.x, sprite.params.pos.y);
@@ -162,6 +199,11 @@ Vector2d<float> Sprite::getCenterPosition() const
 Vector2d<size_t> Sprite::getSize() const
 {
     return Vector2d<size_t>(sprite.params.pos.w, sprite.params.pos.h);
+}
+
+Vector2d<float> Sprite::getEndPosition() const
+{
+    return Vector2d<float>(position.x + sprite.params.pos.w, position.y + sprite.params.pos.h);
 }
 
 
