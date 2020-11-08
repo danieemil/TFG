@@ -70,6 +70,8 @@ private:
 
     Vector2d<float> scroll_vel;
 
+    friend class LevelFactory;
+
 };
 
 #endif

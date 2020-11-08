@@ -7,9 +7,9 @@
 //=========================================
 
 Screen::Screen()
-: width(0), height(0), position(), target_position(nullptr)
+: width(0), height(0), position(), target_position(nullptr), renderer(nullptr)
 {
-    renderer = nullptr;
+
 }
 
 Screen::Screen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch, const utilities::Vector2d<float>* t_pos)
@@ -20,7 +20,7 @@ Screen::Screen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch, co
 }
 
 Screen::Screen(const Screen& sc)
-: width(sc.width), height(sc.height), position(sc.position), target_position(nullptr), renderer(nullptr)
+: width(sc.width), height(sc.height), position(sc.position), target_position(sc.target_position), renderer(sc.renderer)
 {
 
 }
@@ -112,7 +112,4 @@ Screen::~Screen()
         C3D_RenderTargetDelete(renderer);
         renderer = nullptr;
     }
-
-    
-    
 }

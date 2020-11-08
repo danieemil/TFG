@@ -8,7 +8,7 @@ using namespace unvisual::input;
 //=========================================
 
 Game_Playing::Game_Playing()
-: Game_State(), world(nullptr), update_time(), level_factory(), level(1),
+: Game_State(), world(new World()), update_time(), level_factory(world),
 hud(nullptr, "romfs:/gfx/hud.t3x")
 {
     type = state_type::playing;
@@ -18,7 +18,7 @@ hud(nullptr, "romfs:/gfx/hud.t3x")
 }
 
 Game_Playing::Game_Playing(const Game_Playing& gp)
-: Game_State(gp), world(gp.world), update_time(gp.update_time), level_factory(gp.level_factory), level(gp.level)
+: Game_State(gp), world(gp.world), update_time(gp.update_time), level_factory(gp.level_factory)
 {
 
 }
@@ -31,7 +31,6 @@ Game_Playing& Game_Playing::operator= (const Game_Playing& gp)
     world = gp.world;
     update_time = gp.update_time;
     level_factory = gp.level_factory;
-    level = gp.level;
 
     return *this;
 }
@@ -44,15 +43,15 @@ Game_Playing& Game_Playing::operator= (const Game_Playing& gp)
 void Game_Playing::init()
 {
     unvisual::getCurrentScreen()->setBackgroundColor(255,255,255,255);
-    if(world==nullptr)
+    // Cargar datos del save file
+
+    level_factory.loadSave();
+
+    // Inicializar el mundo
+    level_factory.init();
+    if(world!=nullptr)
     {
-        world = new World();
-        level_factory.setWorld(world);
-        level_factory.init(level);
-        if(world!=nullptr)
-        {
-            hud.setPlayer(world->getPlayer());
-        }
+        hud.setPlayer(world->getPlayer());
     }
 }
 
@@ -130,7 +129,7 @@ void Game_Playing::deInit()
 void Game_Playing::resetLevel()
 {
     level_factory.deInit();
-    level_factory.init(level);
+    level_factory.init();
     if(world!=nullptr)
     {
         hud.setPlayer(world->getPlayer());
@@ -152,11 +151,6 @@ void Game_Playing::erasePlayer()
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
-
-void Game_Playing::setLevel(int l)
-{
-    level = l;
-}
 
 
 //=========================================
@@ -192,11 +186,6 @@ Player* Game_Playing::getPlayer() const
         return world->getPlayer();
     }
     return nullptr;
-}
-
-int Game_Playing::getLevel() const
-{
-    return level;
 }
 
 

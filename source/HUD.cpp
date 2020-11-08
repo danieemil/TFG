@@ -108,6 +108,9 @@ void HUD::render()
 
                         auto temp = weapon_selector->getSize();
                         Vector2d<float> container_size = Vector2d<float>(temp.x, temp.y);
+
+                        w_spr->setScale(Vector2d<float>(2.0f, 2.0f));
+
                         temp = w_spr->getSize();
                         Vector2d<float> w_size = Vector2d<float>(temp.x, temp.y);
                         Vector2d<float> w_pos = w_spr->getPosition();
@@ -125,6 +128,7 @@ void HUD::render()
                         w_spr->drawTintedSprite(black, not_attacking);
                         w_spr->setPosition(w_pos);
                         w_spr->setRotationRadians(w_rot);
+                        w_spr->setScale(Vector2d<float>(1.0f, 1.0f));
                     }
                 }
             }

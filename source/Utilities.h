@@ -54,9 +54,8 @@ namespace utilities
         T x;
         T y;
 
-        Vector2d<T>(T px, T py) : x(px), y(py) {};
+        Vector2d<T>(T px = 0, T py = 0) : x(px), y(py) {};
         Vector2d<T>(const Vector2d<T>& v) : x(v.x), y(v.y) {};
-        Vector2d<T>() : x(0), y(0){};
 
         Vector2d<T> Normal(){
             return Vector2d<T>(-y, x);

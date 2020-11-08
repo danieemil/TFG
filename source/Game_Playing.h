@@ -32,7 +32,6 @@ public:
     void erasePlayer();
 
     // Setters
-    void setLevel(int l);
 
     // Getters
     state_type getStateType() const override;
@@ -40,7 +39,6 @@ public:
     float getUpdateTime() const;
     const float getUpd() const;
     Player* getPlayer() const;
-    int getLevel() const;
 
 
     // Destructor
@@ -56,7 +54,6 @@ protected:
     Timepoint update_time;
 
     LevelFactory level_factory;
-    int level;
 
     HUD hud;
 

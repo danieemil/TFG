@@ -68,18 +68,17 @@ protected:
 
 private:
 
-    Screen upScreen;
-    Screen downScreen;
+    static Game* p_instance;
 
     bool running;
     float dt;
     Timepoint delta_time;
 
-    static Game* p_instance;
-
     state_type prev_state;
     Game_State* state;
     state_type post_state;
+
+    // Save file data
 
 };
 

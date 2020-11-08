@@ -15,8 +15,21 @@ Tilemap::Tilemap(const char* tileset, const Vector2d<int>& n_tiles, int** tilema
     }
 
     num_tiles = n_tiles;
-    level = tilemap;
     tile_size = s_tiles;
+
+    if(tilemap!=nullptr)
+    {
+        level = new int*[num_tiles.y];
+        for (int i = 0; i < num_tiles.y; i++)
+        {
+            level[i] = new int[num_tiles.x];
+            for (int j = 0; j < num_tiles.x; j++)
+            {
+                level[i][j] = tilemap[i][j];
+            }
+        }
+        
+    }
 
     map_size = num_tiles * tile_size;
 
@@ -74,8 +87,11 @@ void Tilemap::render(const Vector2d<float>& view_pos)
     }
 }
 
-void Tilemap::update(const Vector2d<float>& pos_dif)
+void Tilemap::moveTilemap(const Vector2d<float>& dif)
 {
+
+    position = position + dif;
+
     if(tiles!=nullptr)
     {
         Vector2d<float> pos = position;
@@ -99,23 +115,9 @@ void Tilemap::update(const Vector2d<float>& pos_dif)
     {
         if(collider!=nullptr)
         {
-            collider->setPosition(collider->getPosition() + pos_dif);
+            collider->setPosition(collider->getPosition() + dif);
         }
     }
-}
-
-void Tilemap::generateTilemap()
-{
-    destroyLevel();
-    destroyTilemap();
-    destroyPhysics();
-
-    if(level!=nullptr)
-    {
-        generateTiles();
-    }
-    
-    update(position);
 }
 
 void Tilemap::generateTiles()
@@ -226,8 +228,8 @@ void Tilemap::setTileset(const char* tileset)
 
 void Tilemap::setPosition(const Vector2d<float>& pos)
 {
-    position = position + pos;
-    update(pos);
+    Vector2d<float> dif = pos - position;
+    moveTilemap(dif);
 }
 
 

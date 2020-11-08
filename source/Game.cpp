@@ -5,7 +5,6 @@ using namespace std;
 using namespace unvisual::input;
 
 
-
 // Singleton
 Game* Game::p_instance = 0;
 Game* Game::Instance()
@@ -27,9 +26,9 @@ Game* Game::Instance()
 //=========================================
 
 Game::Game()
+: running(true), dt(0.0f), delta_time(), prev_state(state_type::none),
+state(new Game_MainMenu()), post_state(state_type::none)
 {
-
-    state = new Game_MainMenu();
     
     init();
 }

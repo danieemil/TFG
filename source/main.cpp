@@ -7,16 +7,18 @@ int main(int argc, char* argv[])
 
 	//Inicializamos todo
 	unvisual::init();
-	//unvisual::initDebugger(N3DS_screenV::N3DS_TOP);
+	unvisual::initDebugger(N3DS_screenV::N3DS_BOTTOM);
 	physics::init();
 	AI::init();
+
 
 	Game* game = Game::Instance();
 	game->loop();
 	game->over();
-
+	
 	// Deinicializar todo(si no se hace, habrán memory leaks)
 	unvisual::deInit();
+	unvisual::deInitDebugger();
 	physics::deInit();
 	AI::deInit();
 

@@ -14,7 +14,9 @@ public:
     LevelFactory& operator= (const LevelFactory& lf);
 
     // Métodos
-    void init(int level);
+    void init();
+    void loadSave();
+    void save();
     void deInit();
 
     // Setters
@@ -33,6 +35,8 @@ protected:
 
 private:
 
+    int actual_level;
+
     void readBin(const char* file_path);
 
     template<class T>
@@ -43,7 +47,10 @@ private:
         in.read(buffer, hSize);
 
         memcpy(n,buffer,hSize);
+
+        delete[] buffer;
     }
+    
 
 };
 

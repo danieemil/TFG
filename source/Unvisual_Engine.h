@@ -24,9 +24,12 @@ namespace unvisual
     void deInitDebugger();
     extern Debugger* debugger;
 
+    void breakpoint();
+
 
     // Renderizado
     void initScreens();
+    void deInitScreens();
     void drawBegin();
     void drawOnCurrentScreen();
     void prepare2D();

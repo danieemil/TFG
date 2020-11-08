@@ -1,5 +1,6 @@
 #include "Shape.h"
 #include "Collider.h"
+#include "Unvisual_Engine.h"
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
@@ -38,7 +39,8 @@ Intersection& Intersection::operator=(const Intersection& i)
 Shape::Shape(Collider* c, float a)
 : collider(c), angle(a)
 {
-    
+    collider = c;
+    angle = a;
 }
 
 Shape::Shape(const Shape& s)

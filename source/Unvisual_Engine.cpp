@@ -58,10 +58,12 @@ namespace unvisual
     void deInit()
     {
         // Apagamos el depurador
-        deInitDebugger();
+        //deInitDebugger();
 
         // Quitamos los puntos en el tiempo
         //clearAllTimepoints();
+
+        deInitScreens();
 
         input::IM_deInit();
 
@@ -79,9 +81,6 @@ namespace unvisual
 
         // Liberar el monitor de estados del APT
         deInitAPT();
-
-        // Inicializar pantallas
-        initScreens();
         
     }
 
@@ -131,8 +130,6 @@ namespace unvisual
 
     Debugger* debugger = nullptr;
 
-
-
     ///////////////////////////
     //      Renderizado      //
     ///////////////////////////
@@ -141,20 +138,37 @@ namespace unvisual
     {
         Screen* current_screen = nullptr;
 
-        Screen top_screen;
-        Screen bottom_screen;
+        Screen* top_screen = nullptr;
+        Screen* bottom_screen = nullptr;
     }
 
     void initScreens()
     {
         // Creamos una "Ventana" para dibujar en 2D/3D y la ubicamos en la pantalla superior
-	    top_screen.setScreen(MAX_WIDTH_UP, MAX_HEIGHT_UP, N3DS_screenV::N3DS_TOP);
+	    top_screen = new Screen(MAX_WIDTH_UP, MAX_HEIGHT_UP, N3DS_screenV::N3DS_TOP);
 
 	    // Creamos una "Ventana" para dibujar en 2D/3D y la ubicamos en la pantalla inferior
-	    bottom_screen.setScreen(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN, N3DS_screenV::N3DS_BOTTOM);
+	    bottom_screen = new Screen(MAX_WIDTH_DOWN, MAX_HEIGHT_DOWN, N3DS_screenV::N3DS_BOTTOM);
 
         // Por defecto se empieza renderizando la escena en la pantalla superior
-        current_screen = &top_screen;
+        current_screen = top_screen;
+    }
+
+    void deInitScreens()
+    {
+        if(top_screen!=nullptr)
+        {
+            delete top_screen;
+            top_screen = nullptr;
+        }
+
+        if(bottom_screen!=nullptr)
+        {
+            delete bottom_screen;
+            bottom_screen = nullptr;
+        }
+
+        current_screen = nullptr;
     }
 
     void drawBegin()
@@ -215,11 +229,11 @@ namespace unvisual
     {
         if(sc_place == N3DS_screenV::N3DS_TOP)
         {
-            current_screen = &top_screen;
+            current_screen = top_screen;
         }
         else if(sc_place == N3DS_screenV::N3DS_BOTTOM)
         {
-            current_screen = &bottom_screen;
+            current_screen = bottom_screen;
         }
     }
 
@@ -444,5 +458,17 @@ namespace unvisual
             // Liberamos la memoria de los inputs
             hidExit();
         }
+    }
+
+    void breakpoint()
+    {
+        unvisual::stopClock();
+        bool pressed = false;
+        while (!pressed)
+        {
+            unvisual::input::IM_scan();
+            pressed = unvisual::input::isPressed(unvisual::input::N3DS_buttons::Key_Select);
+        }
+        unvisual::resumeClock();
     }
 }

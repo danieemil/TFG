@@ -16,13 +16,13 @@ const std::unordered_map<int, const char*> levels_map =
 //=========================================
 
 LevelFactory::LevelFactory(World* w)
-: world(w)
+: world(w), actual_level(0)
 {
 
 }
 
 LevelFactory::LevelFactory(const LevelFactory& lf)
-: world(lf.world)
+: world(lf.world), actual_level(lf.actual_level)
 {
 
 }
@@ -30,6 +30,7 @@ LevelFactory::LevelFactory(const LevelFactory& lf)
 LevelFactory& LevelFactory::operator= (const LevelFactory& lf)
 {
     world = lf.world;
+    actual_level = lf.actual_level;
 
     return *this;
 }
@@ -39,14 +40,14 @@ LevelFactory& LevelFactory::operator= (const LevelFactory& lf)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void LevelFactory::init(int level)
+void LevelFactory::init()
 {
 
     if(world==nullptr) return;
 
 
     // Encontramos el archivo .mp en función del nivel en el que estamos
-    auto it = levels_map.find(level);
+    auto it = levels_map.find(actual_level);
     if(it!=levels_map.end())
     {
         const char* level_file = it->second;
@@ -62,7 +63,7 @@ void LevelFactory::init(int level)
 	// Configuramos el tileset que queremos usar
 	world->setSpriteManager(sprites_path);
 
-	SpriteManager* manager = world->getSpriteManager();
+	SpriteManager* manager = world->manager;
 
 
     // CREACIÓN DE ENTIDADES
@@ -151,6 +152,16 @@ void LevelFactory::init(int level)
     unvisual::setCurrentScreenTarget(&player->getRenderPosition());
 }
 
+void LevelFactory::loadSave()
+{
+    actual_level = 1;
+}
+
+void LevelFactory::save()
+{
+    return;
+}
+
 void LevelFactory::deInit()
 {
     if(world!=nullptr)
@@ -216,10 +227,6 @@ void LevelFactory::readBin(const char* file_path)
     for (int i = 0; i < num_tiles.y; i++)
     {
         level[i] = new int[num_tiles.x];
-    }
-
-    for (int i = 0; i < num_tiles.y; i++)
-    {
         for (int j = 0; j < num_tiles.x; j++)
         {
             file2mem(in, &level[i][j]);
@@ -227,6 +234,12 @@ void LevelFactory::readBin(const char* file_path)
     }
 
 	t_map = new Tilemap(tileset_path, num_tiles, level, tile_size);
+
+    for (int i = 0; i < num_tiles.y; i++)
+    {
+        delete[] level[i];
+    }
+    delete[] level;
 
     // Físicas
     int c_number = 0;

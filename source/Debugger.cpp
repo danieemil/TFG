@@ -131,15 +131,3 @@ void Debugger::printLocation()
 
     std::cout<<location;
 }
-
-void Debugger::breakpoint()
-{
-    unvisual::stopClock();
-    bool pressed = false;
-    while (!pressed)
-    {
-        IM_scan();
-        pressed = isPressed(N3DS_buttons::Key_Start);
-    }
-    unvisual::resumeClock();
-}
