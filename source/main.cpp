@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
 
 
 	Game* game = Game::Instance();
+	game->init();
 	game->loop();
 	game->over();
 	

@@ -12,9 +12,6 @@ Game_Playing::Game_Playing()
 hud(nullptr, "romfs:/gfx/hud.t3x")
 {
     type = state_type::playing;
-
-    //unvisual::debugger->print("He creado el estado Jugando");
-    //unvisual::debugger->nextLine();
 }
 
 Game_Playing::Game_Playing(const Game_Playing& gp)
@@ -43,9 +40,6 @@ Game_Playing& Game_Playing::operator= (const Game_Playing& gp)
 void Game_Playing::init()
 {
     unvisual::getCurrentScreen()->setBackgroundColor(255,255,255,255);
-    // Cargar datos del save file
-
-    level_factory.loadSave();
 
     // Inicializar el mundo
     level_factory.init();
@@ -53,15 +47,26 @@ void Game_Playing::init()
     {
         hud.setPlayer(world->getPlayer());
     }
+
+    Game::Instance()->setSaved(true);
 }
 
 void Game_Playing::processInput()
 {
+
+    if(isPressed(N3DS_buttons::Key_R))
+    {
+        Game::Instance()->stateTransition<Game_Paused>();
+    }
+
+
     // Botón para resetear el nivel
     if(isPressed(N3DS_buttons::Key_L))
     {
         resetLevel();
     }
+
+    
 
     if(world!=nullptr)
     {
@@ -136,6 +141,12 @@ void Game_Playing::resetLevel()
     }
 }
 
+void Game_Playing::nextLevel()
+{
+    level_factory.nextLevel();
+    resetLevel();
+}
+
 void Game_Playing::erasePlayer()
 {
     if(world!=nullptr)
@@ -196,6 +207,9 @@ Player* Game_Playing::getPlayer() const
 
 Game_Playing::~Game_Playing()
 {
+
+    level_factory.save();
+
     if(world!=nullptr)
     {
         delete world;

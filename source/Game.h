@@ -5,6 +5,7 @@
 #include "Game_MainMenu.h"
 #include "Game_Paused.h"
 
+
 //Clase Singleton para que todos puedan acceder a las variables de Game
 class Game
 {
@@ -45,6 +46,7 @@ public:
 
     // Setters
     void setState(Game_State* s);
+    void setSaved(bool s);
 
     // Getters
     float getDeltaTime() const;
@@ -52,6 +54,7 @@ public:
     state_type getPrevState() const;
     Game_State* getActualState() const;
     state_type getPostState() const;
+    bool getSaved() const;
 
     static Game* Instance(); 
 
@@ -78,7 +81,7 @@ private:
     Game_State* state;
     state_type post_state;
 
-    // Save file data
+    bool saved;
 
 };
 

@@ -17,7 +17,11 @@ public:
     void init();
     void loadSave();
     void save();
+    void nextLevel();
     void deInit();
+
+    static bool checkSave();
+    static void resetSave();
 
     // Setters
     void setWorld(World* w);
@@ -29,6 +33,8 @@ public:
     // Destructor
     ~LevelFactory();
 
+    static int max_levels;
+
 protected:
 
     World* world;
@@ -37,10 +43,10 @@ private:
 
     int actual_level;
 
-    void readBin(const char* file_path);
+    void readBin(const char* tilemap_path, const char* tileset_path);
 
     template<class T>
-    void file2mem(ifstream &in, T* n)
+    static void file2mem(ifstream &in, T* n)
     {
         unsigned long hSize = sizeof(T);
         char* buffer = new char[hSize];
@@ -49,6 +55,16 @@ private:
         memcpy(n,buffer,hSize);
 
         delete[] buffer;
+    }
+
+    template<class T>
+    static void mem2file(ofstream &out, T n)
+    {
+        unsigned long hSize = sizeof(n);
+
+        char* bData  = reinterpret_cast<char*>(&n);
+
+        out.write(bData, hSize);
     }
     
 

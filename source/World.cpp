@@ -93,11 +93,6 @@ void World::erasePlayer()
 
 void World::processInput()
 {
-    if(unvisual::input::isPressed(unvisual::input::N3DS_buttons::Key_R))
-    {
-        Game::Instance()->stateTransition<Game_Paused>();
-    }
-
     if(player!=nullptr)
     {
         player->processInput();

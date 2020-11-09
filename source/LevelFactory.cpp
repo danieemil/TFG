@@ -3,13 +3,17 @@
 #include "Game.h"
 #include <unordered_map>
 
-//Mapa conversor de key (int) a la Enemy-Definition correspondiente.
-const std::unordered_map<int, const char*> levels_map = 
+//Mapa que relaciona el nivel con los archivos que contienen los datos del nivel
+const std::unordered_map<int, std::pair<const char*, const char*>> levels_map = 
 {
-    {0, "romfs:/maps/testMap.mp"},
-    {1, "romfs:/maps/testMap2.mp"},
+    {0, {"romfs:/maps/testMap.mp","romfs:/gfx/TileSet.t3x"}},
+    {1, {"romfs:/maps/testMap2.mp","romfs:/gfx/TileSet.t3x"}},
 };
 
+int LevelFactory::max_levels = levels_map.size();
+
+// Archivo de guardado
+const char* save_file = "save.sf";
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
@@ -50,15 +54,15 @@ void LevelFactory::init()
     auto it = levels_map.find(actual_level);
     if(it!=levels_map.end())
     {
-        const char* level_file = it->second;
+        const char* level_file = it->second.first;
+        const char* tileset_file = it->second.second;
 
         // Cargamos del archivo .mp el tilemap, su tileset y sus físicas
-	    readBin(level_file);
+	    readBin(level_file, tileset_file);
     }
 
     // Esto debería estar incluido en el .mp que indica todos los datos sobre el nivel.
 	const char* sprites_path = "romfs:/gfx/sprites.t3x";
-	const char* tileset_path = "romfs:/gfx/TileSet.t3x";
 
 	// Configuramos el tileset que queremos usar
 	world->setSpriteManager(sprites_path);
@@ -133,20 +137,20 @@ void LevelFactory::init()
 	Player* player = new Player(player_life, player_position, player_sprite, world, player_body, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
 	world->setPlayer(player);
 
-        // Arma del jugador
-        Sprite* weapon_sprite = manager->createSprite(1);
-        auto w_s = weapon_sprite->getSize();
-        weapon_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
+    // Arma del jugador
+    Sprite* weapon_sprite = manager->createSprite(1);
+    auto w_s = weapon_sprite->getSize();
+    weapon_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
 
-        Shape* weapon_shape = physics::getSpriteShape(weapon_sprite->getManager()->getPath(), weapon_sprite->getIndex());
-        Collider* weapon_body = new Collider(player_position, weapon_shape, CollisionFlag::player_hurt, CollisionFlag::enemy_hit, CollisionType::col_none);
+    Shape* weapon_shape = physics::getSpriteShape(weapon_sprite->getManager()->getPath(), weapon_sprite->getIndex());
+    Collider* weapon_body = new Collider(player_position, weapon_shape, CollisionFlag::player_hurt, CollisionFlag::enemy_hit, CollisionType::col_none);
 
-        int weapon_damage = 10;
-        float weapon_knockback = 200.0f;
-        float weapon_time_attack = 0.2f;
-        Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
-        Weapon* player_weapon = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_body, player_init_orientation, player);
-        player->equipWeapon(0);
+    int weapon_damage = 10;
+    float weapon_knockback = 200.0f;
+    float weapon_time_attack = 0.2f;
+    Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
+    Weapon* player_weapon = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_body, player_init_orientation, player);
+    player->equipWeapon(0);
 
     // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
     unvisual::setCurrentScreenTarget(&player->getRenderPosition());
@@ -154,12 +158,40 @@ void LevelFactory::init()
 
 void LevelFactory::loadSave()
 {
-    actual_level = 1;
+    ifstream in(save_file, std::ios::binary | std::ios::ate);
+    in.seekg(0, std::ios::beg);
+
+    // Obtener el nivel del archivo de guardado
+    file2mem(in, &actual_level);
+    
+    in.close();
 }
 
 void LevelFactory::save()
 {
-    return;
+
+
+    ofstream out;
+    out.open(save_file, std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
+
+    unvisual::debugger->print("Guardado en:");
+    unvisual::debugger->print(save_file);
+    unvisual::debugger->nextLine();
+    unvisual::breakpoint();
+
+    //Guardar nivel actual
+    mem2file(out, actual_level);
+
+    out.close();
+}
+
+void LevelFactory::nextLevel()
+{
+    actual_level++;
+    if(actual_level>=max_levels)
+    {
+        actual_level = 0;
+    }
 }
 
 void LevelFactory::deInit()
@@ -168,6 +200,34 @@ void LevelFactory::deInit()
     {
         world->eraseWorld();
     }
+}
+
+bool LevelFactory::checkSave()
+{
+    ifstream in;
+    in.open(save_file, std::ofstream::binary);
+
+    if(!in.is_open() || in.fail())
+    {
+        in.close();
+        return false;
+    }
+
+    in.close();
+    return true;
+}
+
+void LevelFactory::resetSave()
+{
+    ofstream out;
+    out.open(save_file, std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
+
+    int l = 0;
+
+    //Guardar primer nivel
+    mem2file(out, l);
+
+    out.close();
 }
 
 
@@ -203,17 +263,16 @@ LevelFactory::~LevelFactory()
 //=========================================
 //=               PRIVATE   	    	  =
 //=========================================
-void LevelFactory::readBin(const char* file_path)
+void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
 {
     // Tilemap
-	const char* tileset_path = "romfs:/gfx/TileSet.t3x";
 
 	Vector2d<int> num_tiles = Vector2d<int>();
 	Vector2d<int> tile_size = Vector2d<int>();
 	int** level = nullptr;
 	Tilemap* t_map = nullptr;
 
-    ifstream in(file_path, std::ios::binary | std::ios::ate);
+    ifstream in(tilemap_path, std::ios::binary | std::ios::ate);
     in.seekg(0, std::ios::beg);
 
     file2mem(in, &num_tiles.x);
@@ -300,6 +359,8 @@ void LevelFactory::readBin(const char* file_path)
         
         t_map->addCollider(new Collider(position, new Convex(vertices), CollisionFlag::none, CollisionFlag::none, CollisionType::col_static));
     }
+
+    in.close();
 
 	world->setTilemap(t_map);
 }

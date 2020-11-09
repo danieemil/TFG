@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "LevelFactory.h"
 
 using namespace std;
 using namespace unvisual::input;
@@ -27,10 +27,9 @@ Game* Game::Instance()
 
 Game::Game()
 : running(true), dt(0.0f), delta_time(), prev_state(state_type::none),
-state(new Game_MainMenu()), post_state(state_type::none)
+state(new Game_MainMenu()), post_state(state_type::none), saved(false)
 {
-    
-    init();
+
 }
 
 //=========================================
@@ -50,7 +49,9 @@ void Game::init()
 
     // Ya que solo se están usando gráficos en 2D
     unvisual::prepare2D();
-
+    
+    saved = LevelFactory::checkSave();
+    
 
     state->init();
 	
@@ -188,6 +189,11 @@ void Game::setState(Game_State* s)
     }
 }
 
+void Game::setSaved(bool s)
+{
+    saved = s;
+}
+
 //=========================================
 //=               GETTERS   	    	  =
 //=========================================
@@ -222,6 +228,11 @@ state_type Game::getPostState() const
     return post_state;
 }
 
+bool Game::getSaved() const
+{
+    return saved;
+}
+
 
 //=========================================
 //=              DESTRUCTOR   	    	  =
@@ -234,5 +245,9 @@ void Game::over()
 
 Game::~Game()
 {
-    
+    if(state!=nullptr)
+    {
+        delete state;
+        state = nullptr;
+    }
 }

@@ -28,6 +28,7 @@ public:
     void interpolate();
 
     void resetLevel();
+    void nextLevel();
 
     void erasePlayer();
 

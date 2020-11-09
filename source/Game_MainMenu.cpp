@@ -1,5 +1,6 @@
 #include "Game_MainMenu.h"
 #include "Game.h"
+#include "LevelFactory.h"
 
 
 //=========================================
@@ -69,32 +70,34 @@ void Game_MainMenu::init()
 
     Vector2d<float> size_b1 = Vector2d<float>((float)size_spr_b1.x, (float)size_spr_b1.y);
 
-    Call callback_b1 = [](){Game::Instance()->stateTransition<Game_Playing>();};
+    Call callback_b1 = [](){LevelFactory::resetSave();Game::Instance()->stateTransition<Game_Playing>();};
     const char* text_b1 = "Nueva partida";
     b1 = new GUI_Button(position_b1, size_b1, spr_b1, callback_b1, text_b1);
     gui_elements.addElement(b1);
 
-
-    // Botón de continuar partida
-    GUI_Button* b2;
-    Sprite* spr_b2 = gui_sprite_manager.createSprite(0);
-    but_pos += but_padding;
-    Vector2d<float> position_b2 = but_pos;
-
-    Vector2d<size_t> size_spr_b2;
-
-    if(spr_b2!=nullptr)
+    if(Game::Instance()->getSaved())
     {
-        spr_b2->setScale(Vector2d<float>(0.8f, 1.0f));
-        size_spr_b2 = spr_b2->getSize();
+        // Botón de continuar partida
+        GUI_Button* b2;
+        Sprite* spr_b2 = gui_sprite_manager.createSprite(0);
+        but_pos += but_padding;
+        Vector2d<float> position_b2 = but_pos;
+
+        Vector2d<size_t> size_spr_b2;
+
+        if(spr_b2!=nullptr)
+        {
+            spr_b2->setScale(Vector2d<float>(0.8f, 1.0f));
+            size_spr_b2 = spr_b2->getSize();
+        }
+
+        Vector2d<float> size_b2 = Vector2d<float>((float)size_spr_b2.x, (float)size_spr_b2.y);
+
+        Call callback_b2 = [](){Game::Instance()->stateTransition<Game_Playing>();};
+
+        b2 = new GUI_Button(position_b2, size_b2, spr_b2, callback_b2, "Continuar");
+        gui_elements.addElement(b2);
     }
-
-    Vector2d<float> size_b2 = Vector2d<float>((float)size_spr_b2.x, (float)size_spr_b2.y);
-
-    Call callback_b2 = [](){Game::Instance()->stateTransition<Game_Playing>();};
-
-    b2 = new GUI_Button(position_b2, size_b2, spr_b2, callback_b2, "Continuar");
-    gui_elements.addElement(b2);
 
 
     // Botón de salir del juego
@@ -125,8 +128,7 @@ void Game_MainMenu::init()
 
 
 
-    //unvisual::debugger->setColumn(1);
-    //unvisual::debugger->setRow(1);
+    
 
 
 }
