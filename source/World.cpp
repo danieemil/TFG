@@ -40,7 +40,8 @@ void World::addEntity(Entity* e)
     {
         for(auto entity = entities.begin();entity!=entities.end();entity++)
         {
-            if(e==(*entity))
+            Entity* ent = (*entity);
+            if(e == ent)
             {
                 return;
             }
@@ -320,7 +321,7 @@ void World::eraseWorld()
 
 void World::setTilemap(Tilemap* t)
 {
-    if(tilemap!=nullptr)
+    if(tilemap!=nullptr && t!=tilemap)
     {
         delete tilemap;
     }
@@ -335,7 +336,7 @@ void World::setEntities(const std::vector<Entity*>& v)
 
 void World::setPlayer(Player* p)
 {
-    if(player!=nullptr)
+    if(player!=nullptr && p!=player)
     {
         delete player;
     }

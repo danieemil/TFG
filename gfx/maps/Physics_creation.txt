@@ -27,8 +27,34 @@ Example 2:
       /   |
      /    |
     /     |
+ 1 ·      |
+    \     |
+     \    |
+      \   |
+       \  |
+        \ |
+         \|
+          ·
+           3
+
+
+Example 3(Exception):
+
+           1
+          ·
+         /|
+        / |
+       /  |
+      /   |
+     /    |
+    /     |
    ·------·
-  1        3
+  3        2
+
+La excepción es que la línea que une el último punto con el primero,
+no puede ser horizontal y en dirección hacia la izquierda.
+(Si esto ocurre darán fallos en las colisiones al corregir)
+
 
 
 

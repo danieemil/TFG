@@ -10,8 +10,8 @@
 //=========================================
 
 Weapon::Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
-    Sprite* spr, World* w, Collider* c, const Vector2d<float>& ori, Combat_Character* cc)
-: Entity(rel_attack, spr, w, c, ori), character(cc), attack_rel_position(rel_attack),
+    Sprite* spr, World* w, CollisionFlag type_flag, CollisionFlag interests_flag, const Vector2d<float>& ori, Combat_Character* cc)
+: Entity(rel_attack, spr, w, new Collider(Vector2d<float>(), physics::getSpriteShape(spr), type_flag, interests_flag, CollisionType::col_none), ori), character(cc), attack_rel_position(rel_attack),
     attacking(false), attack_time(t_attack), damage(dam), knockback(knock)
 {
     id = Class_Id::e_weapon;
@@ -20,6 +20,10 @@ Weapon::Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_
     {
         position += character->getPosition();
         character->addWeapon(this);
+        if(body!=nullptr)
+        {
+            body->setPosition(character->getPosition());
+        }
     }
 
     if(body!=nullptr)

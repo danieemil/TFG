@@ -17,6 +17,7 @@ Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, c
         body->setCreator(this);
         body->setCallback(std::bind(&Entity::collision, this, _1));
         body->setPosition(position);
+        body->setVelocity(velocity);
     }
 
     if(orientation.x!=0.0f)
@@ -180,7 +181,7 @@ void Entity::setWorld(World* w)
 
 void Entity::setBody(Collider* c)
 {
-    if(body!=nullptr)
+    if(body!=nullptr && c != body)
     {
         delete body;
     }

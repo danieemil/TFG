@@ -12,8 +12,8 @@ enum class Class_Id
     e_none = -1,
     e_tile,
     e_player,
-    e_weapon,
     e_enemy,
+    e_weapon,
 
 };
 

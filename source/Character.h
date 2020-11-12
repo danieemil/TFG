@@ -10,7 +10,7 @@ class Character : public Entity
 public:
     // Constructores
     Character(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
-        World* w = nullptr, Collider* c = nullptr,
+        World* w = nullptr, CollisionFlag type_flag = CollisionFlag::none, CollisionFlag interests_flag = CollisionFlag::none,
         const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),

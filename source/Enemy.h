@@ -12,7 +12,7 @@ class Enemy : public Combat_Character
 public:
     // Constructores
     Enemy(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr,
-        Collider* c = nullptr, const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
+        CollisionFlag interests_flag = CollisionFlag::player_hurt, const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,

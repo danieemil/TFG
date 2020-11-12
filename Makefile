@@ -165,7 +165,11 @@ endif
 #---------------------------------------------------------------------------------
 # Process .tmx files into .mp files(customized)
 #---------------------------------------------------------------------------------
-MPFILES		:=	$(patsubst %.tmx, $(MAPSBUILD)/%.mp, $(TMXFILES))
+MPFILES							:=	$(patsubst %.tmx, $(MAPSBUILD)/%.mp, $(TMXFILES))
+CONVERSOR_FOLDER 				:= map_conversor
+TILEMAP_CONVERSOR 				:= conversor
+TILESET_CONVERSOR_ENV 			:= env/bin/activate
+TILESET_CONVERSOR 				:= crop_tilesets.py
 
 #---------------------------------------------------------------------------------
 # Process .tsx files to generate .t3s files and images with Python
@@ -229,9 +233,12 @@ citra: all
 #---------------------------------------------------------------------------------
 $(MAPSBUILD)/%.mp	: $(MAPS)/%.tmx
 #---------------------------------------------------------------------------------
-	/home/tuba/Escritorio/testing_cpp/conversor $(CURDIR)/$< $(CURDIR)/$@
+	$(CONVERSOR_FOLDER)/$(TILEMAP_CONVERSOR) $(CURDIR)/$< $(CURDIR)/$@
 
 #---------------------------------------------------------------------------------
+
+
+
 $(TILESETDIRS):
 	@mkdir -p $@
 

@@ -11,7 +11,7 @@ class Weapon : public Entity
 public:
     // Constructores
     Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack, Sprite* spr = nullptr,
-            World* w = nullptr, Collider* c = nullptr,
+            World* w = nullptr, CollisionFlag type_flag = CollisionFlag::none, CollisionFlag interests_flag = CollisionFlag::none,
             const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
             Combat_Character* cc = nullptr);
     Weapon(const Weapon& w);

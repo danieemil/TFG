@@ -394,34 +394,47 @@ namespace physics
         return colliders;
     }
 
-    Shape* getSpriteShape(std::string tileset_path, int sprite_id)
-    {
-        auto tileset = tilesets_colliders.find(tileset_path);
+    Shape* getSpriteShape(Sprite* spr)
+    {   
 
-        if(tileset != tilesets_colliders.end())
+        if(spr != nullptr)
         {
-            auto sprite = tileset->second.find(sprite_id);
-
-            if(sprite != tileset->second.end())
+            SpriteManager* man = spr->getManager();
+            if(man != nullptr)
             {
-                Shape* s = sprite->second;
-                if(s!=nullptr)
+                std::string tileset_path = man->getPath();
+                int sprite_id = spr->getIndex();
+
+                auto tileset = tilesets_colliders.find(tileset_path);
+
+                if(tileset != tilesets_colliders.end())
                 {
-                    if(s->getType()==Shape_Type::AABB)
+                    auto sprite = tileset->second.find(sprite_id);
+
+                    if(sprite != tileset->second.end())
                     {
-                        return new AABB(*(static_cast<AABB*>(s)));
-                    }
-                    if(s->getType()==Shape_Type::Circle)
-                    {
-                        return new Circle(*(static_cast<Circle*>(s)));
-                    }
-                    if(s->getType()==Shape_Type::Convex)
-                    {
-                        return new Convex(*(static_cast<Convex*>(s)));
+                        Shape* s = sprite->second;
+                        if(s!=nullptr)
+                        {
+                            if(s->getType()==Shape_Type::AABB)
+                            {
+                                return new AABB(*(static_cast<AABB*>(s)));
+                            }
+                            if(s->getType()==Shape_Type::Circle)
+                            {
+                                return new Circle(*(static_cast<Circle*>(s)));
+                            }
+                            if(s->getType()==Shape_Type::Convex)
+                            {
+                                return new Convex(*(static_cast<Convex*>(s)));
+                            }
+                        }
                     }
                 }
+
             }
         }
+
 
         return nullptr;
     }

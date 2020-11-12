@@ -169,6 +169,9 @@ SpriteManager::~SpriteManager()
         }
     }
 
+
+    
+
     if(sprite_collection!=NULL)
     {
         C2D_SpriteSheetFree(sprite_collection);

@@ -18,6 +18,7 @@ public:
     void addSprite(Sprite* spr);
     void deleteSprite(Sprite* spr);
     void eraseSprite(Sprite* spr);
+    void deleteSprites();
 
     // Setters
     void setSprites(const char* sprites_path);

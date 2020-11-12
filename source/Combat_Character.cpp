@@ -6,10 +6,11 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Combat_Character::Combat_Character(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
+Combat_Character::Combat_Character(int l, const Vector2d<float>& pos, Sprite* spr, World* w,
+    CollisionFlag type_flag, CollisionFlag interests_flag,
     const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
     const Vector2d<float>& frict, Weapon* wp, float st_time)
-: Character(pos, spr, w, c, ori, max_vel, max_accel, frict), equipped(wp), attacked(false),
+: Character(pos, spr, w, type_flag, interests_flag, ori, max_vel, max_accel, frict), equipped(wp), attacked(false),
     stunned(false), stun_time(st_time), life(l), max_life(l)
 {
     if(wp!=nullptr)

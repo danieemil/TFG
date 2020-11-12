@@ -9,6 +9,7 @@ Interactable::Interactable(const Vector2d<float>& pos, Sprite* spr, World* w, Co
     const Vector2d<float>& ori)
 : Entity(pos, spr, w, c, ori)
 {
+    
 }
 
 Interactable::Interactable(const Interactable& c)

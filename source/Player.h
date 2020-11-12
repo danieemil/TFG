@@ -11,7 +11,7 @@ class Player : public Combat_Character
 public:
     // Constructores
     Player(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
-        World* w = nullptr, Collider* c = nullptr,
+        World* w = nullptr, CollisionFlag interests_flag = (CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt),
         const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),

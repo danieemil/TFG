@@ -7,7 +7,7 @@
 #include <map>
 #include <vector>
 #include "Collider.h"
-
+#include "SpriteManager.h"
 
 namespace physics
 {
@@ -45,7 +45,7 @@ namespace physics
 
     const std::vector<Collider*>& getColliders();
 
-    Shape* getSpriteShape(std::string tileset_path, int sprite_id);
+    Shape* getSpriteShape(Sprite* spr);
 
     void deInit();
 }
