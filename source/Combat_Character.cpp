@@ -204,7 +204,7 @@ void Combat_Character::setFriction(const Vector2d<float>& frict)
     Character::setFriction(frict);
 }
 
-void Combat_Character::addWeapon(Weapon* wp)
+bool Combat_Character::addWeapon(Weapon* wp)
 {
     if(wp!=nullptr)
     {
@@ -212,11 +212,13 @@ void Combat_Character::addWeapon(Weapon* wp)
         {
             if(w_eapon==wp)
             {
-                return;
+                return false;
             }
         }
         weapons.emplace_back(wp);
+        return true;
     }
+    return false;
 }
 
 void Combat_Character::removeWeapon(Weapon* wp)

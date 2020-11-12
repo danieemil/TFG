@@ -2,6 +2,7 @@
 #define _LEVELFACTORY_
 
 #include "World.h"
+#include "WeaponManager.h"
 
 class LevelFactory
 {
@@ -35,13 +36,14 @@ public:
 
     static int max_levels;
 
-protected:
-
-    World* world;
 
 private:
 
     int actual_level;
+
+    World* world;
+    SpriteManager manager;
+    WeaponManager weapon_manager;
 
     void readBin(const char* tilemap_path, const char* tileset_path);
 

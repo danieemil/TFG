@@ -20,13 +20,14 @@ const char* save_file = "save.sf";
 //=========================================
 
 LevelFactory::LevelFactory(World* w)
-: world(w), actual_level(0)
+: world(w), actual_level(0), manager("romfs:/gfx/sprites.t3x"),
+weapon_manager("romfs:/gfx/sprites.t3x")
 {
 
 }
 
 LevelFactory::LevelFactory(const LevelFactory& lf)
-: world(lf.world), actual_level(lf.actual_level)
+: world(lf.world), actual_level(lf.actual_level), manager(lf.manager), weapon_manager(lf.weapon_manager)
 {
 
 }
@@ -35,6 +36,8 @@ LevelFactory& LevelFactory::operator= (const LevelFactory& lf)
 {
     world = lf.world;
     actual_level = lf.actual_level;
+    manager = lf.manager;
+    weapon_manager = lf.weapon_manager;
 
     return *this;
 }
@@ -49,7 +52,6 @@ void LevelFactory::init()
 
     if(world==nullptr) return;
 
-
     // Encontramos el archivo .mp en función del nivel en el que estamos
     auto it = levels_map.find(actual_level);
     if(it!=levels_map.end())
@@ -60,83 +62,6 @@ void LevelFactory::init()
         // Cargamos del archivo .mp el tilemap, su tileset y sus físicas
 	    readBin(level_file, tileset_file);
     }
-
-    // Esto debería estar incluido en el .mp que indica todos los datos sobre el nivel.
-	const char* sprites_path = "romfs:/gfx/sprites.t3x";
-
-	// Configuramos el tileset que queremos usar
-	world->setSpriteManager(sprites_path);
-
-	SpriteManager* manager = world->manager;
-
-
-    // CREACIÓN DE ENTIDADES
-
-
-    //Creamos un enemigo genérico
-	Vector2d<float> enemy_position = Vector2d<float>(140, 180);
-
-		// Gráficos del enemigo
-	Sprite* enemy_sprite = manager->createSprite(2);
-
-        // Colisiones del enemigo
-    CollisionFlag enemy_interests = CollisionFlag::player_hurt;
-	
-    // Otros atributos del enemigo
-    int enemy_life = 30;
-	Vector2d<float> enemy_max_vel = Vector2d<float>(500.0f,500.0f);
-	Vector2d<float> enemy_max_accel = Vector2d<float>(INFINITY, INFINITY);
-	Vector2d<float> enemy_friction = Vector2d<float>(20.0f,20.0f);
-    Vector2d<float> enemy_init_orientation = Vector2d<float>(0.0f,-1.0f);
-    float enemy_stunned_time = 0.5f;
-
-    // Comportamiento del enemigo
-    BinaryTree* bt = AI::getBehaviour(AI::bt_types::enemy_agressive);
-
-	Enemy* enemy = new Enemy(enemy_life, enemy_position, enemy_sprite, world, enemy_interests, enemy_init_orientation, enemy_max_vel, enemy_max_accel, enemy_friction, nullptr, enemy_stunned_time, bt);
-	world->addEntity(enemy);
-
-	// Creamos al jugador
-	Vector2d<float> player_position = Vector2d<float>(250.5f,150.5f);
-
-		// Gráficos del jugador
-	Sprite* player_sprite = manager->createSprite(0);
-    player_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
-    Vector2d<float> player_center = player_sprite->getCenter();
-
-        // Colisiones del jugador
-    CollisionFlag player_interests = CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt;
-
-		// Otros atributos del jugador
-    int player_life = 11;
-	Vector2d<float> player_max_vel = Vector2d<float>(400.0f,400.0f);
-	Vector2d<float> player_max_accel = Vector2d<float>(INFINITY, INFINITY); // Máximo de fuerza que se le puede aplicar a un cuerpo
-	Vector2d<float> player_frict = Vector2d<float>(40.0f,40.0f);
-    Vector2d<float> player_init_orientation = Vector2d<float>(0.0f,-1.0f);
-    float player_stunned_time = 0.5f;
-	Player* player = new Player(player_life, player_position, player_sprite, world, player_interests, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
-    player->getBody()->setRotationCenter(player_center);
-    world->setPlayer(player);
-
-    // Arma del jugador
-    // Gráficos del arma
-    Sprite* weapon_sprite = manager->createSprite(1);
-    auto w_s = weapon_sprite->getSize();
-    weapon_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
-
-    // Colisiones del arma
-    CollisionFlag weapon_type = CollisionFlag::player_hurt;
-    CollisionFlag weapon_interests = CollisionFlag::enemy_hit;
-
-    int weapon_damage = 10;
-    float weapon_knockback = 200.0f;
-    float weapon_time_attack = 0.2f;
-    Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
-    Weapon* player_weapon = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_type, weapon_interests, player_init_orientation, player);
-    player->equipWeapon(0);
-
-    // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
-    unvisual::setCurrentScreenTarget(&player->getRenderPosition());
 }
 
 void LevelFactory::loadSave()
@@ -341,6 +266,97 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
         }
         
         t_map->addCollider(new Collider(position, new Convex(vertices), CollisionFlag::none, CollisionFlag::none, CollisionType::col_static));
+    }
+
+    // Entidades
+	
+	// Configuramos el tileset que queremos usar
+    const char* sprites_path = "romfs:/gfx/sprites.t3x";
+	manager.setSprites(sprites_path);
+    weapon_manager.setSprites(sprites_path);
+
+        // Jugador
+	Vector2d<float> player_position = Vector2d<float>(250.5f,150.5f);
+    int player_weapon_type = -1;
+
+    file2mem(in, &player_position.x);
+    file2mem(in, &player_position.y);
+
+    file2mem(in, &player_weapon_type);
+
+    Player* player = world->getPlayer();
+
+    Vector2d<float> player_init_orientation = Vector2d<float>(0.0f,-1.0f);
+
+    if(player==nullptr)
+    {
+            // Gráficos del jugador
+        Sprite* player_sprite = manager.createSprite(0);
+        player_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
+        Vector2d<float> player_center = player_sprite->getCenter();
+
+            // Colisiones del jugador
+        CollisionFlag player_interests = CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt;
+
+            // Otros atributos del jugador
+        int player_life = 11;
+        Vector2d<float> player_max_vel = Vector2d<float>(400.0f,400.0f);
+        Vector2d<float> player_max_accel = Vector2d<float>(INFINITY, INFINITY); // Máximo de fuerza que se le puede aplicar a un cuerpo
+        Vector2d<float> player_frict = Vector2d<float>(40.0f,40.0f);
+        float player_stunned_time = 0.5f;
+        player = new Player(player_life, player_position, player_sprite, world, player_interests, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
+        player->getBody()->setRotationCenter(player_center);
+        world->setPlayer(player);
+    }
+
+    player->setPosition(player_position);
+
+
+    // Creamos el arma inicial del jugador
+    Weapon* player_weapon = weapon_manager.createWeapon((weapon_type)player_weapon_type, player);
+    player->equipWeapon(0);
+
+    // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
+    unvisual::setCurrentScreenTarget(&player->getRenderPosition());
+
+
+        // Enemigos
+    int number = 0;
+    file2mem(in, &number);
+
+    for (int i = 0; i < number; i++)
+    {
+        Vector2d<float> enemy_position = Vector2d<float>();
+        int enemy_weapon_type = -1;
+        int enemy_behaviour_type = 0;
+
+        file2mem(in, &enemy_position.x);
+        file2mem(in, &enemy_position.y);
+
+        file2mem(in, &enemy_weapon_type);
+
+        file2mem(in, &enemy_behaviour_type);
+
+        // Gráficos del enemigo
+        Sprite* enemy_sprite = manager.createSprite(2);
+
+            // Colisiones del enemigo
+        CollisionFlag enemy_interests = CollisionFlag::player_hurt;
+        
+        // Otros atributos del enemigo
+        int enemy_life = 30;
+        Vector2d<float> enemy_max_vel = Vector2d<float>(500.0f,500.0f);
+        Vector2d<float> enemy_max_accel = Vector2d<float>(INFINITY, INFINITY);
+        Vector2d<float> enemy_friction = Vector2d<float>(20.0f,20.0f);
+        Vector2d<float> enemy_init_orientation = Vector2d<float>(0.0f,-1.0f);
+        float enemy_stunned_time = 0.5f;
+
+        // Comportamiento del enemigo
+        BinaryTree* bt = AI::getBehaviour((AI::bt_types)enemy_behaviour_type);
+
+        Enemy* enemy = new Enemy(enemy_life, enemy_position, enemy_sprite, world, enemy_interests, enemy_init_orientation, enemy_max_vel, enemy_max_accel, enemy_friction, nullptr, enemy_stunned_time, bt);
+        world->addEntity(enemy);
+
     }
 
     in.close();

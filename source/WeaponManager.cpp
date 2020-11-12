@@ -5,7 +5,7 @@
 #include "Unvisual_Engine.h"
 
 //Mapa que relaciona las armas que se pueden crear junto con su método de creación
-const std::unordered_map<weapon_type, std::function<Weapon* (WeaponManager*)>> weapons_map = 
+const std::unordered_map<weapon_type, std::function<Weapon* (WeaponManager*, Combat_Character*)>> weapons_map = 
 {
     {weapon_type::dagger, &WeaponManager::createDagger},
     {weapon_type::other, &WeaponManager::createDagger},
@@ -38,26 +38,28 @@ WeaponManager& WeaponManager::operator= (const WeaponManager& wm)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-Weapon* WeaponManager::createWeapon(weapon_type wt)
+Weapon* WeaponManager::createWeapon(weapon_type wt, Combat_Character* cc)
 {
-    auto it = weapons_map.find(wt);
-    if(it != weapons_map.end())
+    if(cc!=nullptr)
     {
-        if(it->second!=nullptr)
+        auto it = weapons_map.find(wt);
+        if(it != weapons_map.end())
         {
-            Weapon* w = it->second(this);
-            if(w!=nullptr)
+            if(it->second!=nullptr)
             {
-                weapons.push_back(w);
+                Weapon* w = it->second(this, cc);
+                if(w!=nullptr)
+                {
+                    weapons.push_back(w);
+                }
+                return w;
             }
-            return w;
         }
     }
-
     return nullptr;
 }
 
-void WeaponManager::deleteWeapon(Weapon* w)
+void WeaponManager::eraseWeapon(Weapon* w)
 {
     if (w != nullptr)
     {
@@ -66,22 +68,32 @@ void WeaponManager::deleteWeapon(Weapon* w)
             Weapon* we = *it;
             if(we == w)
             {
-                delete w;
                 weapons.erase(it);
                 return;
             }
         }
     }
-    
 }
 
 
-Weapon* WeaponManager::createDagger()
+Weapon* WeaponManager::createDagger(Combat_Character* cc)
 {
 
-    unvisual::breakpoint();
+    // Gráficos del arma
+    Sprite* weapon_sprite = sprites_manager.createSprite(1);
+    auto w_s = weapon_sprite->getSize();
+    weapon_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
 
-    return nullptr;
+    // Crear arma
+    int weapon_damage = 10;
+    float weapon_knockback = 200.0f;
+    float weapon_time_attack = 0.2f;
+    Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
+    Weapon* w = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack,
+    weapon_relative_position_attacking, weapon_sprite, nullptr, CollisionFlag::none, CollisionFlag::none);
+    w->setCharacter(cc);
+
+    return w;
 }
 
 
@@ -92,7 +104,10 @@ Weapon* WeaponManager::createDagger()
 //=               SETTERS   	    	  =
 //=========================================
 
-
+void WeaponManager::setSprites(const char* tileset)
+{
+    sprites_manager.setSprites(tileset);
+}
 
 
 //=========================================
@@ -111,7 +126,7 @@ WeaponManager::~WeaponManager()
     {
         if(it!=nullptr)
         {
-            delete it;
+            //delete it;
         }
     }
 

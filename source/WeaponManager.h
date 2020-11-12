@@ -25,12 +25,13 @@ public:
     WeaponManager& operator= (const WeaponManager& wm);
 
     // Métodos
-    Weapon* createWeapon(weapon_type wt);
-    void deleteWeapon(Weapon* w);
+    Weapon* createWeapon(weapon_type wt, Combat_Character* cc);
+    void eraseWeapon(Weapon* w);
 
-    Weapon* createDagger();
+    Weapon* createDagger(Combat_Character* cc);
 
     // Setters
+    void setSprites(const char* tileset);
 
     // Getters
 
@@ -41,7 +42,6 @@ private:
 
     SpriteManager sprites_manager;
     std::vector<Weapon*> weapons;
-
 
 };
 

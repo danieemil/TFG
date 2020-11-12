@@ -200,9 +200,27 @@ void Enemy::setFriction(const Vector2d<float>& frict)
     Combat_Character::setFriction(frict);
 }
 
-void Enemy::addWeapon(Weapon* wp)
+bool Enemy::addWeapon(Weapon* wp)
 {
-    Combat_Character::addWeapon(wp);
+    if(Combat_Character::addWeapon(wp))
+    {
+        // Colisiones del arma
+        CollisionFlag weapon_type = CollisionFlag::enemy_hurt;
+        CollisionFlag weapon_interests = CollisionFlag::player_hit;
+
+        Collider* weapon_collider = wp->getBody();
+        if(weapon_collider!=nullptr)
+        {
+            CollisionFlag type = weapon_collider->getTypeFlags();
+            CollisionFlag interests = weapon_collider->getInterestedFlags();
+
+            weapon_collider->setTypeFlags(weapon_type | type);
+            weapon_collider->setIntersetedFlags(weapon_interests | interests);
+        }
+
+        return true;
+    }
+    return false;
 }
 
 void Enemy::removeWeapon(Weapon* wp)

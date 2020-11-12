@@ -100,6 +100,26 @@ void SpriteManager::eraseSprite(Sprite* spr)
     }
 }
 
+void SpriteManager::deleteAllSprites()
+{
+    auto sprite = sprites.begin();
+
+    while (sprite!=sprites.end())
+    {
+        Sprite* spr = (*sprite);
+
+        if(spr!=nullptr)
+        {
+            delete spr;
+        }
+
+        if((*sprite)==spr && sprite!=sprites.end())
+        {
+            sprites.erase(sprite);
+        }
+    }
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -152,25 +172,8 @@ std::string SpriteManager::getPath() const
 SpriteManager::~SpriteManager()
 {
 
-    auto sprite = sprites.begin();
+    void deleteAllSprites();
 
-    while (sprite!=sprites.end())
-    {
-        Sprite* spr = (*sprite);
-
-        if(spr!=nullptr)
-        {
-            delete spr;
-        }
-
-        if((*sprite)==spr && sprite!=sprites.end())
-        {
-            sprites.erase(sprite);
-        }
-    }
-
-
-    
 
     if(sprite_collection!=NULL)
     {

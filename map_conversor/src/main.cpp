@@ -343,7 +343,7 @@ int readLevelXML(const char* level_path)
                                             t_val = property->FindAttribute("value");
                                             if(t_val!=nullptr)
                                             {
-                                                pl.weapon = t_val->IntValue();
+                                                e.weapon = t_val->IntValue();
                                             }
                                         }
                                         else if(prop_name == std::string("Behaviour"))

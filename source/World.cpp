@@ -5,14 +5,14 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-World::World(const char* tileset_map, Player* p, const char* tileset_ent)
-: player(p), tilemap(nullptr), manager(nullptr), scroll_vel(4.0f, 4.0f)
+World::World(Player* p)
+: player(p), tilemap(nullptr), scroll_vel(4.0f, 4.0f)
 {
 
 }
 
 World::World(const World& w)
-: player(w.player), tilemap(w.tilemap), manager(w.manager), scroll_vel(w.scroll_vel)
+: player(w.player), tilemap(w.tilemap), scroll_vel(w.scroll_vel)
 {
 
 }
@@ -22,7 +22,6 @@ World& World::operator= (const World& w)
 
     player = nullptr;
     tilemap = nullptr;
-    manager = w.manager;
     scroll_vel = w.scroll_vel;
 
     return *this;
@@ -307,11 +306,6 @@ void World::eraseWorld()
         player = nullptr;
     }
 
-    if (manager!=nullptr)
-    {
-        delete manager;
-        manager = nullptr;
-    }
 }
 
 
@@ -343,16 +337,6 @@ void World::setPlayer(Player* p)
     player = p;
 }
 
-void World::setSpriteManager(const char* tileset)
-{
-    if (manager==nullptr)
-    {
-        manager = new SpriteManager();
-    }
-    
-    manager->setSprites(tileset);
-}
-
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -371,11 +355,6 @@ const std::vector<Entity*>& World::getEntities() const
 Player* World::getPlayer() const
 {
     return player;
-}
-
-SpriteManager* World::getSpriteManager() const
-{
-    return manager;
 }
 
 

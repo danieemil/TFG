@@ -11,7 +11,7 @@ class World
 
 public:
     // Constructores
-    World(const char* tileset_path = nullptr, Player* p = nullptr, const char* tileset_ent = nullptr);
+    World(Player* p = nullptr);
     World(const World& w);
 
     World& operator= (const World& w);
@@ -50,13 +50,11 @@ public:
     void setTilemap(Tilemap* t);
     void setEntities(const std::vector<Entity*>& v);
     void setPlayer(Player* p);
-    void setSpriteManager(const char* tileset);
 
     // Getters
     Tilemap* getTilemap() const;
     const std::vector<Entity*>& getEntities() const;
     Player* getPlayer() const;
-    SpriteManager* getSpriteManager() const;
 
     // Destructor
     ~World();
@@ -66,7 +64,6 @@ private:
     std::vector<Entity*> entities;
     Player* player;
     Tilemap* tilemap;
-    SpriteManager* manager;
 
     Vector2d<float> scroll_vel;
 

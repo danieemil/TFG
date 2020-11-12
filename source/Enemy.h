@@ -51,7 +51,7 @@ public:
     virtual void setAcceleration(const Vector2d<float>& accel);
     virtual void setFriction(const Vector2d<float>& frict);
         //Combat_Character
-    virtual void addWeapon(Weapon* wp);
+    virtual bool addWeapon(Weapon* wp);
     virtual void removeWeapon(Weapon* wp);
     virtual void equipWeapon(size_t index);
     virtual void setAttacked(bool at);

@@ -48,7 +48,7 @@ public:
     void setAcceleration(const Vector2d<float>& accel) override;
     void setFriction(const Vector2d<float>& frict) override;
         //Combat_Character
-    void addWeapon(Weapon* wp) override;
+    bool addWeapon(Weapon* wp) override;
     void removeWeapon(Weapon* wp) override;
     void equipWeapon(size_t index) override;
     void setAttacked(bool at) override;
