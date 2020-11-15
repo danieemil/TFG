@@ -1,6 +1,7 @@
 #ifndef _WORLD_
 #define _WORLD_
 
+#include "Interactable.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Tilemap.h"

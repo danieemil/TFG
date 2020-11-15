@@ -23,6 +23,8 @@ public:
     void update() override;
     void render() override;
     void deInit() override;
+    void processEvents() override;
+    void addEvent(Event e) override;
 
     void updateCollisions();
     void interpolate();

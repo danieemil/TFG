@@ -7,7 +7,7 @@
 
 // Clases que pueden ser instanciadas.
 // Se usan en las físicas
-enum class Class_Id
+enum class EntityType
 {
     e_none = -1,
     e_tile,
@@ -56,7 +56,7 @@ public:
     virtual const Vector2d<float>& getVelocity() const;
     virtual const Vector2d<float>& getPrePosition() const;
     virtual const Vector2d<float>& getRenderPosition() const;
-    virtual const Class_Id& getClassId() const;
+    virtual const EntityType& getEntityType() const;
     virtual float getAngle() const;
     virtual Vector2d<float> getCenter() const;
     virtual const Vector2d<float>& getOrientation() const;
@@ -73,7 +73,7 @@ protected:
     Vector2d<float> pre_position;
     Collider* body;
     Vector2d<float> velocity;
-    Class_Id id;
+    EntityType id;
 
     float angle;
     Vector2d<float> orientation;

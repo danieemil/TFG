@@ -66,7 +66,7 @@ public:
     const Vector2d<float>& getVelocity() const override;
     const Vector2d<float>& getPrePosition() const override;
     const Vector2d<float>& getRenderPosition() const override;
-    const Class_Id& getClassId() const override;
+    const EntityType& getEntityType() const override;
     float getAngle() const override;
     Vector2d<float> getCenter() const override;
     const Vector2d<float>& getOrientation() const override;

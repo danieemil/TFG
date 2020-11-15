@@ -30,7 +30,23 @@ Game_State& Game_State::operator= (const Game_State& gs)
 //=               MÉTODOS   	    	  =
 //=========================================
 
+void Game_State::processEvents()
+{
+    if(!events.empty())
+    {
+        Event e = events.top();
+        if(e!=nullptr)
+        {
+            e();
+        }
+        events.pop();
+    }
+}
 
+void Game_State::addEvent(Event e)
+{
+    events.push(e);
+}
 
 
 //=========================================

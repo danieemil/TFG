@@ -10,7 +10,7 @@ using std::placeholders::_1;
 //=========================================
 
 Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, const Vector2d<float>& ori)
-: world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c), velocity(), id(Class_Id::e_none), angle(0.0f), orientation(ori)
+: world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c), velocity(), id(EntityType::e_none), angle(0.0f), orientation(ori)
 {
     if(body!=nullptr)
     {
@@ -136,7 +136,7 @@ void Entity::collision(void * ent)
     if(ent!=nullptr)
     {
         Entity* e = static_cast<Entity*>(ent);
-        if(e->getClassId()==Class_Id::e_none)
+        if(e->getEntityType()==EntityType::e_none)
         {
             return;
         }
@@ -266,7 +266,7 @@ const Vector2d<float>& Entity::getRenderPosition() const
     return render_position;
 }
 
-const Class_Id& Entity::getClassId() const
+const EntityType& Entity::getEntityType() const
 {
     return id;
 }

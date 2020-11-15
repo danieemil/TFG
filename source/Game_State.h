@@ -1,6 +1,12 @@
 #ifndef _GAME_STATE_
 #define _GAME_STATE_
 
+
+#include <stack>
+#include <functional>
+
+using Event = std::function<void()>;
+
 enum class state_type
 {
     none,
@@ -28,6 +34,8 @@ public:
     virtual void update() = 0;
     virtual void render() = 0;
     virtual void deInit() = 0;
+    virtual void processEvents();
+    virtual void addEvent(Event e);
 
     // Setters
 
@@ -40,6 +48,7 @@ public:
 protected:
 
     state_type type;
+    std::stack<Event> events;
 
 private:
 

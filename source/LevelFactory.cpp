@@ -20,14 +20,13 @@ const char* save_file = "save.sf";
 //=========================================
 
 LevelFactory::LevelFactory(World* w)
-: world(w), actual_level(0), manager("romfs:/gfx/sprites.t3x"),
-weapon_manager("romfs:/gfx/sprites.t3x")
+: world(w), actual_level(0), entity_manager("romfs:/gfx/sprites.t3x")
 {
 
 }
 
 LevelFactory::LevelFactory(const LevelFactory& lf)
-: world(lf.world), actual_level(lf.actual_level), manager(lf.manager), weapon_manager(lf.weapon_manager)
+: world(lf.world), actual_level(lf.actual_level), entity_manager(lf.entity_manager)
 {
 
 }
@@ -36,8 +35,7 @@ LevelFactory& LevelFactory::operator= (const LevelFactory& lf)
 {
     world = lf.world;
     actual_level = lf.actual_level;
-    manager = lf.manager;
-    weapon_manager = lf.weapon_manager;
+    entity_manager = lf.entity_manager;
 
     return *this;
 }
@@ -272,8 +270,7 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
 	
 	// Configuramos el tileset que queremos usar
     const char* sprites_path = "romfs:/gfx/sprites.t3x";
-	manager.setSprites(sprites_path);
-    weapon_manager.setSprites(sprites_path);
+	entity_manager.setSprites(sprites_path);
 
         // Jugador
 	Vector2d<float> player_position = Vector2d<float>(250.5f,150.5f);
@@ -286,35 +283,22 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
 
     Player* player = world->getPlayer();
 
-    Vector2d<float> player_init_orientation = Vector2d<float>(0.0f,-1.0f);
-
     if(player==nullptr)
     {
-            // Gráficos del jugador
-        Sprite* player_sprite = manager.createSprite(0);
-        player_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
-        Vector2d<float> player_center = player_sprite->getCenter();
+        player = entity_manager.createPlayer(world, player_position);
 
-            // Colisiones del jugador
-        CollisionFlag player_interests = CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt;
-
-            // Otros atributos del jugador
-        int player_life = 11;
-        Vector2d<float> player_max_vel = Vector2d<float>(400.0f,400.0f);
-        Vector2d<float> player_max_accel = Vector2d<float>(INFINITY, INFINITY); // Máximo de fuerza que se le puede aplicar a un cuerpo
-        Vector2d<float> player_frict = Vector2d<float>(40.0f,40.0f);
-        float player_stunned_time = 0.5f;
-        player = new Player(player_life, player_position, player_sprite, world, player_interests, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
-        player->getBody()->setRotationCenter(player_center);
-        world->setPlayer(player);
+        // Creamos el arma inicial del jugador
+        entity_manager.createWeapon((WeaponType)player_weapon_type, player);
+        if(player!=nullptr)
+        {
+            player->equipWeapon(0);
+        }
     }
 
     player->setPosition(player_position);
 
 
-    // Creamos el arma inicial del jugador
-    Weapon* player_weapon = weapon_manager.createWeapon((weapon_type)player_weapon_type, player);
-    player->equipWeapon(0);
+    
 
     // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
     unvisual::setCurrentScreenTarget(&player->getRenderPosition());
@@ -328,36 +312,51 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
     {
         Vector2d<float> enemy_position = Vector2d<float>();
         int enemy_weapon_type = -1;
-        int enemy_behaviour_type = 0;
+        int enemy_type = 0;
 
         file2mem(in, &enemy_position.x);
         file2mem(in, &enemy_position.y);
 
         file2mem(in, &enemy_weapon_type);
 
-        file2mem(in, &enemy_behaviour_type);
+        file2mem(in, &enemy_type);
 
-        // Gráficos del enemigo
-        Sprite* enemy_sprite = manager.createSprite(2);
+        // Crear al tipo de enemigo instanciable con su posición inicial
+        Enemy* enemy = entity_manager.createEnemy((EnemyType)enemy_type, world, enemy_position);
 
-            // Colisiones del enemigo
-        CollisionFlag enemy_interests = CollisionFlag::player_hurt;
-        
-        // Otros atributos del enemigo
-        int enemy_life = 30;
-        Vector2d<float> enemy_max_vel = Vector2d<float>(500.0f,500.0f);
-        Vector2d<float> enemy_max_accel = Vector2d<float>(INFINITY, INFINITY);
-        Vector2d<float> enemy_friction = Vector2d<float>(20.0f,20.0f);
-        Vector2d<float> enemy_init_orientation = Vector2d<float>(0.0f,-1.0f);
-        float enemy_stunned_time = 0.5f;
+        // Crear su arma y asignársela
+        entity_manager.createWeapon((WeaponType)enemy_weapon_type, enemy);
 
-        // Comportamiento del enemigo
-        BinaryTree* bt = AI::getBehaviour((AI::bt_types)enemy_behaviour_type);
+        if(enemy!=nullptr)
+        {
+            enemy->equipWeapon(0);
+        }
+    }
 
-        Enemy* enemy = new Enemy(enemy_life, enemy_position, enemy_sprite, world, enemy_interests, enemy_init_orientation, enemy_max_vel, enemy_max_accel, enemy_friction, nullptr, enemy_stunned_time, bt);
-        world->addEntity(enemy);
+
+    // Interactables
+    file2mem(in, &number);
+
+    for (int i = 0; i < number; i++)
+    {
+
+        Vector2d<float> interactable_position = Vector2d<float>();
+        int interactable_type = -1;
+        int interactable_value = 0;
+
+        file2mem(in, &interactable_position.x);
+        file2mem(in, &interactable_position.y);
+
+        file2mem(in, &interactable_type);
+
+        file2mem(in, &interactable_value);
+
+        // Crear interactuable con los datos proporcionados
+
+        Interactable* inter = entity_manager.createInteractable((InteractableType)interactable_type, world, interactable_position);
 
     }
+
 
     in.close();
 

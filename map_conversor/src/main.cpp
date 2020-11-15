@@ -57,6 +57,7 @@ enum entity_type
 {
     player = 1,
     enemy,
+    interactable,
 };
 
 
@@ -69,12 +70,21 @@ struct Player
 struct Enemy
 {
     point p;
-    int behaviour;
+    int type;
     int weapon;
 };
 
+struct Interactable
+{
+    point p;
+    int type;
+    int value;
+};
+
+
 Player pl;
 std::vector<Enemy> enemies;
+std::vector<Interactable> interactables;
 
 
 int charToInt(const char* c)
@@ -331,6 +341,9 @@ int readLevelXML(const char* level_path)
                                 // Datos del enemigo
                                 Enemy e;
                                 e.p = posit;
+                                e.type = 0;
+                                e.weapon = -1;
+
                                 XMLElement* property = properties->FirstChildElement();
                                 while(property!=nullptr)
                                 {
@@ -346,18 +359,53 @@ int readLevelXML(const char* level_path)
                                                 e.weapon = t_val->IntValue();
                                             }
                                         }
-                                        else if(prop_name == std::string("Behaviour"))
+                                        else if(prop_name == std::string("EnemyType"))
                                         {
                                             t_val = property->FindAttribute("value");
                                             if(t_val!=nullptr)
                                             {
-                                                e.behaviour = t_val->IntValue();
+                                                e.type = t_val->IntValue();
                                             }
                                         }
                                     }
                                     property = property->NextSiblingElement();
                                 }
                                 enemies.push_back(e);
+                            }
+                            else if(value == entity_type::interactable)
+                            {
+                                Interactable i;
+                                i.p = posit;
+                                i.type = -1;
+                                i.value = 0;
+
+                                XMLElement* property = properties->FirstChildElement();
+                                while(property!=nullptr)
+                                {
+                                    const XMLAttribute* attr = property->FindAttribute("name");
+                                    if(attr!=nullptr)
+                                    {
+                                        std::string prop_name = attr->Value();
+                                        if(prop_name == std::string("Type"))
+                                        {
+                                            t_val = property->FindAttribute("value");
+                                            if(t_val!=nullptr)
+                                            {
+                                                i.type = t_val->IntValue();
+                                            }
+                                        }
+                                        else if(prop_name == std::string("Value"))
+                                        {
+                                            t_val = property->FindAttribute("value");
+                                            if(t_val!=nullptr)
+                                            {
+                                                i.value = t_val->IntValue();
+                                            }
+                                        }
+                                    }
+                                    property = property->NextSiblingElement();
+                                }
+                                interactables.push_back(i);
                             }
                         }
                     }
@@ -457,9 +505,23 @@ void dumpBin(const char* file_path)
 
         mem2file(out, enemy.weapon);
 
-        mem2file(out, enemy.behaviour);
+        mem2file(out, enemy.type);
     }
     enemies.clear();
+
+        // Interactuables
+    mem2file(out, (int)interactables.size());
+    for (auto &&interactable : interactables)
+    {
+        mem2file(out, interactable.p.x);
+        mem2file(out, interactable.p.y);
+
+        mem2file(out, interactable.type);
+
+        mem2file(out, interactable.value);
+    }
+    interactables.clear();
+    
 
 
     out.close();
@@ -604,10 +666,26 @@ void readBin(const char* file_path)
 
         file2mem(in, &e.weapon);
 
-        file2mem(in, &e.behaviour);
+        file2mem(in, &e.type);
     }
 
-    
+        // Interactables
+    file2mem(in, &number);
+
+    std::cout<<"Interactuables: "<<number<<std::endl;
+
+    for (int i = 0; i < number; i++)
+    {
+        Interactable inter;
+
+        file2mem(in, &inter.p.x);
+        file2mem(in, &inter.p.y);
+
+        file2mem(in, &inter.type);
+
+        file2mem(in, &inter.value);
+    }
+
 
     in.close();
 

@@ -105,7 +105,7 @@ void Combat_Character::collision(void* ent)
     if(ent!=nullptr)
     {
         Entity* e = static_cast<Entity*>(ent);
-        if(e->getClassId()==Class_Id::e_weapon)
+        if(e->getEntityType()==EntityType::e_weapon)
         {
             Weapon* w = static_cast<Weapon*>(e);
             // He colisionado con un arma, eso significa que me han atacado
@@ -335,9 +335,9 @@ const Vector2d<float>& Combat_Character::getRenderPosition() const
     return Character::getRenderPosition();
 }
 
-const Class_Id& Combat_Character::getClassId() const
+const EntityType& Combat_Character::getEntityType() const
 {
-    return Character::getClassId();
+    return Character::getEntityType();
 }
 
 float Combat_Character::getAngle() const

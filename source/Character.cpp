@@ -173,9 +173,9 @@ const Vector2d<float>& Character::getRenderPosition() const
     return Entity::getRenderPosition();
 }
 
-const Class_Id& Character::getClassId() const
+const EntityType& Character::getEntityType() const
 {
-    return Entity::getClassId();
+    return Entity::getEntityType();
 }
 
 float Character::getAngle() const

@@ -21,10 +21,13 @@ public:
     void interpolate();
     void loop();
     void processInput();
+    void processEvents();
     bool isRunning();
     void stopRunning();
 
     void erasePlayer();
+
+    void nextLevelEvent();
 
     template<class S>
     void stateTransition()

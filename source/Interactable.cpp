@@ -5,22 +5,22 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Interactable::Interactable(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
-    const Vector2d<float>& ori)
-: Entity(pos, spr, w, c, ori)
+Interactable::Interactable(const Vector2d<float>& pos, Sprite* spr, World* w,
+    CollisionFlag type_flag, CollisionFlag interests_flag, const Vector2d<float>& ori)
+: Entity(pos, spr, w, new Collider(pos, physics::getSpriteShape(spr), type_flag, interests_flag, CollisionType::col_none), ori)
 {
     
 }
 
-Interactable::Interactable(const Interactable& c)
-: Entity(c)
+Interactable::Interactable(const Interactable& i)
+: Entity(i)
 {
 
 }
 
-Interactable& Interactable::operator= (const Interactable& c)
+Interactable& Interactable::operator= (const Interactable& i)
 {
-    this->Entity::operator=(c);
+    this->Entity::operator=(i);
 
     return *this;
 }
@@ -47,6 +47,11 @@ void Interactable::updateFromCollider()
 void Interactable::interpolate(float rp)
 {
     Entity::interpolate(rp);
+}
+
+void Interactable::collision(void * ent)
+{
+    Entity::collision(ent);
 }
 
 
@@ -129,9 +134,9 @@ const Vector2d<float>& Interactable::getRenderPosition() const
     return Entity::getRenderPosition();
 }
 
-const Class_Id& Interactable::getClassId() const
+const EntityType& Interactable::getEntityType() const
 {
-    return Entity::getClassId();
+    return Entity::getEntityType();
 }
 
 float Interactable::getAngle() const

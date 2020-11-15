@@ -131,6 +131,16 @@ void Game_Playing::deInit()
     }
 }
 
+void Game_Playing::processEvents()
+{
+    Game_State::processEvents();
+}
+
+void Game_Playing::addEvent(Event e)
+{
+    Game_State::addEvent(e);
+}
+
 void Game_Playing::resetLevel()
 {
     level_factory.deInit();
@@ -155,7 +165,6 @@ void Game_Playing::erasePlayer()
     }
 
     hud.setPlayer(nullptr);
-
 }
 
 

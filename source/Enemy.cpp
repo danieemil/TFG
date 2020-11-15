@@ -12,13 +12,13 @@ Enemy::Enemy(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Collision
     const Vector2d<float>& frict, Weapon* wp, float st_time, BinaryTree* bt)
 : Combat_Character(l, pos, spr, w, CollisionFlag::enemy_hit, interests_flag, ori, max_vel, max_accel, frict, wp, st_time), b_tree(bt)
 {
-    id = Class_Id::e_enemy;
+    id = EntityType::e_enemy;
 }
 
 Enemy::Enemy(const Enemy& cc)
 : Combat_Character(cc), b_tree(cc.b_tree)
 {
-    id = Class_Id::e_enemy;
+    id = EntityType::e_enemy;
 }
 
 Enemy& Enemy::operator= (const Enemy& cc)
@@ -64,9 +64,9 @@ void Enemy::collision(void* ent)
     if(ent!=nullptr)
     {
         Entity* e = static_cast<Entity*>(ent);
-        if(e->getClassId()==Class_Id::e_weapon)
+        if(e->getEntityType()==EntityType::e_weapon)
         {
-            Weapon* w = static_cast<Weapon*>(e);
+            //Weapon* w = static_cast<Weapon*>(e);
         }
     }
 
@@ -205,7 +205,7 @@ bool Enemy::addWeapon(Weapon* wp)
     if(Combat_Character::addWeapon(wp))
     {
         // Colisiones del arma
-        CollisionFlag weapon_type = CollisionFlag::enemy_hurt;
+        CollisionFlag WeaponType = CollisionFlag::enemy_hurt;
         CollisionFlag weapon_interests = CollisionFlag::player_hit;
 
         Collider* weapon_collider = wp->getBody();
@@ -214,7 +214,7 @@ bool Enemy::addWeapon(Weapon* wp)
             CollisionFlag type = weapon_collider->getTypeFlags();
             CollisionFlag interests = weapon_collider->getInterestedFlags();
 
-            weapon_collider->setTypeFlags(weapon_type | type);
+            weapon_collider->setTypeFlags(WeaponType | type);
             weapon_collider->setIntersetedFlags(weapon_interests | interests);
         }
 
@@ -293,9 +293,9 @@ const Vector2d<float>& Enemy::getRenderPosition() const
     return Combat_Character::getRenderPosition();
 }
 
-const Class_Id& Enemy::getClassId() const
+const EntityType& Enemy::getEntityType() const
 {
-    return Combat_Character::getClassId();
+    return Combat_Character::getEntityType();
 }
 
 float Enemy::getAngle() const

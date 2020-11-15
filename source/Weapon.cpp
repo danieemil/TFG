@@ -14,7 +14,7 @@ Weapon::Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_
 : Entity(rel_attack, spr, w, new Collider(Vector2d<float>(), physics::getSpriteShape(spr), type_flag, interests_flag, CollisionType::col_none), ori), character(cc), attack_rel_position(rel_attack),
     attacking(false), attack_time(t_attack), damage(dam), knockback(knock)
 {
-    id = Class_Id::e_weapon;
+    id = EntityType::e_weapon;
 
     if(character!=nullptr)
     {
@@ -296,9 +296,9 @@ const Vector2d<float>& Weapon::getRenderPosition() const
     return Entity::getRenderPosition();
 }
 
-const Class_Id& Weapon::getClassId() const
+const EntityType& Weapon::getEntityType() const
 {
-    return Entity::getClassId();
+    return Entity::getEntityType();
 }
 
 float Weapon::getAngle() const

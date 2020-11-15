@@ -125,12 +125,6 @@ void Game_MainMenu::init()
     gui_elements.setUntouchable(true);
     // La opción de continuar está por defecto seleccionada cuando presionamos EL BOTÓN
     gui_elements.setSelectedDefault(1);
-
-
-
-    
-
-
 }
 
 void Game_MainMenu::processInput()
@@ -161,7 +155,15 @@ void Game_MainMenu::deInit()
     delete this;
 }
 
+void Game_MainMenu::processEvents()
+{
+    Game_State::processEvents();
+}
 
+void Game_MainMenu::addEvent(Event e)
+{
+    Game_State::addEvent(e);
+}
 
 
 //=========================================

@@ -6,7 +6,7 @@
 
 
 // Tipos de armas instanciables
-enum class weapon_type
+enum class WeaponType
 {
     dagger,
     other,
@@ -25,8 +25,7 @@ public:
     WeaponManager& operator= (const WeaponManager& wm);
 
     // Métodos
-    Weapon* createWeapon(weapon_type wt, Combat_Character* cc);
-    void eraseWeapon(Weapon* w);
+    Weapon* createWeapon(WeaponType wt, Combat_Character* cc);
 
     Weapon* createDagger(Combat_Character* cc);
 
@@ -41,7 +40,6 @@ public:
 private:
 
     SpriteManager sprites_manager;
-    std::vector<Weapon*> weapons;
 
 };
 

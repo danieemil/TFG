@@ -2,7 +2,7 @@
 #define _LEVELFACTORY_
 
 #include "World.h"
-#include "WeaponManager.h"
+#include "EntityManager.h"
 
 class LevelFactory
 {
@@ -39,11 +39,11 @@ public:
 
 private:
 
+    World* world;
+
     int actual_level;
 
-    World* world;
-    SpriteManager manager;
-    WeaponManager weapon_manager;
+    EntityManager entity_manager;
 
     void readBin(const char* tilemap_path, const char* tileset_path);
 

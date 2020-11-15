@@ -14,7 +14,7 @@ Tile::Tile(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
         spr->setDepth(-1);
     }
 
-    id = Class_Id::e_tile;
+    id = EntityType::e_tile;
 }
 
 Tile::Tile(const Tile& c)
@@ -134,9 +134,9 @@ const Vector2d<float>& Tile::getRenderPosition() const
     return Entity::getRenderPosition();
 }
 
-const Class_Id& Tile::getClassId() const
+const EntityType& Tile::getEntityType() const
 {
-    return Entity::getClassId();
+    return Entity::getEntityType();
 }
 
 float Tile::getAngle() const

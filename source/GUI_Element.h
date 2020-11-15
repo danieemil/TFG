@@ -39,7 +39,7 @@ public:
     virtual bool getPressed() const;
 
     // Destructor
-    ~GUI_Element();
+    virtual ~GUI_Element();
 
 protected:
 

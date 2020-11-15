@@ -69,7 +69,7 @@ public:
     virtual const Vector2d<float>& getVelocity() const;
     virtual const Vector2d<float>& getPrePosition() const;
     virtual const Vector2d<float>& getRenderPosition() const;
-    virtual const Class_Id& getClassId() const;
+    virtual const EntityType& getEntityType() const;
     virtual float getAngle() const;
     virtual Vector2d<float> getCenter() const;
     virtual const Vector2d<float>& getOrientation() const;

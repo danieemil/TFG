@@ -105,8 +105,17 @@ void Game::processInput()
     {
         state->processInput();
     }
-
 }
+
+void Game::processEvents()
+{
+    if(state!=nullptr)
+    {
+        state->processEvents();
+    }
+}
+
+
 
 void Game::render()
 {
@@ -166,6 +175,15 @@ void Game::erasePlayer()
     {
         Game_Playing* gp = static_cast<Game_Playing*>(state);
         gp->erasePlayer();
+    }
+}
+
+void Game::nextLevelEvent()
+{
+    if(state->getStateType()==state_type::playing)
+    {
+        Game_Playing* gp = static_cast<Game_Playing*>(state);
+        //gp->nextLevel();
     }
 }
 

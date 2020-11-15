@@ -1,14 +1,16 @@
 #include "WeaponManager.h"
 
+#include "Combat_Character.h"
+
 #include "functional"
 #include <unordered_map>
 #include "Unvisual_Engine.h"
 
 //Mapa que relaciona las armas que se pueden crear junto con su método de creación
-const std::unordered_map<weapon_type, std::function<Weapon* (WeaponManager*, Combat_Character*)>> weapons_map = 
+const std::unordered_map<WeaponType, std::function<Weapon* (WeaponManager*, Combat_Character*)>> weapons_map = 
 {
-    {weapon_type::dagger, &WeaponManager::createDagger},
-    {weapon_type::other, &WeaponManager::createDagger},
+    {WeaponType::dagger, &WeaponManager::createDagger},
+    {WeaponType::other, &WeaponManager::createDagger},
 };
 
 //=========================================
@@ -38,7 +40,7 @@ WeaponManager& WeaponManager::operator= (const WeaponManager& wm)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-Weapon* WeaponManager::createWeapon(weapon_type wt, Combat_Character* cc)
+Weapon* WeaponManager::createWeapon(WeaponType wt, Combat_Character* cc)
 {
     if(cc!=nullptr)
     {
@@ -47,32 +49,11 @@ Weapon* WeaponManager::createWeapon(weapon_type wt, Combat_Character* cc)
         {
             if(it->second!=nullptr)
             {
-                Weapon* w = it->second(this, cc);
-                if(w!=nullptr)
-                {
-                    weapons.push_back(w);
-                }
-                return w;
+                return it->second(this, cc);
             }
         }
     }
     return nullptr;
-}
-
-void WeaponManager::eraseWeapon(Weapon* w)
-{
-    if (w != nullptr)
-    {
-        for (auto it = weapons.begin(); it != weapons.end(); it++)
-        {
-            Weapon* we = *it;
-            if(we == w)
-            {
-                weapons.erase(it);
-                return;
-            }
-        }
-    }
 }
 
 
@@ -89,8 +70,9 @@ Weapon* WeaponManager::createDagger(Combat_Character* cc)
     float weapon_knockback = 200.0f;
     float weapon_time_attack = 0.2f;
     Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
+    Vector2d<float> ori = cc->getOrientation();
     Weapon* w = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack,
-    weapon_relative_position_attacking, weapon_sprite, nullptr, CollisionFlag::none, CollisionFlag::none);
+    weapon_relative_position_attacking, weapon_sprite, nullptr, CollisionFlag::none, CollisionFlag::none, ori);
     w->setCharacter(cc);
 
     return w;
@@ -122,14 +104,5 @@ void WeaponManager::setSprites(const char* tileset)
 
 WeaponManager::~WeaponManager()
 {
-    for (auto &&it : weapons)
-    {
-        if(it!=nullptr)
-        {
-            //delete it;
-        }
-    }
-
-    weapons.clear();
     
 }

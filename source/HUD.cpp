@@ -103,7 +103,7 @@ void HUD::render()
                     if (w_spr!=nullptr)
                     {
                         float not_attacking = 0.0f;
-                        u32 white = unvisual::getColor2D(255,255,255,255);
+                        //u32 white = unvisual::getColor2D(255,255,255,255);
                         u32 black = unvisual::getColor2D(0,0,0,255);
 
                         auto temp = weapon_selector->getSize();

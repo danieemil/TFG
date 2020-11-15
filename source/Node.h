@@ -5,8 +5,6 @@
 
 class Enemy;
 
-static int node_id;
-
 class Node
 {
 
@@ -25,7 +23,7 @@ public:
     // Getters
 
     // Destructor
-    ~Node();
+    virtual ~Node();
 
 private:
 

@@ -14,7 +14,7 @@ Player::Player(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Collisi
     const Vector2d<float>& frict, Weapon* wp, float st_time)
 : Combat_Character(l, pos, spr, w, CollisionFlag::player_hit, interests_flag, ori, max_vel, max_accel, frict, wp, st_time)
 {
-    id = Class_Id::e_player;
+    id = EntityType::e_player;
 }
 
 Player::Player(const Player& p)
@@ -63,7 +63,7 @@ void Player::collision(void* ent)
     if(ent!=nullptr)
     {
         Entity* e = static_cast<Entity*>(ent);
-        if(e->getClassId()==Class_Id::e_enemy)
+        if(e->getEntityType()==EntityType::e_enemy)
         {
             Enemy* en = static_cast<Enemy*>(e);
 
@@ -313,9 +313,9 @@ const Vector2d<float>& Player::getRenderPosition() const
     return Combat_Character::getRenderPosition();
 }
 
-const Class_Id& Player::getClassId() const
+const EntityType& Player::getEntityType() const
 {
-    return Combat_Character::getClassId();
+    return Combat_Character::getEntityType();
 }
 
 float Player::getAngle() const

@@ -191,8 +191,11 @@ all: graphics $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 
-graphics: $(TILESETDIRS) $(T3SFILES) $(MAPSBUILD) $(MPFILES)
+graphics: make_conversor $(TILESETDIRS) $(T3SFILES) $(MAPSBUILD) $(MPFILES)
 
+
+make_conversor:
+	$(MAKE) -C $(CONVERSOR_FOLDER)
 
 
 $(MAPSBUILD):

@@ -146,7 +146,15 @@ void Game_Paused::deInit()
     delete this;
 }
 
+void Game_Paused::processEvents()
+{
+    Game_State::processEvents();
+}
 
+void Game_Paused::addEvent(Event e)
+{
+    Game_State::addEvent(e);
+}
 
 
 //=========================================

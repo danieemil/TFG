@@ -10,9 +10,9 @@ using namespace unvisual;
 
 Text::Text(const Vector2d<float>& pos, const char* t, size_t text_size, float height,
 u8 r, u8 g, u8 b, u8 a)
-: position(pos), text(), text_buf(C2D_TextBufNew(text_size)), text_data(t),
+: position(pos), size(Vector2d<float>((height*2.0f)/TEXT_HEIGH, (height*2.0f)/TEXT_HEIGH)),
+text(), text_buf(C2D_TextBufNew(text_size)), text_data(t),
 color(unvisual::getColor2D(r, g, b, a)),
-size(Vector2d<float>((height*2.0f)/TEXT_HEIGH, (height*2.0f)/TEXT_HEIGH)),
 padding(Vector2d<float>(0.0f, 6.0f * size.y))
 {
     if(t!=nullptr)
