@@ -253,7 +253,6 @@ int readLevelXML(const char* level_path)
 
                         circles.push_back(c);
                     }
-                    
                 }
                 else
                 {
@@ -374,6 +373,7 @@ int readLevelXML(const char* level_path)
                             }
                             else if(value == entity_type::interactable)
                             {
+                                // Datos del interactuable
                                 Interactable i;
                                 i.p = posit;
                                 i.type = -1;
@@ -386,7 +386,7 @@ int readLevelXML(const char* level_path)
                                     if(attr!=nullptr)
                                     {
                                         std::string prop_name = attr->Value();
-                                        if(prop_name == std::string("Type"))
+                                        if(prop_name == std::string("InteractableType"))
                                         {
                                             t_val = property->FindAttribute("value");
                                             if(t_val!=nullptr)

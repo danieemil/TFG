@@ -9,8 +9,10 @@ using std::placeholders::_1;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c, const Vector2d<float>& ori)
-: world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c), velocity(), id(EntityType::e_none), angle(0.0f), orientation(ori)
+Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
+    const Vector2d<float>& ori)
+: world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c),
+    velocity(), id(EntityType::e_none), angle(0.0f), orientation(ori)
 {
     if(body!=nullptr)
     {
@@ -172,10 +174,6 @@ void Entity::setPosition(const Vector2d<float>& pos)
 
 void Entity::setWorld(World* w)
 {
-    if(world!=nullptr && w!=world)
-    {
-        world->eraseEntity(this);
-    }
     world = w;
 }
 

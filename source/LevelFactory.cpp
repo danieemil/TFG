@@ -15,12 +15,15 @@ int LevelFactory::max_levels = levels_map.size();
 // Archivo de guardado
 const char* save_file = "save.sf";
 
+// Gráficos de las entidades
+const char* entity_graphics = "romfs:/gfx/sprites.t3x";
+
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
 LevelFactory::LevelFactory(World* w)
-: world(w), actual_level(0), entity_manager("romfs:/gfx/sprites.t3x")
+: world(w), actual_level(0), entity_manager(entity_graphics)
 {
 
 }
@@ -69,24 +72,43 @@ void LevelFactory::loadSave()
 
     // Obtener el nivel del archivo de guardado
     file2mem(in, &actual_level);
+
+    // Obtener datos del jugador
+    file2mem(in, &player_data.max_life);
+    file2mem(in, &player_data.life);
     
     in.close();
 }
 
 void LevelFactory::save()
 {
-
-
     ofstream out;
     out.open(save_file, std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
 
-    unvisual::debugger->print("Guardado en:");
-    unvisual::debugger->print(save_file);
-    unvisual::debugger->nextLine();
-    unvisual::breakpoint();
-
-    //Guardar nivel actual
+    // Guardar nivel actual
     mem2file(out, actual_level);
+
+    // Si el jugador no tiene vida se guarda el estado anterior
+    if(world!=nullptr)
+    {
+        Player* player = world->getPlayer();
+        if(player!=nullptr)
+        {
+            int max_life = player->getMaxLife();
+            int life = player->getLife();
+            if(life > 0)
+            {
+                player_data.max_life = max_life;
+                player_data.life = life;
+            }
+        }
+    }
+
+    // Guardar vida máxima del jugador
+    mem2file(out, player_data.max_life);
+
+    // Guardar vida actual del jugador
+    mem2file(out, player_data.life);
 
     out.close();
 }
@@ -104,7 +126,7 @@ void LevelFactory::deInit()
 {
     if(world!=nullptr)
     {
-        world->eraseWorld();
+        world->deleteLevel();
     }
 }
 
@@ -128,10 +150,19 @@ void LevelFactory::resetSave()
     ofstream out;
     out.open(save_file, std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
 
-    int l = 0;
+    int level = 0;
+    int max_life = 8;
+    int life = 8;
 
-    //Guardar primer nivel
-    mem2file(out, l);
+    // Guardar primer nivel
+    mem2file(out, level);
+
+    // Guardar vida máxima del jugador
+    mem2file(out, max_life);
+
+    // Guardar vida inicial del jugador
+    mem2file(out, life);
+
 
     out.close();
 }
@@ -267,10 +298,6 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
     }
 
     // Entidades
-	
-	// Configuramos el tileset que queremos usar
-    const char* sprites_path = "romfs:/gfx/sprites.t3x";
-	entity_manager.setSprites(sprites_path);
 
         // Jugador
 	Vector2d<float> player_position = Vector2d<float>(250.5f,150.5f);
@@ -286,7 +313,10 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
     if(player==nullptr)
     {
         player = entity_manager.createPlayer(world, player_position);
+    }
 
+    if(player->getWeapons().empty())
+    {
         // Creamos el arma inicial del jugador
         entity_manager.createWeapon((WeaponType)player_weapon_type, player);
         if(player!=nullptr)
@@ -297,6 +327,8 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
 
     player->setPosition(player_position);
 
+    player->setMaxLife(player_data.max_life);
+    player->setLife(player_data.life);
 
     
 

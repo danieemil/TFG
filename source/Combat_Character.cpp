@@ -295,6 +295,16 @@ void Combat_Character::setMaxLife(int l)
     }
 }
 
+bool Combat_Character::increaseLife(int l)
+{
+    if(life<max_life)
+    {
+        setLife(life + l);
+        return true;
+    }
+    return false;
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =

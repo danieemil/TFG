@@ -1,7 +1,7 @@
 #ifndef _WORLD_
 #define _WORLD_
 
-#include "Interactable.h"
+#include "Exit.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Tilemap.h"
@@ -22,7 +22,11 @@ public:
     void deleteEntity(Entity* e);
     void eraseEntity(Entity* e);
 
+    void deletePlayer();
     void erasePlayer();
+
+    void deleteLevel();
+    void deleteWorld();
 
     void processInput();
 
@@ -44,8 +48,6 @@ public:
     void updateCollisions();
     void updateEntitiesCollisions();
     void updatePlayerCollisions();
-
-    void eraseWorld();
 
     // Setters
     void setTilemap(Tilemap* t);

@@ -52,10 +52,16 @@ Interactable* InteractableManager::createInteractable(InteractableType it, World
 }
 
 
-Interactable* InteractableManager::createExit(World* w, const Vector2d<float>& pos)
+Exit* InteractableManager::createExit(World* w, const Vector2d<float>& pos)
 {
 
-    return nullptr;
+    Vector2d<float> ori = Vector2d<float>(0.0f,-1.0f);
+    Sprite* spr = sprites_manager.createSprite(3);
+
+    Exit* exit = new Exit(pos, spr, w, ori);
+    w->addEntity(exit);
+
+    return exit;
 }
 
 

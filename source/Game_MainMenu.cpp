@@ -56,6 +56,8 @@ void Game_MainMenu::init()
 
     gui_sprite_manager.setSprites(gui_sprites_path);
 
+    int default_button = 0;
+
     // Botón de iniciar juego
     GUI_Button* b1;
     Sprite* spr_b1 = gui_sprite_manager.createSprite(0);
@@ -75,10 +77,12 @@ void Game_MainMenu::init()
     b1 = new GUI_Button(position_b1, size_b1, spr_b1, callback_b1, text_b1);
     gui_elements.addElement(b1);
 
+    GUI_Button* b2 = nullptr;
+
     if(Game::Instance()->getSaved())
     {
-        // Botón de continuar partida
-        GUI_Button* b2;
+        default_button = 1;
+        // Botón de continuar partida   
         Sprite* spr_b2 = gui_sprite_manager.createSprite(0);
         but_pos += but_padding;
         Vector2d<float> position_b2 = but_pos;
@@ -124,7 +128,8 @@ void Game_MainMenu::init()
     // No se pueden seleccionar los botones con el panel táctil -> (Pantalla de arriba)
     gui_elements.setUntouchable(true);
     // La opción de continuar está por defecto seleccionada cuando presionamos EL BOTÓN
-    gui_elements.setSelectedDefault(1);
+    
+    gui_elements.setSelectedDefault(default_button);
 }
 
 void Game_MainMenu::processInput()

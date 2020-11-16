@@ -56,11 +56,11 @@ void HUD::render()
         {
             Vector2d<float> pos = life_position;
 
-            int half_hearts =   player->getLife();
-            int max_hearts  =   player->getMaxLife();
-            int no_hearts = max_hearts - half_hearts;
-            no_hearts = no_hearts + (no_hearts % 2);
-
+            int half_hearts =   player->getLife();      // 10
+            int max_hearts  =   player->getMaxLife();   // 11
+            int no_hearts = max_hearts - half_hearts;   // 1
+            no_hearts = no_hearts - (no_hearts % 2);    // 
+            
 
 
             Sprite* rendering = heart;

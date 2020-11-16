@@ -55,6 +55,7 @@ public:
     void setStunned(bool st) override;
     void setLife(int l) override;
     void setMaxLife(int l) override;
+    bool increaseLife(int l) override;
         //Player
 
     // Getters

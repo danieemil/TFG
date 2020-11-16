@@ -9,15 +9,15 @@
 
 Exit::Exit(const Vector2d<float>& pos, Sprite* spr, World* w,
     const Vector2d<float>& ori)
-: Interactable(pos, spr, w, CollisionFlag::none, CollisionFlag::player_hit, ori)
+: Interactable(pos, spr, w, CollisionFlag::exit_hit, CollisionFlag::player_hit, ori)
 {
-    
+    id = EntityType::e_exit;
 }
 
 Exit::Exit(const Exit& c)
 : Interactable(c)
 {
-
+    id = EntityType::e_exit;
 }
 
 Exit& Exit::operator= (const Exit& c)
@@ -53,7 +53,14 @@ void Exit::interpolate(float rp)
 
 void Exit::collision(void* ent)
 {
-    Interactable::collision(ent);
+    if(ent!=nullptr)
+    {
+        Entity* e = static_cast<Entity*>(ent);
+        if(e->getEntityType()==EntityType::e_player)
+        {
+            nextLevel();
+        }
+    }
 }
 
 void Exit::nextLevel()

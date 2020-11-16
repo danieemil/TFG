@@ -58,6 +58,7 @@ public:
     virtual void setStunned(bool st);
     virtual void setLife(int l);
     virtual void setMaxLife(int l);
+    virtual bool increaseLife(int l);
         //Enemy
 
     // Getters

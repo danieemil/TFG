@@ -27,7 +27,9 @@ public:
 
     void erasePlayer();
 
+    // Eventos para evitar procesar un elemento después de eliminarse
     void nextLevelEvent();
+    void resetLevelEvent();
 
     template<class S>
     void stateTransition()

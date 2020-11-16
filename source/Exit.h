@@ -9,8 +9,8 @@ class Exit : public Interactable
 
 public:
     // Constructores
-    Exit(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr,
-    const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
+    Exit(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+    World* w = nullptr, const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
     Exit(const Exit& e);
 
     Exit& operator= (const Exit& e);

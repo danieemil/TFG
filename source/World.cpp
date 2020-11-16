@@ -86,9 +86,47 @@ void World::eraseEntity(Entity* e)
     }
 }
 
+void World::deletePlayer()
+{
+    if(player!=nullptr)
+    {
+        delete player;
+        player = nullptr;
+    }
+}
+
 void World::erasePlayer()
 {
     player = nullptr;
+}
+
+void World::deleteLevel()
+{
+    if(tilemap!=nullptr)
+    {
+        delete tilemap;
+        tilemap = nullptr;
+    }
+
+    auto entity = entities.begin();
+
+    while (entity!=entities.end())
+    {
+        Entity* e = (*entity);
+
+        if(e!=nullptr)
+        {
+            delete e;
+        }
+    }
+
+    entities.clear();
+}
+
+void World::deleteWorld()
+{
+    deleteLevel();
+    deletePlayer();
 }
 
 void World::processInput()
@@ -278,36 +316,6 @@ void World::updatePlayerCollisions()
     }
 }
 
-void World::eraseWorld()
-{
-    if(tilemap!=nullptr)
-    {
-        delete tilemap;
-        tilemap = nullptr;
-    }
-
-    auto entity = entities.begin();
-
-    while (entity!=entities.end())
-    {
-        Entity* e = (*entity);
-
-        if(e!=nullptr)
-        {
-            delete e;
-        }
-    }
-
-    entities.clear();
-
-    if(player!=nullptr)
-    {
-        delete player;
-        player = nullptr;
-    }
-
-}
-
 
 //=========================================
 //=               SETTERS   	    	  =
@@ -326,6 +334,14 @@ void World::setTilemap(Tilemap* t)
 void World::setEntities(const std::vector<Entity*>& v)
 {
     entities = v;
+    for (auto &&entity : entities)
+    {
+        if(entity!=nullptr)
+        {
+            entity->setWorld(this);
+        }
+    }
+    
 }
 
 void World::setPlayer(Player* p)
@@ -335,6 +351,10 @@ void World::setPlayer(Player* p)
         delete player;
     }
     player = p;
+    if(player!=nullptr)
+    {
+        player->setWorld(this);
+    }
 }
 
 
@@ -364,5 +384,5 @@ Player* World::getPlayer() const
 
 World::~World()
 {
-    eraseWorld();
+    deleteWorld();
 }

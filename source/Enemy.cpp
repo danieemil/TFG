@@ -253,6 +253,11 @@ void Enemy::setMaxLife(int l)
     Combat_Character::setMaxLife(l);
 }
 
+bool Enemy::increaseLife(int l)
+{
+    return Combat_Character::increaseLife(l);
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =

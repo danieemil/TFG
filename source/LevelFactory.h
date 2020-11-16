@@ -41,7 +41,19 @@ private:
 
     World* world;
 
+
+    // Datos del archivo de guardado
     int actual_level;
+
+    struct PlayerData
+    {
+        int max_life;
+        int life;
+    };
+
+    PlayerData player_data;
+
+
 
     EntityManager entity_manager;
 

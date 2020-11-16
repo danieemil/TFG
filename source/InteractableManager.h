@@ -28,7 +28,7 @@ public:
     // Métodos
     Interactable* createInteractable(InteractableType it, World* w, const Vector2d<float>& pos = Vector2d<float>());
 
-    Interactable* createExit(World* w, const Vector2d<float>& pos = Vector2d<float>());
+    Exit* createExit(World* w, const Vector2d<float>& pos = Vector2d<float>());
 
     // Setters
     void setSprites(const char* tileset);

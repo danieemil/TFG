@@ -156,6 +156,8 @@ void Game::loop()
         render();
 
         unvisual::drawEnd();
+
+        processEvents();
 	}
 }
 
@@ -183,7 +185,18 @@ void Game::nextLevelEvent()
     if(state->getStateType()==state_type::playing)
     {
         Game_Playing* gp = static_cast<Game_Playing*>(state);
-        //gp->nextLevel();
+        Event e = [gp](){gp->nextLevel();};
+        gp->addEvent(e);
+    }
+}
+
+void Game::resetLevelEvent()
+{
+    if(state->getStateType()==state_type::playing)
+    {
+        Game_Playing* gp = static_cast<Game_Playing*>(state);
+        Event e = [gp](){gp->resetLevel();};
+        gp->addEvent(e);
     }
 }
 

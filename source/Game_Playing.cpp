@@ -41,6 +41,9 @@ void Game_Playing::init()
 {
     unvisual::getCurrentScreen()->setBackgroundColor(255,255,255,255);
 
+    // Cargar archivo de guardado
+    level_factory.loadSave();
+
     // Inicializar el mundo
     level_factory.init();
     if(world!=nullptr)
@@ -59,14 +62,13 @@ void Game_Playing::processInput()
         Game::Instance()->stateTransition<Game_Paused>();
     }
 
-
     // Botón para resetear el nivel
     if(isPressed(N3DS_buttons::Key_L))
     {
+        world->deletePlayer();
         resetLevel();
+        return;
     }
-
-    
 
     if(world!=nullptr)
     {
@@ -144,6 +146,7 @@ void Game_Playing::addEvent(Event e)
 void Game_Playing::resetLevel()
 {
     level_factory.deInit();
+    
     level_factory.init();
     if(world!=nullptr)
     {
@@ -154,6 +157,7 @@ void Game_Playing::resetLevel()
 void Game_Playing::nextLevel()
 {
     level_factory.nextLevel();
+    level_factory.save();
     resetLevel();
 }
 

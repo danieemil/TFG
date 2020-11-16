@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="64">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="71">
  <tileset firstgid="1" source="../TileSet.tsx"/>
  <layer id="1" name="Capa de patrones" width="40" height="40">
   <data>
@@ -1668,5 +1668,38 @@
   <object id="55" x="560" y="352" width="16" height="16"/>
   <object id="59" x="528" y="352" width="16" height="16"/>
   <object id="60" x="592" y="352" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="3" name="Entidades">
+  <object id="65" type="Player" x="320" y="512">
+   <properties>
+    <property name="Type" type="int" value="1"/>
+    <property name="Weapon" type="int" value="0"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="66" type="Interactable" x="64" y="96">
+   <properties>
+    <property name="InteractableType" type="int" value="0"/>
+    <property name="Type" type="int" value="3"/>
+    <property name="Value" type="int" value="0"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="67" type="Enemy" x="288" y="288">
+   <properties>
+    <property name="EnemyType" type="int" value="0"/>
+    <property name="Type" type="int" value="2"/>
+    <property name="Weapon" type="int" value="-1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="68" type="Enemy" x="336" y="288">
+   <properties>
+    <property name="EnemyType" type="int" value="0"/>
+    <property name="Type" type="int" value="2"/>
+    <property name="Weapon" type="int" value="-1"/>
+   </properties>
+   <point/>
+  </object>
  </objectgroup>
 </map>

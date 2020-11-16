@@ -14,7 +14,7 @@ enum class EntityType
     e_player,
     e_enemy,
     e_weapon,
-
+    e_exit,
 };
 
 

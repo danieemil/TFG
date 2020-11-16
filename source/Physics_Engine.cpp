@@ -58,8 +58,8 @@ namespace physics
         Shape* s;
         float sizeX, sizeY; // Dimensiones del sprite 
         float sX, sY;           // Dimensiones del collider
+        int sprite_number = 0;
 
-    
         // Tileset de los sprites de prueba
         tileset_route = "romfs:/gfx/sprites.t3x";
         tileset_colliders.clear();
@@ -78,18 +78,25 @@ namespace physics
             Vector2d<float>(0,sY)
         };
         s = new Convex(vertices);
-        tileset_colliders.insert(pair<int, Shape*>(0,s));
+        tileset_colliders.insert(pair<int, Shape*>(sprite_number,s));
+        sprite_number++;
 
         // Arma temporal
         s = new AABB(Vector2d<float>(-15,-20), Vector2d<float>(15,1));
-        tileset_colliders.insert(pair<int, Shape*>(1,s));
+        tileset_colliders.insert(pair<int, Shape*>(sprite_number,s));
+        sprite_number++;
 
         // Letra "E"
         s = new AABB(Vector2d<float>(0,0), Vector2d<float>(sX, sY));
-        tileset_colliders.insert(pair<int, Shape*>(2,s));
+        tileset_colliders.insert(pair<int, Shape*>(sprite_number,s));
+        sprite_number++;
+
+        // Escaleras
+        s = new AABB(Vector2d<float>(0,0), Vector2d<float>(20,15));
+        tileset_colliders.insert(pair<int, Shape*>(sprite_number,s));
+        sprite_number++;
 
         tilesets_colliders.insert(pair<string, std::map<int, Shape*>>(tileset_route, tileset_colliders));
-
     }
 
     void addCollider(Collider* c)

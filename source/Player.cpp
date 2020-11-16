@@ -110,7 +110,7 @@ void Player::attack()
 
 void Player::die()
 {
-    Game::Instance()->stateTransition<Game_MainMenu>();
+    Game::Instance()->resetLevelEvent();
 }
 
 void Player::processInput()
@@ -273,6 +273,10 @@ void Player::setMaxLife(int l)
     Combat_Character::setMaxLife(l);
 }
 
+bool Player::increaseLife(int l)
+{
+    return Combat_Character::increaseLife(l);
+}
 
 //=========================================
 //=               GETTERS   	    	  =
