@@ -5,22 +5,24 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Interactable::Interactable(const Vector2d<float>& pos, Sprite* spr, World* w,
+Interactable::Interactable(int val, const Vector2d<float>& pos, Sprite* spr, World* w,
     CollisionFlag type_flag, CollisionFlag interests_flag, const Vector2d<float>& ori)
-: Entity(pos, spr, w, new Collider(pos, physics::getSpriteShape(spr), type_flag, interests_flag, CollisionType::col_none), ori)
+: Entity(pos, spr, w, new Collider(pos, physics::getSpriteShape(spr), type_flag,
+    interests_flag, CollisionType::col_none), ori), value(val)
 {
-    
+    id = EntityType::e_interactable;
 }
 
 Interactable::Interactable(const Interactable& i)
-: Entity(i)
+: Entity(i), value(i.value)
 {
-
+    id = EntityType::e_interactable;
 }
 
 Interactable& Interactable::operator= (const Interactable& i)
 {
     this->Entity::operator=(i);
+    value = i.value;
 
     return *this;
 }
@@ -94,6 +96,11 @@ void Interactable::setOrientation(const Vector2d<float>& ori)
     Entity::setOrientation(ori);
 }
 
+void Interactable::setValue(int val)
+{
+    value = val;
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -152,6 +159,11 @@ Vector2d<float> Interactable::getCenter() const
 const Vector2d<float>& Interactable::getOrientation() const
 {
     return Entity::getOrientation();
+}
+
+int Interactable::getValue() const
+{
+    return value;
 }
 
 

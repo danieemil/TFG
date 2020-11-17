@@ -87,12 +87,17 @@ namespace physics
         sprite_number++;
 
         // Letra "E"
-        s = new AABB(Vector2d<float>(0,0), Vector2d<float>(sX, sY));
+        s = new AABB(Vector2d<float>(0,0), Vector2d<float>(10,15));
         tileset_colliders.insert(pair<int, Shape*>(sprite_number,s));
         sprite_number++;
 
         // Escaleras
         s = new AABB(Vector2d<float>(0,0), Vector2d<float>(20,15));
+        tileset_colliders.insert(pair<int, Shape*>(sprite_number,s));
+        sprite_number++;
+
+        // Salud
+        s = new AABB(Vector2d<float>(0,0), Vector2d<float>(8,7));
         tileset_colliders.insert(pair<int, Shape*>(sprite_number,s));
         sprite_number++;
 

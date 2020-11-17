@@ -2,6 +2,7 @@
 #define _WORLD_
 
 #include "Exit.h"
+#include "Health.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Tilemap.h"

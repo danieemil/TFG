@@ -24,6 +24,7 @@ enum class CollisionFlag
     enemy_hit   = 1 << 2,
     enemy_hurt  = 1 << 3,
     exit_hit    = 1 << 4,
+    health_hit  = 1 << 5,
 };
 
 // 0+8+0+1 |16+8+0+0 =16+8+0+1 -> simula el comportamiento de una puerta OR

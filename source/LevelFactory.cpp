@@ -385,7 +385,7 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
 
         // Crear interactuable con los datos proporcionados
 
-        Interactable* inter = entity_manager.createInteractable((InteractableType)interactable_type, world, interactable_position);
+        Interactable* inter = entity_manager.createInteractable((InteractableType)interactable_type, world, interactable_position, interactable_value);
 
     }
 

@@ -23,7 +23,7 @@ public:
     Weapon* createWeapon(WeaponType wt, Combat_Character* cc);
     Player* createPlayer(World* w, const Vector2d<float>& pos = Vector2d<float>());
     Enemy* createEnemy(EnemyType et, World* w, const Vector2d<float>& pos = Vector2d<float>());
-    Interactable* createInteractable(InteractableType it, World* w, const Vector2d<float>& pos = Vector2d<float>());
+    Interactable* createInteractable(InteractableType it, World* w, const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
 
     // Setters
     void setSprites(const char* entity_tileset, const char* weapon_tileset = nullptr,

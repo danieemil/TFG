@@ -200,6 +200,16 @@ void Game::resetLevelEvent()
     }
 }
 
+void Game::deleteEntityEvent(Entity* ent)
+{
+    if(state->getStateType()==state_type::playing)
+    {
+        Game_Playing* gp = static_cast<Game_Playing*>(state);
+        Event e = [gp, ent](){gp->getWorld()->deleteEntity(ent);};
+        gp->addEvent(e);
+    }
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =

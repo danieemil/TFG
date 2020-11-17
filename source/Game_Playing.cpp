@@ -51,7 +51,13 @@ void Game_Playing::init()
         hud.setPlayer(world->getPlayer());
     }
 
-    Game::Instance()->setSaved(true);
+    Game* g = Game::Instance();
+
+    if(!g->getSaved())
+    {
+        level_factory.save();
+        Game::Instance()->setSaved(true);
+    }
 }
 
 void Game_Playing::processInput()
@@ -220,8 +226,6 @@ Player* Game_Playing::getPlayer() const
 
 Game_Playing::~Game_Playing()
 {
-
-    level_factory.save();
 
     if(world!=nullptr)
     {

@@ -30,6 +30,7 @@ public:
     // Eventos para evitar procesar un elemento después de eliminarse
     void nextLevelEvent();
     void resetLevelEvent();
+    void deleteEntityEvent(Entity* e);
 
     template<class S>
     void stateTransition()

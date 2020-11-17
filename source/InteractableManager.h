@@ -11,6 +11,7 @@
 enum class InteractableType
 {
     exit,
+    health,
 };
 
 
@@ -26,9 +27,10 @@ public:
     InteractableManager& operator= (const InteractableManager& im);
 
     // Métodos
-    Interactable* createInteractable(InteractableType it, World* w, const Vector2d<float>& pos = Vector2d<float>());
+    Interactable* createInteractable(InteractableType it, World* w, const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
 
-    Exit* createExit(World* w, const Vector2d<float>& pos = Vector2d<float>());
+    Exit* createExit(World* w, const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
+    Health* createHealth(World* w, const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
 
     // Setters
     void setSprites(const char* tileset);

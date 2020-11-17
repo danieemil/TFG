@@ -1,19 +1,19 @@
-#ifndef _EXIT_
-#define _EXIT_
+#ifndef _HEALTH_
+#define _HEALTH_
 
 #include "Interactable.h"
 
 
-class Exit : public Interactable
+class Health : public Interactable
 {
 
 public:
     // Constructores
-    Exit(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+    Health(int val, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
     World* w = nullptr, const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
-    Exit(const Exit& e);
+    Health(const Health& h);
 
-    Exit& operator= (const Exit& e);
+    Health& operator= (const Health& h);
 
     // Métodos
         //Entity
@@ -24,8 +24,7 @@ public:
 
     void collision(void * ent) override;
         //Interactable
-        //Exit
-    void nextLevel();
+        //Health
 
     // Setters
         //Entity
@@ -38,7 +37,7 @@ public:
     void setOrientation(const Vector2d<float>& ori) override;
         //Interactable
     void setValue(int val) override;
-        //Exit
+        //Health
 
     // Getters
         //Entity
@@ -55,10 +54,10 @@ public:
     const Vector2d<float>& getOrientation() const override;
         //Interactable
     int getValue() const override;
-        //Exit
+        //Health
 
     // Destructor
-    ~Exit();
+    ~Health();
 
 protected:
 

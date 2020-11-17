@@ -1,4 +1,4 @@
-#include "Exit.h"
+#include "Health.h"
 
 #include "Game.h"
 
@@ -7,22 +7,22 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Exit::Exit(const Vector2d<float>& pos, Sprite* spr, World* w,
+Health::Health(int val, const Vector2d<float>& pos, Sprite* spr, World* w,
     const Vector2d<float>& ori)
-: Interactable(0, pos, spr, w, CollisionFlag::exit_hit, CollisionFlag::player_hit, ori)
+: Interactable(val, pos, spr, w, CollisionFlag::health_hit, CollisionFlag::player_hit, ori)
 {
     
 }
 
-Exit::Exit(const Exit& e)
-: Interactable(e)
+Health::Health(const Health& h)
+: Interactable(h)
 {
-
+    
 }
 
-Exit& Exit::operator= (const Exit& e)
+Health& Health::operator= (const Health& h)
 {
-    this->Interactable::operator=(e);
+    this->Interactable::operator=(h);
 
     return *this;
 }
@@ -31,85 +31,83 @@ Exit& Exit::operator= (const Exit& e)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Exit::render(const Vector2d<float>& view_pos)
+void Health::render(const Vector2d<float>& view_pos)
 {
     Interactable::render(view_pos);
 }
 
-void Exit::update()
+void Health::update()
 {
     Interactable::update();
 }
 
-void Exit::updateFromCollider()
+void Health::updateFromCollider()
 {
     Interactable::updateFromCollider();
 }
 
-void Exit::interpolate(float rp)
+void Health::interpolate(float rp)
 {
     Interactable::interpolate(rp);
 }
 
-void Exit::collision(void* ent)
+void Health::collision(void* ent)
 {
     if(ent!=nullptr)
     {
         Entity* e = static_cast<Entity*>(ent);
         if(e->getEntityType()==EntityType::e_player)
         {
-            nextLevel();
+            Player* p = static_cast<Player*>(e);
+            if(p->increaseLife(value))
+            {
+                Game::Instance()->deleteEntityEvent(this);
+            }
         }
     }
 }
-
-void Exit::nextLevel()
-{
-    Game::Instance()->nextLevelEvent();
-}
-
 
 
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
 
-void Exit::setSprite(Sprite* spr)
+void Health::setSprite(Sprite* spr)
 {
     Interactable::setSprite(spr);
 }
 
-void Exit::setPosition(const Vector2d<float>& pos)
+void Health::setPosition(const Vector2d<float>& pos)
 {
     Interactable::setPosition(pos);
 }
 
-void Exit::setWorld(World* w)
+void Health::setWorld(World* w)
 {
     Interactable::setWorld(w);
 }
 
-void Exit::setBody(Collider* c)
+void Health::setBody(Collider* c)
 {
     Interactable::setBody(c);
 }
 
-void Exit::setVelocity(const Vector2d<float>& vel)
+void Health::setVelocity(const Vector2d<float>& vel)
 {
     Interactable::setVelocity(vel);
 }
 
-void Exit::setAngle(float angl)
+void Health::setAngle(float angl)
 {
     Interactable::setAngle(angl);
 }
 
-void Exit::setOrientation(const Vector2d<float>& ori)
+void Health::setOrientation(const Vector2d<float>& ori)
 {
     Interactable::setOrientation(ori);
 }
 
-void Exit::setValue(int val)
+void Health::setValue(int val)
 {
     Interactable::setValue(val);
 }
@@ -119,62 +117,62 @@ void Exit::setValue(int val)
 //=               GETTERS   	    	  =
 //=========================================
 
-Sprite* Exit::getSprite() const
+Sprite* Health::getSprite() const
 {
     return Interactable::getSprite();
 }
 
-const Vector2d<float>& Exit::getPosition() const
+const Vector2d<float>& Health::getPosition() const
 {
     return Interactable::getPosition();
 }
 
-World* Exit::getWorld() const
+World* Health::getWorld() const
 {
     return Interactable::getWorld();
 }
 
-Collider* Exit::getBody() const
+Collider* Health::getBody() const
 {
     return Interactable::getBody();
 }
 
-const Vector2d<float>& Exit::getVelocity() const
+const Vector2d<float>& Health::getVelocity() const
 {
     return Interactable::getVelocity();
 }
 
-const Vector2d<float>& Exit::getPrePosition() const
+const Vector2d<float>& Health::getPrePosition() const
 {
     return Interactable::getPrePosition();
 }
 
-const Vector2d<float>& Exit::getRenderPosition() const
+const Vector2d<float>& Health::getRenderPosition() const
 {
     return Interactable::getRenderPosition();
 }
 
-const EntityType& Exit::getEntityType() const
+const EntityType& Health::getEntityType() const
 {
     return Interactable::getEntityType();
 }
 
-float Exit::getAngle() const
+float Health::getAngle() const
 {
     return Interactable::getAngle();
 }
 
-Vector2d<float> Exit::getCenter() const
+Vector2d<float> Health::getCenter() const
 {
     return Interactable::getCenter();
 }
 
-const Vector2d<float>& Exit::getOrientation() const
+const Vector2d<float>& Health::getOrientation() const
 {
     return Interactable::getOrientation();
 }
 
-int Exit::getValue() const
+int Health::getValue() const
 {
     return Interactable::getValue();
 }
@@ -184,7 +182,7 @@ int Exit::getValue() const
 //=              DESTRUCTOR   	    	  =
 //=========================================
 
-Exit::~Exit()
+Health::~Health()
 {
     
 }

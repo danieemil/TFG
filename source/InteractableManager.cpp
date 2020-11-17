@@ -3,9 +3,10 @@
 #include "Unvisual_Engine.h"
 
 //Mapa que relaciona las armas que se pueden crear junto con su método de creación
-const std::unordered_map<InteractableType, std::function<Interactable* (InteractableManager*, World*, const Vector2d<float>&)>> interactables_map = 
+const std::unordered_map<InteractableType, std::function<Interactable* (InteractableManager*, World*, const Vector2d<float>&, int)>> interactables_map = 
 {
     {InteractableType::exit, &InteractableManager::createExit},
+    {InteractableType::health, &InteractableManager::createHealth},
 };
 
 //=========================================
@@ -35,7 +36,7 @@ InteractableManager& InteractableManager::operator= (const InteractableManager& 
 //=               MÉTODOS   	    	  =
 //=========================================
 
-Interactable* InteractableManager::createInteractable(InteractableType it, World* w, const Vector2d<float>& pos)
+Interactable* InteractableManager::createInteractable(InteractableType it, World* w, const Vector2d<float>& pos, int value)
 {
     if(w!=nullptr)
     {
@@ -44,7 +45,7 @@ Interactable* InteractableManager::createInteractable(InteractableType it, World
         {
             if(iter->second!=nullptr)
             {
-                return iter->second(this, w, pos);
+                return iter->second(this, w, pos, value);
             }
         }
     }
@@ -52,7 +53,7 @@ Interactable* InteractableManager::createInteractable(InteractableType it, World
 }
 
 
-Exit* InteractableManager::createExit(World* w, const Vector2d<float>& pos)
+Exit* InteractableManager::createExit(World* w, const Vector2d<float>& pos, int value)
 {
 
     Vector2d<float> ori = Vector2d<float>(0.0f,-1.0f);
@@ -62,6 +63,18 @@ Exit* InteractableManager::createExit(World* w, const Vector2d<float>& pos)
     w->addEntity(exit);
 
     return exit;
+}
+
+Health* InteractableManager::createHealth(World* w, const Vector2d<float>& pos, int value)
+{
+
+    Vector2d<float> ori = Vector2d<float>(0.0f,-1.0f);
+    Sprite* spr = sprites_manager.createSprite(4);
+
+    Health* health = new Health(value, pos, spr, w, ori);
+    w->addEntity(health);
+
+    return health;
 }
 
 

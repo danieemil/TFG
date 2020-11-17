@@ -364,5 +364,5 @@ int Enemy::getMaxLife() const
 
 Enemy::~Enemy()
 {
-
+    
 }

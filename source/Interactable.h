@@ -9,7 +9,7 @@ class Interactable : public Entity
 
 public:
     // Constructores
-    Interactable(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+    Interactable(int val = 0, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
         World* w = nullptr, CollisionFlag type_flag = CollisionFlag::none,
         CollisionFlag interests_flag = CollisionFlag::none,
         const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
@@ -37,6 +37,7 @@ public:
     virtual void setAngle(float angl) override;
     virtual void setOrientation(const Vector2d<float>& ori) override;
         //Interactable
+    virtual void setValue(int v);
 
     // Getters
         //Entity
@@ -52,12 +53,13 @@ public:
     virtual Vector2d<float> getCenter() const override;
     virtual const Vector2d<float>& getOrientation() const override;
         //Interactable
+    virtual int getValue() const;
 
     // Destructor
     virtual ~Interactable();
 
 protected:
-
+    int value;
 
 private:
 

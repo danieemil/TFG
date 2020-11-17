@@ -83,9 +83,9 @@ Enemy* EntityManager::createEnemy(EnemyType et, World* w, const Vector2d<float>&
     return enemy_manager.createEnemy(et, w, pos);
 }
 
-Interactable* EntityManager::createInteractable(InteractableType it, World* w, const Vector2d<float>& pos)
+Interactable* EntityManager::createInteractable(InteractableType it, World* w, const Vector2d<float>& pos, int value)
 {
-    return interactable_manager.createInteractable(it, w, pos);
+    return interactable_manager.createInteractable(it, w, pos, value);
 }
 
 
