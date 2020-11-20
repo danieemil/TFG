@@ -7,10 +7,10 @@
 //=========================================
 
 Combat_Character::Combat_Character(int l, const Vector2d<float>& pos, Sprite* spr, World* w,
-    CollisionFlag type_flag, CollisionFlag interests_flag,
+    Shape* sh, CollisionFlag type_flag, CollisionFlag interests_flag,
     const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
     const Vector2d<float>& frict, Weapon* wp, float st_time)
-: Character(pos, spr, w, type_flag, interests_flag, ori, max_vel, max_accel, frict), equipped(wp), attacked(false),
+: Character(pos, spr, w, sh, type_flag, interests_flag, ori, max_vel, max_accel, frict), equipped(wp), attacked(false),
     stunned(false), stun_time(st_time), life(l), max_life(l)
 {
     if(wp!=nullptr)
@@ -98,6 +98,11 @@ void Combat_Character::interpolate(float rp)
     {
         equipped->interpolate(rp);
     }
+}
+
+void Combat_Character::manageAnimations()
+{
+    Character::manageAnimations();
 }
 
 void Combat_Character::collision(void* ent)

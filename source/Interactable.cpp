@@ -5,9 +5,9 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Interactable::Interactable(int val, const Vector2d<float>& pos, Sprite* spr, World* w,
+Interactable::Interactable(int val, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     CollisionFlag type_flag, CollisionFlag interests_flag, const Vector2d<float>& ori)
-: Entity(pos, spr, w, new Collider(pos, physics::getSpriteShape(spr), type_flag,
+: Entity(pos, spr, w, new Collider(pos, sh, type_flag,
     interests_flag, CollisionType::col_none), ori), value(val)
 {
     id = EntityType::e_interactable;
@@ -49,6 +49,11 @@ void Interactable::updateFromCollider()
 void Interactable::interpolate(float rp)
 {
     Entity::interpolate(rp);
+}
+
+void Interactable::manageAnimations()
+{
+    Entity::manageAnimations();
 }
 
 void Interactable::collision(void * ent)

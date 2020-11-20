@@ -7,9 +7,9 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Health::Health(int val, const Vector2d<float>& pos, Sprite* spr, World* w,
+Health::Health(int val, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     const Vector2d<float>& ori)
-: Interactable(val, pos, spr, w, CollisionFlag::health_hit, CollisionFlag::player_hit, ori)
+: Interactable(val, pos, spr, w, sh, CollisionFlag::health_hit, CollisionFlag::player_hit, ori)
 {
     
 }
@@ -49,6 +49,11 @@ void Health::updateFromCollider()
 void Health::interpolate(float rp)
 {
     Interactable::interpolate(rp);
+}
+
+void Health::manageAnimations()
+{
+    Interactable::manageAnimations();
 }
 
 void Health::collision(void* ent)

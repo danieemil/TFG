@@ -50,6 +50,10 @@ public:
     void updateEntitiesCollisions();
     void updatePlayerCollisions();
 
+    void manageAnimations();
+    void manageEntitiesAnimations();
+    void managePlayerAnimations();
+
     // Setters
     void setTilemap(Tilemap* t);
     void setEntities(const std::vector<Entity*>& v);

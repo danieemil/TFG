@@ -19,7 +19,8 @@ public:
     void init() override;
     void processInput() override;
     void update() override;
-    void render() override;
+    void renderTop() override;
+    void renderBottom() override;
     void deInit() override;
     void processEvents() override;
     void addEvent(Event e) override;

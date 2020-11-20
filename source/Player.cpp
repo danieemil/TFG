@@ -9,10 +9,10 @@ using namespace unvisual;
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Player::Player(int l, const Vector2d<float>& pos, Sprite* spr, World* w, CollisionFlag interests_flag,
-    const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
-    const Vector2d<float>& frict, Weapon* wp, float st_time)
-: Combat_Character(l, pos, spr, w, CollisionFlag::player_hit, interests_flag, ori, max_vel, max_accel, frict, wp, st_time)
+Player::Player(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
+    CollisionFlag interests_flag, const Vector2d<float>& ori, const Vector2d<float>& max_vel,
+    const Vector2d<float>& max_accel, const Vector2d<float>& frict, Weapon* wp, float st_time)
+: Combat_Character(l, pos, spr, w, sh, CollisionFlag::player_hit, interests_flag, ori, max_vel, max_accel, frict, wp, st_time)
 {
     id = EntityType::e_player;
 }
@@ -56,6 +56,11 @@ void Player::updateFromCollider()
 void Player::interpolate(float rp)
 {
     Combat_Character::interpolate(rp);
+}
+
+void Player::manageAnimations()
+{
+    Combat_Character::manageAnimations();
 }
 
 void Player::collision(void* ent)

@@ -206,7 +206,7 @@ void World::render()
     renderTilemap(view_pos);
     renderEntities(view_pos);
     renderPlayer(view_pos);
-    physics::render(view_pos);
+    //physics::render(view_pos);
 }
 
 void World::renderTilemap(const Vector2d<float>& view_pos)
@@ -305,7 +305,6 @@ void World::updateEntitiesCollisions()
             e->updateFromCollider();
         }
     }
-    
 }
 
 void World::updatePlayerCollisions()
@@ -313,6 +312,31 @@ void World::updatePlayerCollisions()
     if(player!=nullptr)
     {
         player->updateFromCollider();
+    }
+}
+
+void World::manageAnimations()
+{
+    managePlayerAnimations();
+    manageEntitiesAnimations();
+}
+
+void World::manageEntitiesAnimations()
+{
+    for (auto &&ent : entities)
+    {
+        if(ent!=nullptr)
+        {
+            ent->manageAnimations();
+        }   
+    }
+}
+
+void World::managePlayerAnimations()
+{
+    if(player!=nullptr)
+    {
+        player->manageAnimations();
     }
 }
 

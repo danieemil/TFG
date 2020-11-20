@@ -15,7 +15,8 @@ public:
     // Métodos
     void init();
     void deInit();
-    void render();
+    void renderTop();
+    void renderBottom();
     void update();
     void updateCollisions();
     void interpolate();

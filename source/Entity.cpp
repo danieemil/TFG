@@ -12,7 +12,7 @@ using std::placeholders::_1;
 Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
     const Vector2d<float>& ori)
 : world(w), sprite(spr), position(pos), render_position(pos), pre_position(pos), body(c),
-    velocity(), id(EntityType::e_none), angle(0.0f), orientation(ori)
+    velocity(), id(EntityType::e_none), angle(0.0f), orientation(ori), rendering(spr)
 {
     if(body!=nullptr)
     {
@@ -34,7 +34,9 @@ Entity::Entity(const Vector2d<float>& pos, Sprite* spr, World* w, Collider* c,
 }
 
 Entity::Entity(const Entity& e) :
-world(nullptr), sprite(nullptr), position(e.position), render_position(e.render_position), pre_position(e.pre_position), body(nullptr), velocity(e.velocity), id(e.id), angle(e.angle), orientation(e.orientation)
+    world(nullptr), sprite(nullptr), position(e.position), render_position(e.render_position),
+    pre_position(e.pre_position), body(nullptr), velocity(e.velocity), id(e.id), angle(e.angle),
+    orientation(e.orientation), rendering(nullptr)
 {
     if(orientation.x!=0.0f)
     {
@@ -48,10 +50,6 @@ world(nullptr), sprite(nullptr), position(e.position), render_position(e.render_
 
 Entity& Entity::operator= (const Entity& e)
 {
-    sprite = nullptr;
-    world = nullptr;
-    body = nullptr;
-
     position = e.position;
     render_position = e.render_position;
     pre_position = e.pre_position;
@@ -79,10 +77,11 @@ Entity& Entity::operator= (const Entity& e)
 
 void Entity::render(const Vector2d<float>& view_pos)
 {
-    if(sprite!=nullptr)
+    if(rendering!=nullptr)
     {
-        sprite->setPosition(render_position);
-        sprite->drawSprite(view_pos);
+        rendering->setPosition(render_position);
+        rendering->setRotation(angle);
+        rendering->drawSprite(view_pos);
     }
 }
 
@@ -108,7 +107,6 @@ void Entity::update()
     {
         setAngle(90.0f + 90.0f*orientation.y);
     }
-    
 }
 
 void Entity::updateFromCollider()
@@ -130,7 +128,12 @@ void Entity::interpolate(float rp)
         // Interpolación
         render_position = pre_position + (position - pre_position) * rp;
     }
-    
+}
+
+void Entity::manageAnimations()
+{
+    // updatear animaciones y decidir qué sprite de qué animación se mostrará por pantalla
+    // (dudando sobre ponerlo en el update o no :/)
 }
 
 void Entity::collision(void * ent)
@@ -153,14 +156,17 @@ void Entity::collision(void * ent)
 void Entity::setSprite(Sprite* spr)
 {
 
-    if(sprite!=nullptr)
+    if(rendering == sprite)
+    {
+        rendering = spr;
+    }
+
+    if(sprite!=nullptr && sprite!=spr)
     {
         delete sprite;
     }
 
     sprite = spr;
-    sprite->setRotation(angle);
-
 }
 
 void Entity::setPosition(const Vector2d<float>& pos)
@@ -209,10 +215,6 @@ void Entity::setAngle(float angl)
     if(angle == angl) return;
 
     angle = angl;
-    if(sprite!=nullptr)
-    {
-        sprite->setRotation(angle);
-    }
     if(body!=nullptr)
     {
         body->setGlobalRotation(angle);

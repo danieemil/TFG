@@ -37,7 +37,7 @@ Game_MainMenu& Game_MainMenu::operator= (const Game_MainMenu& gmm)
 void Game_MainMenu::init()
 {
 
-    unvisual::getCurrentScreen()->setBackgroundColor(255,255,255,255);
+    unvisual::setCurrentScreen(N3DS_screenV::N3DS_BOTTOM);
 
     Vector2d<float> sc_size = unvisual::getCurrentScreenSize();
     Vector2d<float> sc_center = sc_size / 2;
@@ -125,10 +125,10 @@ void Game_MainMenu::init()
     b3 = new GUI_Button(position_b3, size_b3, spr_b3, callback_b3, "Salir");
     gui_elements.addElement(b3);
 
-    // No se pueden seleccionar los botones con el panel táctil -> (Pantalla de arriba)
-    gui_elements.setUntouchable(true);
-    // La opción de continuar está por defecto seleccionada cuando presionamos EL BOTÓN
     
+    gui_elements.setUntouchable(false);
+
+    // La opción de continuar está por defecto seleccionada cuando presionamos EL BOTÓN
     gui_elements.setSelectedDefault(default_button);
 }
 
@@ -148,7 +148,12 @@ void Game_MainMenu::update()
     gui_elements.update();
 }
 
-void Game_MainMenu::render()
+void Game_MainMenu::renderTop()
+{
+    
+}
+
+void Game_MainMenu::renderBottom()
 {
     gui_elements.render();
 

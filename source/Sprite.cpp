@@ -83,6 +83,10 @@ void Sprite::drawOutlinedSrpite(u32 color, const Vector2d<float>& view_pos)
     position += Vector2d<float>(1,1);
 }
 
+AABB* Sprite::createSpriteCollisionShape()
+{
+    return new AABB(Vector2d<float>(0,0), Vector2d<float>(sprite.params.pos.w,sprite.params.pos.h));
+}
 
 
 //=========================================

@@ -11,7 +11,8 @@ class Player : public Combat_Character
 public:
     // Constructores
     Player(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
-        World* w = nullptr, CollisionFlag interests_flag = (CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt),
+        World* w = nullptr, Shape* sh = nullptr,
+        CollisionFlag interests_flag = (CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt),
         const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
@@ -27,6 +28,7 @@ public:
     void update() override;
     void updateFromCollider() override;
     void interpolate(float rp = 0.0f) override;
+    void manageAnimations() override;
     void collision(void * ent) override;
         //Character
         //Combat_Character

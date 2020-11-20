@@ -5,28 +5,20 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Animation::Animation(const Vector2d<float>& pos, Sprite* spr)
-: position(pos)
+Animation::Animation()
+: sprites(), timer(), ended(false), index(0)
 {
-    if(spr!=nullptr)
-    {
-        sprites.push_back(spr);
-    }
-    index = 0;
+
 }
 
 Animation::Animation(const Animation& a)
-: position(a.position), sprites(a.sprites), index(a.index)
+: Animation()
 {
 
 }
 
 Animation& Animation::operator= (const Animation& a)
 {
-    position = a.position;
-    sprites = a.sprites;
-    index = a.index;
-
     return *this;
 }
 
@@ -35,39 +27,54 @@ Animation& Animation::operator= (const Animation& a)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Animation::render(const Vector2d<float>& view_pos)
+void Animation::update()
 {
-    if(!sprites.empty())
+    if(hasSprites())
     {
-        Sprite* spr = sprites.at(index);
-        spr->setPosition(position);
-        spr->drawSprite(view_pos);
+        std::pair<Sprite*, float> spr = sprites[index];
+
+        if(timer.getElapsed() > spr.second)
+        {
+            nextSprite();
+        }
+    }
+    else
+    {
+        ended = true;
     }
 }
 
-void Animation::addBackSprite(Sprite* spr)
+void Animation::addBackSprite(Sprite* spr, float dur)
 {
     if(spr!=nullptr)
     {
-        sprites.push_back(spr);
+        sprites.push_back(make_pair(spr,dur));
     }
 }
 
-void Animation::moveIndex(int offset)
+void Animation::resetAnimation()
 {
-    int sprs_size = (int)sprites.size();
+    index = 0;
+    ended = false;
+    timer.reset();
+}
 
-    if(sprs_size!=0)
+void Animation::nextSprite()
+{
+    size_t i = index + 1;
+    if(i >= sprites.size())
     {
-        index = (size_t)clamp(0,sprs_size - 1, offset + (int)index);
+        ended = true;
         return;
     }
-    index = (size_t)0;
+
+    index = i;
+    timer.reset();
 }
 
-bool Animation::atEnd() const
+bool Animation::hasEnded() const
 {
-    return (index == sprites.size() - (size_t)1);
+    return ended;
 }
 
 bool Animation::hasSprites() const
@@ -75,15 +82,9 @@ bool Animation::hasSprites() const
     return !sprites.empty();
 }
 
-
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
-
-void Animation::setPosition(const Vector2d<float>& pos)
-{
-    position = pos;
-}
 
 void Animation::setIndex(size_t i)
 {
@@ -108,16 +109,11 @@ void Animation::setIndex(size_t i)
 //=               GETTERS   	    	  =
 //=========================================
 
-const Vector2d<float>& Animation::getPosition() const
-{
-    return position;
-}
-
 Sprite* Animation::getActualSprite() const
 {
-    if (!sprites.empty())
+    if (hasSprites())
     {
-        return sprites.at(index);
+        return sprites[index].first;
     }
 
     return nullptr;
@@ -127,13 +123,12 @@ Sprite* Animation::getSpriteAt(size_t i) const
 {
     size_t ind = sprites.size();
 
-    if(ind != 0)
+    if(i >= 0)
     {
-        if(i >= ind)
+        if(i < ind)
         {
-            return sprites.at(ind - (size_t)1);
+            return sprites[i].first;
         }
-        return sprites.at(i);
     }
     return nullptr;
 }
@@ -152,9 +147,9 @@ Animation::~Animation()
 {
     for (auto &&spr : sprites)
     {
-        if (spr!=nullptr)
+        if (spr.first!=nullptr)
         {
-            delete spr;
+            delete spr.first;
         }
     }
     sprites.clear();

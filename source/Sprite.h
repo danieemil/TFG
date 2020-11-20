@@ -2,6 +2,7 @@
 #define _SPRITE_
 
 #include "Unvisual_Engine.h"
+#include "AABB.h"
 
 
 using namespace utilities;
@@ -25,6 +26,7 @@ public:
     void drawSprite(const Vector2d<float>& view_pos = Vector2d<float>());
     void drawTintedSprite(u32 color, float strength, const Vector2d<float>& view_pos = Vector2d<float>());
     void drawOutlinedSrpite(u32 color = unvisual::getColor2D(255,255,255,255), const Vector2d<float>& view_pos = Vector2d<float>());
+    AABB* createSpriteCollisionShape();
 
     // Setters
     void setSprite(SpriteManager* man, size_t collection_index);

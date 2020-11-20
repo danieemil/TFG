@@ -11,8 +11,10 @@ class Enemy : public Combat_Character
 
 public:
     // Constructores
-    Enemy(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr, World* w = nullptr,
-        CollisionFlag interests_flag = CollisionFlag::player_hurt, const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
+    Enemy(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+        World* w = nullptr, Shape* sh = nullptr,
+        CollisionFlag interests_flag = CollisionFlag::player_hurt,
+        const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
@@ -27,6 +29,7 @@ public:
     virtual void update() override;
     virtual void updateFromCollider() override;
     virtual void interpolate(float rp = 0.0f) override;
+    virtual void manageAnimations() override;
     virtual void collision(void * ent) override;
         //Character
         //Combat_Character

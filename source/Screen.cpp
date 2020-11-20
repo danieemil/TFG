@@ -7,20 +7,24 @@
 //=========================================
 
 Screen::Screen()
-: width(0), height(0), position(), target_position(nullptr), renderer(nullptr)
+: width(0), height(0), position(), target_position(nullptr), renderer(nullptr),
+    background_color(unvisual::getColor2D(0,0,0,255))
 {
 
 }
 
-Screen::Screen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch, const utilities::Vector2d<float>* t_pos)
-: width(s_width), height(s_height), position(), target_position(t_pos)
+Screen::Screen(int s_width, int s_height, N3DS_screenV scv, N3DS_screenH sch,
+    const utilities::Vector2d<float>* t_pos)
+: width(s_width), height(s_height), position(), target_position(t_pos),
+    background_color(unvisual::getColor2D(0,0,0,255))
 {
     renderer = C3D_RenderTargetCreate(height,width,GPU_RB_RGBA8,GPU_RB_DEPTH24_STENCIL8);
 	C3D_RenderTargetSetOutput(renderer, (gfxScreen_t)(scv), (gfx3dSide_t)(sch), DISPLAY_TRANSFER_FLAGS);
 }
 
 Screen::Screen(const Screen& sc)
-: width(sc.width), height(sc.height), position(sc.position), target_position(sc.target_position), renderer(sc.renderer)
+: width(sc.width), height(sc.height), position(sc.position), target_position(sc.target_position),
+    renderer(sc.renderer), background_color(sc.background_color)
 {
 
 }

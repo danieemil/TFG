@@ -10,7 +10,8 @@ class Exit : public Interactable
 public:
     // Constructores
     Exit(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
-    World* w = nullptr, const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
+    World* w = nullptr, Shape* sh = nullptr,
+    const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
     Exit(const Exit& e);
 
     Exit& operator= (const Exit& e);
@@ -21,7 +22,7 @@ public:
     void update() override;
     void updateFromCollider() override;
     void interpolate(float rp = 0.0f) override;
-
+    void manageAnimations() override;
     void collision(void * ent) override;
         //Interactable
         //Exit

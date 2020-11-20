@@ -33,6 +33,7 @@ namespace unvisual
     void drawBegin();
     void drawOnCurrentScreen();
     void prepare2D();
+    void waitRenderScreen();
     void drawEnd();
 
     void drawRectangle(const utilities::Vector2d<float>& pos, float depth, const utilities::Vector2d<float>& dimensions, u8 r, u8 g, u8 b, u8 a);

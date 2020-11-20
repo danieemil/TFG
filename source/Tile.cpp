@@ -54,6 +54,16 @@ void Tile::interpolate(float rp)
     Entity::interpolate(rp);
 }
 
+void Tile::manageAnimations()
+{
+    Entity::manageAnimations();
+}
+
+void Tile::collision(void* ent)
+{
+    Entity::collision(ent);
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =

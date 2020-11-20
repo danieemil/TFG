@@ -8,7 +8,7 @@ namespace physics
 
     namespace
     {
-
+        // Constante con el máximo número de cuerpos en escena
         std::size_t sz = 1000;
 
         std::vector<Collider*> colliders;
@@ -45,11 +45,12 @@ namespace physics
 
 
         // Relacionando sprites con sus colisiones
-        std::map<std::string, std::map<int, Shape*>> tilesets_colliders;
+        //std::map<std::string, std::map<int, Shape*>> tilesets_colliders;
     }
 
     void init()
     {
+        /*
         // Vamos almacenando las colisiones de los sprites de cada tileset
         // Junto con la id del sprite al que corresponde
         std::map<int, Shape*> tileset_colliders;
@@ -102,6 +103,7 @@ namespace physics
         sprite_number++;
 
         tilesets_colliders.insert(pair<string, std::map<int, Shape*>>(tileset_route, tileset_colliders));
+        */
     }
 
     void addCollider(Collider* c)
@@ -239,6 +241,7 @@ namespace physics
         
     }
 
+    // Modo debug para dibujar las bounding boxes cuando intersectan dos cuerpos entre sí
     void render(const Vector2d<float>& view_pos)
     {
         for (auto &&col : colliders)
@@ -406,53 +409,9 @@ namespace physics
         return colliders;
     }
 
-    Shape* getSpriteShape(Sprite* spr)
-    {   
-
-        if(spr != nullptr)
-        {
-            SpriteManager* man = spr->getManager();
-            if(man != nullptr)
-            {
-                std::string tileset_path = man->getPath();
-                int sprite_id = spr->getIndex();
-
-                auto tileset = tilesets_colliders.find(tileset_path);
-
-                if(tileset != tilesets_colliders.end())
-                {
-                    auto sprite = tileset->second.find(sprite_id);
-
-                    if(sprite != tileset->second.end())
-                    {
-                        Shape* s = sprite->second;
-                        if(s!=nullptr)
-                        {
-                            if(s->getType()==Shape_Type::AABB)
-                            {
-                                return new AABB(*(static_cast<AABB*>(s)));
-                            }
-                            if(s->getType()==Shape_Type::Circle)
-                            {
-                                return new Circle(*(static_cast<Circle*>(s)));
-                            }
-                            if(s->getType()==Shape_Type::Convex)
-                            {
-                                return new Convex(*(static_cast<Convex*>(s)));
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-
-
-        return nullptr;
-    }
-
     void deInit()
     {
+        /*
         for (auto &&tileset : tilesets_colliders)
         {
             for (auto &&sprite : tileset.second)
@@ -467,5 +426,6 @@ namespace physics
             tileset.second.clear();
         }
         tilesets_colliders.clear();
+        */
     }
 }

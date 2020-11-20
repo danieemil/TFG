@@ -17,40 +17,42 @@ public:
 
     // Métodos
         //Entity
-    virtual void render(const Vector2d<float>& view_pos = Vector2d<float>()) override;
-    virtual void update() override;
-    virtual void updateFromCollider();
-    virtual void interpolate(float rp = 0.0f);
+    void render(const Vector2d<float>& view_pos = Vector2d<float>()) override;
+    void update() override;
+    void updateFromCollider() override;
+    void interpolate(float rp = 0.0f) override;
+    void manageAnimations() override;
+    void collision(void* ent) override;
         //Tile
 
     // Setters
         //Entity
-    virtual void setSprite(Sprite* spr);
-    virtual void setPosition(const Vector2d<float>& pos);
-    virtual void setWorld(World* w);
-    virtual void setBody(Collider* c);
-    virtual void setVelocity(const Vector2d<float>& vel);
-    virtual void setAngle(float angl);
-    virtual void setOrientation(const Vector2d<float>& ori);
+    void setSprite(Sprite* spr) override;
+    void setPosition(const Vector2d<float>& pos) override;
+    void setWorld(World* w) override;
+    void setBody(Collider* c) override;
+    void setVelocity(const Vector2d<float>& vel) override;
+    void setAngle(float angl) override;
+    void setOrientation(const Vector2d<float>& ori) override;
         //Tile
 
     // Getters
         //Entity
-    virtual Sprite* getSprite() const;
-    virtual const Vector2d<float>& getPosition() const;
-    virtual World* getWorld() const;
-    virtual Collider* getBody() const;
-    virtual const Vector2d<float>& getVelocity() const;
-    virtual const Vector2d<float>& getPrePosition() const;
-    virtual const Vector2d<float>& getRenderPosition() const;
-    virtual const EntityType& getEntityType() const;
-    virtual float getAngle() const;
-    virtual Vector2d<float> getCenter() const;
-    virtual const Vector2d<float>& getOrientation() const;
+    Sprite* getSprite() const override;
+    const Vector2d<float>& getPosition() const override;
+    World* getWorld() const override;
+    Collider* getBody() const override;
+    const Vector2d<float>& getVelocity() const override;
+    const Vector2d<float>& getPrePosition() const override;
+    const Vector2d<float>& getRenderPosition() const override;
+    const EntityType& getEntityType() const override;
+    float getAngle() const override;
+    Vector2d<float> getCenter() const override;
+    const Vector2d<float>& getOrientation() const override;
         //Tile
 
     // Destructor
-    virtual ~Tile();
+    ~Tile();
 
 protected:
 

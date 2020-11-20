@@ -7,10 +7,12 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Enemy::Enemy(int l, const Vector2d<float>& pos, Sprite* spr, World* w, CollisionFlag interests_flag,
-    const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
-    const Vector2d<float>& frict, Weapon* wp, float st_time, BinaryTree* bt)
-: Combat_Character(l, pos, spr, w, CollisionFlag::enemy_hit, interests_flag, ori, max_vel, max_accel, frict, wp, st_time), b_tree(bt)
+Enemy::Enemy(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
+    CollisionFlag interests_flag, const Vector2d<float>& ori, const Vector2d<float>& max_vel,
+    const Vector2d<float>& max_accel, const Vector2d<float>& frict, Weapon* wp, float st_time,
+    BinaryTree* bt)
+: Combat_Character(l, pos, spr, w, sh, CollisionFlag::enemy_hit, interests_flag, ori, max_vel,
+    max_accel, frict, wp, st_time), b_tree(bt)
 {
     id = EntityType::e_enemy;
 }
@@ -18,7 +20,7 @@ Enemy::Enemy(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Collision
 Enemy::Enemy(const Enemy& cc)
 : Combat_Character(cc), b_tree(cc.b_tree)
 {
-    id = EntityType::e_enemy;
+
 }
 
 Enemy& Enemy::operator= (const Enemy& cc)
@@ -40,7 +42,6 @@ void Enemy::render(const Vector2d<float>& view_pos)
 
 void Enemy::update()
 {
-
     if(b_tree!=nullptr)
     {
         b_tree->update(this);
@@ -57,6 +58,11 @@ void Enemy::updateFromCollider()
 void Enemy::interpolate(float rp)
 {
     Combat_Character::interpolate(rp);
+}
+
+void Enemy::manageAnimations()
+{
+    Combat_Character::manageAnimations();
 }
 
 void Enemy::collision(void* ent)

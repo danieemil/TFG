@@ -9,8 +9,9 @@ class Interactable : public Entity
 
 public:
     // Constructores
-    Interactable(int val = 0, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
-        World* w = nullptr, CollisionFlag type_flag = CollisionFlag::none,
+    Interactable(int val = 0, const Vector2d<float>& pos = Vector2d<float>(),
+        Sprite* spr = nullptr, World* w = nullptr, Shape* sh = nullptr,
+        CollisionFlag type_flag = CollisionFlag::none,
         CollisionFlag interests_flag = CollisionFlag::none,
         const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
     Interactable(const Interactable& i);
@@ -23,7 +24,7 @@ public:
     virtual void update() override;
     virtual void updateFromCollider() override;
     virtual void interpolate(float rp = 0.0f) override;
-
+    virtual void manageAnimations() override;
     virtual void collision(void * ent) override;
         //Interactable
 

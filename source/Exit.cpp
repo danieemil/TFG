@@ -7,9 +7,9 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Exit::Exit(const Vector2d<float>& pos, Sprite* spr, World* w,
+Exit::Exit(const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     const Vector2d<float>& ori)
-: Interactable(0, pos, spr, w, CollisionFlag::exit_hit, CollisionFlag::player_hit, ori)
+: Interactable(0, pos, spr, w, sh, CollisionFlag::exit_hit, CollisionFlag::player_hit, ori)
 {
     
 }
@@ -49,6 +49,11 @@ void Exit::updateFromCollider()
 void Exit::interpolate(float rp)
 {
     Interactable::interpolate(rp);
+}
+
+void Exit::manageAnimations()
+{
+    Interactable::manageAnimations();
 }
 
 void Exit::collision(void* ent)

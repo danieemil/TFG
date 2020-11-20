@@ -52,6 +52,11 @@ void Game::init()
     
     saved = LevelFactory::checkSave();
     
+    unvisual::setCurrentScreen(N3DS_screenV::N3DS_TOP);
+    unvisual::getCurrentScreen()->setBackgroundColor(0,0,0,0);
+
+    unvisual::setCurrentScreen(N3DS_screenV::N3DS_BOTTOM);
+    unvisual::getCurrentScreen()->setBackgroundColor(255,255,255,255);
 
     state->init();
 	
@@ -115,14 +120,32 @@ void Game::processEvents()
     }
 }
 
-
-
-void Game::render()
+void Game::renderTop()
 {
+    unvisual::setCurrentScreen(N3DS_screenV::N3DS_TOP);
+    unvisual::prepare2D();
+    unvisual::drawOnCurrentScreen();
+
     if(state!=nullptr)
     {
-        state->render();
+        state->renderTop();
     }
+
+    unvisual::waitRenderScreen();
+}
+
+void Game::renderBottom()
+{
+    unvisual::setCurrentScreen(N3DS_screenV::N3DS_BOTTOM);
+    unvisual::prepare2D();
+    unvisual::drawOnCurrentScreen();
+
+    if(state!=nullptr)
+    {
+        state->renderBottom();
+    }
+    
+    unvisual::waitRenderScreen();
 }
 
 void Game::update()
@@ -150,12 +173,15 @@ void Game::loop()
         update();
 
         unvisual::drawBegin();
-        unvisual::drawOnCurrentScreen();
 
-        // Renderizamos el juego entero en la patnalla seleccionada
-        render();
+        // Renderizamos la pantalla inferior con su respectivo contenido
+        renderBottom();
+
+        // Renderizamos la pantalla superior con su respectivo contenido
+        renderTop();
 
         unvisual::drawEnd();
+
 
         processEvents();
 	}

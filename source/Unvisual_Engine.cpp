@@ -195,11 +195,14 @@ namespace unvisual
         }
     }
 
-    void drawEnd()
+    void waitRenderScreen()
     {
         // Nos aseguramos que todo se ha dibujado 
 		C2D_Flush();
+    }
 
+    void drawEnd()
+    {
 		// A partir de esta línea acaba lo que se dibujaría en el frame actual y pasa al siguiente
 		C3D_FrameEnd(0);
     }

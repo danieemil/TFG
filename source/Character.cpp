@@ -6,10 +6,10 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, CollisionFlag type_flag, CollisionFlag interests_flag,
+Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh, CollisionFlag type_flag, CollisionFlag interests_flag,
 const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
 const Vector2d<float>& frict)
-: Entity(pos, spr, w, new Collider(pos, physics::getSpriteShape(spr), type_flag, interests_flag, CollisionType::col_dynamic), ori)
+: Entity(pos, spr, w, new Collider(pos, sh, type_flag, interests_flag, CollisionType::col_dynamic), ori)
 {
     if(body!= nullptr)
     {
@@ -70,6 +70,11 @@ void Character::updateFromCollider()
 void Character::interpolate(float rp)
 {
     Entity::interpolate(rp);
+}
+
+void Character::manageAnimations()
+{
+    Entity::manageAnimations();
 }
 
 void Character::collision(void * ent)

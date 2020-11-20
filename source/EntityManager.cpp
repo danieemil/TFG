@@ -54,13 +54,36 @@ Weapon* EntityManager::createWeapon(WeaponType wt, Combat_Character* cc)
 
 Player* EntityManager::createPlayer(World* w, const Vector2d<float>& pos)
 {
-    // Gráficos del jugador
-    Sprite* player_sprite = sprites_manager.createSprite(0);
-    player_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
-    Vector2d<float> player_center = player_sprite->getCenter();
-
     // Colisiones del jugador
     CollisionFlag player_interests = CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt;
+    Convex* player_shape = nullptr;
+
+
+    // Gráficos del jugador
+    Sprite* player_sprite = sprites_manager.createSprite(0);
+    Vector2d<float> player_center;
+    
+    if(player_sprite!=nullptr)
+    {
+        player_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
+        player_center = player_sprite->getCenter();
+        Vector2d<size_t> sprite_size = player_sprite->getSize();
+
+        Vector2d<float> s = Vector2d<float>(sprite_size.x, sprite_size.y);
+
+        // Letra "P"
+        std::vector<Vector2d<float>> vertices =
+        {
+            Vector2d<float>(0,0),
+            Vector2d<float>(s.x,0),
+            Vector2d<float>(s.x,s.y/2.5f),
+            //Vector2d<float>(s.x/5.0f,s.y/2.5f),
+            Vector2d<float>(s.x/5.0f,s.y),
+            Vector2d<float>(0,s.y)
+        };
+        player_shape = new Convex(vertices);        
+    }
+    
 
     // Otros atributos del jugador
     int player_life = 11;
@@ -71,7 +94,7 @@ Player* EntityManager::createPlayer(World* w, const Vector2d<float>& pos)
     float player_stunned_time = 0.5f;
 
     // Creación final del jugador
-    Player* player = new Player(player_life, pos, player_sprite, w, player_interests, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
+    Player* player = new Player(player_life, pos, player_sprite, w, player_shape, player_interests, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
     player->getBody()->setRotationCenter(player_center);
     w->setPlayer(player);
 

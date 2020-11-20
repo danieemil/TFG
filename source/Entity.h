@@ -1,7 +1,7 @@
 #ifndef _ENTITY_
 #define _ENTITY_
 
-#include "Sprite.h"
+#include "Animation.h"
 #include "Physics_Engine.h"
 
 
@@ -36,6 +36,7 @@ public:
     virtual void update();
     virtual void updateFromCollider();
     virtual void interpolate(float rp = 0.0f);
+    virtual void manageAnimations();
 
     virtual void collision(void * ent);
 
@@ -77,6 +78,8 @@ protected:
 
     float angle;
     Vector2d<float> orientation;
+
+    Sprite* rendering;
 
 
 private:

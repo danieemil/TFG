@@ -101,6 +101,8 @@ void Game_Playing::update()
     }
 
     updateCollisions();
+
+
 }
 
 void Game_Playing::updateCollisions()
@@ -118,7 +120,7 @@ void Game_Playing::interpolate()
     }
 }
 
-void Game_Playing::render()
+void Game_Playing::renderTop()
 {
     interpolate();
 
@@ -130,6 +132,18 @@ void Game_Playing::render()
     hud.render();
 }
 
+void Game_Playing::renderBottom()
+{
+
+}
+
+void Game_Playing::manageAnimations()
+{
+    if(world!=nullptr)
+    {
+        world->manageAnimations();
+    }
+}
 
 void Game_Playing::deInit()
 {

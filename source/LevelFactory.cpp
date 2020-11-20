@@ -15,15 +15,26 @@ int LevelFactory::max_levels = levels_map.size();
 // Archivo de guardado
 const char* save_file = "save.sf";
 
-// Gráficos de las entidades
+// Gráficos de las entidades en general
 const char* entity_graphics = "romfs:/gfx/sprites.t3x";
+
+// Gráficos de los enemigos
+const char* enemy_graphics = "romfs:/gfx/enemies.t3x";
+
+// Gráficos de las armas
+const char* weapon_graphics = "romfs:/gfx/weapons.t3x";
+
+// Gráficos de los interactuables
+const char* interactable_graphics = "romfs:/gfx/interactables.t3x";
+
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
 LevelFactory::LevelFactory(World* w)
-: world(w), actual_level(0), entity_manager(entity_graphics)
+: world(w), actual_level(0),
+    entity_manager(entity_graphics, weapon_graphics, enemy_graphics, interactable_graphics)
 {
 
 }
@@ -298,7 +309,6 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
     }
 
     // Entidades
-
         // Jugador
 	Vector2d<float> player_position = Vector2d<float>(250.5f,150.5f);
     int player_weapon_type = -1;
@@ -334,6 +344,7 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
 
     // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
     unvisual::setCurrentScreenTarget(&player->getRenderPosition());
+    unvisual::getCurrentScreen()->setPosition(Vector2d<float>(0,0));
 
 
         // Enemigos

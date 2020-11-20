@@ -55,11 +55,19 @@ Interactable* InteractableManager::createInteractable(InteractableType it, World
 
 Exit* InteractableManager::createExit(World* w, const Vector2d<float>& pos, int value)
 {
-
+    // Gráficos de la salida
     Vector2d<float> ori = Vector2d<float>(0.0f,-1.0f);
-    Sprite* spr = sprites_manager.createSprite(3);
+    Sprite* spr = sprites_manager.createSprite(0);
+    AABB* exit_shape = nullptr;
 
-    Exit* exit = new Exit(pos, spr, w, ori);
+    // Físicas de la salida
+    if(spr!=nullptr)
+    {
+        exit_shape = spr->createSpriteCollisionShape();
+    }
+
+    // Crear la salida
+    Exit* exit = new Exit(pos, spr, w, exit_shape, ori);
     w->addEntity(exit);
 
     return exit;
@@ -67,11 +75,19 @@ Exit* InteractableManager::createExit(World* w, const Vector2d<float>& pos, int 
 
 Health* InteractableManager::createHealth(World* w, const Vector2d<float>& pos, int value)
 {
-
+    // Gráficos de la salud
     Vector2d<float> ori = Vector2d<float>(0.0f,-1.0f);
-    Sprite* spr = sprites_manager.createSprite(4);
+    Sprite* spr = sprites_manager.createSprite(1);
+    AABB* health_shape = nullptr;
 
-    Health* health = new Health(value, pos, spr, w, ori);
+    // Físicas de la salud
+    if(spr!=nullptr)
+    {
+        health_shape = spr->createSpriteCollisionShape();
+    }
+
+    // Crear la salud
+    Health* health = new Health(value, pos, spr, w, health_shape, ori);
     w->addEntity(health);
 
     return health;

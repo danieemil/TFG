@@ -56,11 +56,21 @@ Enemy* EnemyManager::createEnemy(EnemyType et, World* w, const Vector2d<float>& 
 Enemy* EnemyManager::createMiner(World* w, const Vector2d<float>& pos)
 {
     // Gráficos del enemigo minero
-    Sprite* enemy_sprite = sprites_manager.createSprite(2);
+    Sprite* enemy_sprite = sprites_manager.createSprite(0);
 
     // Colisiones del enemigo minero
     CollisionFlag enemy_interests = CollisionFlag::player_hurt;
+    AABB* enemy_shape = nullptr;
     
+    if(enemy_sprite!=nullptr)
+    {
+        enemy_shape = enemy_sprite->createSpriteCollisionShape();
+    }
+
+    // Animaciones del enemigo minero
+
+    
+
     // Otros atributos del enemigo minero
     int enemy_life = 30;
     Vector2d<float> enemy_max_vel = Vector2d<float>(500.0f,500.0f);
@@ -73,7 +83,7 @@ Enemy* EnemyManager::createMiner(World* w, const Vector2d<float>& pos)
     BinaryTree* bt = AI::getBehaviour(AI::bt_types::enemy_agressive);
 
     // Creación final del enemigo minero
-    Enemy* enemy = new Enemy(enemy_life, pos, enemy_sprite, w,
+    Enemy* enemy = new Enemy(enemy_life, pos, enemy_sprite, w, enemy_shape,
     enemy_interests, enemy_init_orientation, enemy_max_vel, enemy_max_accel,
     enemy_friction, nullptr, enemy_stunned_time, bt);
     w->addEntity(enemy);

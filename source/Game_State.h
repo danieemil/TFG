@@ -32,7 +32,8 @@ public:
     virtual void init() = 0;
     virtual void processInput() = 0;
     virtual void update() = 0;
-    virtual void render() = 0;
+    virtual void renderTop() = 0;
+    virtual void renderBottom() = 0;
     virtual void deInit() = 0;
     virtual void processEvents();
     virtual void addEvent(Event e);

@@ -45,8 +45,6 @@ namespace physics
 
     const std::vector<Collider*>& getColliders();
 
-    Shape* getSpriteShape(Sprite* spr);
-
     void deInit();
 }
 

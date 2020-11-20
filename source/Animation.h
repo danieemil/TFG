@@ -3,6 +3,7 @@
 
 #include "Sprite.h"
 #include "vector"
+#include "Timepoint.h"
 
 
 class Animation
@@ -10,26 +11,24 @@ class Animation
 
 public:
     // Constructores
-    Animation(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr);
+    Animation();
     Animation(const Animation& a);
 
     Animation& operator= (const Animation& a);
 
     // Métodos
-    void render(const Vector2d<float>& view_pos = Vector2d<float>());
+    void update();
 
-    void addBackSprite(Sprite* spr);
-    void moveIndex(int offset);
-
-    bool atEnd() const;
+    void addBackSprite(Sprite* spr, float dur);
+    void resetAnimation();
+    void nextSprite();
+    bool hasEnded() const;
     bool hasSprites() const;
 
     // Setters
-    void setPosition(const Vector2d<float>& pos);
     void setIndex(size_t i);
 
     // Getters
-    const Vector2d<float>& getPosition() const;
     Sprite* getActualSprite() const;
     Sprite* getSpriteAt(size_t i) const;
     size_t getIndex() const;
@@ -41,9 +40,13 @@ private:
 
     Vector2d<float> position;
 
-    std::vector<Sprite*> sprites;
+    std::vector<std::pair<Sprite*, float>> sprites;
 
+    Timepoint timer;
+
+    bool ended;
     size_t index;
+
 
 };
 

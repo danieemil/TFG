@@ -61,9 +61,14 @@ Weapon* WeaponManager::createDagger(Combat_Character* cc)
 {
 
     // Gráficos del arma
-    Sprite* weapon_sprite = sprites_manager.createSprite(1);
-    auto w_s = weapon_sprite->getSize();
-    weapon_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
+    Sprite* weapon_sprite = sprites_manager.createSprite(0);
+    if(weapon_sprite!=nullptr)
+    {
+        weapon_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
+    }
+
+    // Colisiones del arma
+    AABB* weapon_shape = new AABB(Vector2d<float>(-15,-20), Vector2d<float>(15,1));
 
     // Crear arma
     int weapon_damage = 10;
@@ -71,8 +76,7 @@ Weapon* WeaponManager::createDagger(Combat_Character* cc)
     float weapon_time_attack = 0.2f;
     Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
     Vector2d<float> ori = cc->getOrientation();
-    Weapon* w = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack,
-    weapon_relative_position_attacking, weapon_sprite, nullptr, CollisionFlag::none, CollisionFlag::none, ori);
+    Weapon* w = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori);
     w->setCharacter(cc);
 
     return w;
