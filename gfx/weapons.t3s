@@ -1,2 +1,5 @@
 --atlas -f rgba8888 -z auto
-sprites/Weapons/Sword.png
+sprites/Weapons/Dagger.png
+sprites/Weapons/Dagger_Anim_01.png
+sprites/Weapons/Dagger_Anim_02.png
+sprites/Weapons/Dagger_Anim_03.png

@@ -146,6 +146,11 @@ void Game_Paused::renderBottom()
     gui_elements.render();
 }
 
+void Game_Paused::manageAnimations()
+{
+    
+}
+
 void Game_Paused::deInit()
 {
     if(playingState!=nullptr)

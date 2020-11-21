@@ -103,6 +103,10 @@ void Combat_Character::interpolate(float rp)
 void Combat_Character::manageAnimations()
 {
     Character::manageAnimations();
+    if(equipped!=nullptr)
+    {
+        equipped->manageAnimations();
+    }
 }
 
 void Combat_Character::collision(void* ent)

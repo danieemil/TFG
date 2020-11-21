@@ -10,7 +10,7 @@
 const std::unordered_map<WeaponType, std::function<Weapon* (WeaponManager*, Combat_Character*)>> weapons_map = 
 {
     {WeaponType::dagger, &WeaponManager::createDagger},
-    {WeaponType::other, &WeaponManager::createDagger},
+    {WeaponType::sword, &WeaponManager::createSword},
 };
 
 //=========================================
@@ -60,30 +60,78 @@ Weapon* WeaponManager::createWeapon(WeaponType wt, Combat_Character* cc)
 Weapon* WeaponManager::createDagger(Combat_Character* cc)
 {
 
-    // Gráficos del arma
+    // Gráficos de la daga
     Sprite* weapon_sprite = sprites_manager.createSprite(0);
     if(weapon_sprite!=nullptr)
     {
         weapon_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
     }
 
-    // Colisiones del arma
-    AABB* weapon_shape = new AABB(Vector2d<float>(-15,-20), Vector2d<float>(15,1));
+    // Colisiones de la daga
+    Vector2d<float> min_pos_rel = Vector2d<float>(-5, -20);
+    Vector2d<float> max_pos_rel = Vector2d<float>(5,-10);
+    AABB* weapon_shape = new AABB(min_pos_rel, max_pos_rel);
 
-    // Crear arma
+
+    // Animaciones de la daga
+    Animation* weapon_anim = new Animation();
+        // Daga a medio camino
+        weapon_anim->addBackSprite(sprites_manager.createSprite(1),0.01f);
+        // Daga al final del camino
+        weapon_anim->addBackSprite(sprites_manager.createSprite(2),0.1f);
+        // Daga a medio camino
+        weapon_anim->addBackSprite(sprites_manager.createSprite(1),0.05f);
+        // Daga guardada
+        weapon_anim->addBackSprite(sprites_manager.createSprite(3),0.05);
+
+    // Crear la daga
     int weapon_damage = 10;
     float weapon_knockback = 200.0f;
-    float weapon_time_attack = 0.2f;
+    float weapon_time_attack = 0.3f;
     Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
     Vector2d<float> ori = cc->getOrientation();
-    Weapon* w = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori);
-    w->setCharacter(cc);
+    Weapon* w = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc, weapon_anim);
 
     return w;
 }
 
+Weapon* WeaponManager::createSword(Combat_Character* cc)
+{
+
+    // Gráficos de la daga
+    Sprite* weapon_sprite = sprites_manager.createSprite(0);
+    if(weapon_sprite!=nullptr)
+    {
+        weapon_sprite->setCenter(Vector2d<float>(0.5f,0.5f));
+    }
+
+    // Colisiones de la daga
+    Vector2d<float> min_pos_rel = Vector2d<float>(-15,-20);
+    Vector2d<float> max_pos_rel = Vector2d<float>(15,1);
+    AABB* weapon_shape = new AABB(min_pos_rel, max_pos_rel);
 
 
+    // Animaciones de la daga
+    Animation* weapon_anim = new Animation();
+        // Daga a medio camino
+        weapon_anim->addBackSprite(sprites_manager.createSprite(1),0.05f);
+        // Daga al final del camino
+        weapon_anim->addBackSprite(sprites_manager.createSprite(2),0.1f);
+        // Daga a medio camino
+        weapon_anim->addBackSprite(sprites_manager.createSprite(1),0.05f);
+        // Daga guardada
+        weapon_anim->addBackSprite(sprites_manager.createSprite(3),0.05);
+
+    // Crear la daga
+    int weapon_damage = 10;
+    float weapon_knockback = 200.0f;
+    float weapon_time_attack = 0.3f;
+    Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
+    Vector2d<float> ori = cc->getOrientation();
+    Weapon* w = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc, weapon_anim);
+
+    return w;
+}
 
 
 //=========================================

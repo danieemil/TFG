@@ -1,12 +1,11 @@
 #ifndef _WORLD_
 #define _WORLD_
 
-#include "Exit.h"
-#include "Health.h"
-#include "Player.h"
-#include "Enemy.h"
+#include "EntityManager.h"
 #include "Tilemap.h"
 #include <vector>
+
+class EntityManager;
 
 class World
 {
@@ -19,6 +18,11 @@ public:
     World& operator= (const World& w);
 
     // Métodos
+    Weapon* createWeapon(WeaponType wt, Combat_Character* cc);
+    Player* createPlayer(const Vector2d<float>& pos = Vector2d<float>());
+    Enemy* createEnemy(EnemyType et, const Vector2d<float>& pos = Vector2d<float>());
+    Interactable* createInteractable(InteractableType it, const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
+
     void addEntity(Entity* e);
     void deleteEntity(Entity* e);
     void eraseEntity(Entity* e);
@@ -74,6 +78,8 @@ private:
     Tilemap* tilemap;
 
     Vector2d<float> scroll_vel;
+
+    EntityManager entity_manager;
 
     friend class LevelFactory;
 

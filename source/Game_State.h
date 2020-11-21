@@ -34,6 +34,7 @@ public:
     virtual void update() = 0;
     virtual void renderTop() = 0;
     virtual void renderBottom() = 0;
+    virtual void manageAnimations() = 0;
     virtual void deInit() = 0;
     virtual void processEvents();
     virtual void addEvent(Event e);

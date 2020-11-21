@@ -12,9 +12,6 @@ class Animation
 public:
     // Constructores
     Animation();
-    Animation(const Animation& a);
-
-    Animation& operator= (const Animation& a);
 
     // Métodos
     void update();

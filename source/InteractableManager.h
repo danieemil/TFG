@@ -3,7 +3,8 @@
 
 #include "functional"
 #include <unordered_map>
-#include "World.h"
+#include "Exit.h"
+#include "Health.h"
 #include "SpriteManager.h"
 
 
@@ -27,10 +28,10 @@ public:
     InteractableManager& operator= (const InteractableManager& im);
 
     // Métodos
-    Interactable* createInteractable(InteractableType it, World* w, const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
+    Interactable* createInteractable(InteractableType it, const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
 
-    Exit* createExit(World* w, const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
-    Health* createHealth(World* w, const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
+    Exit* createExit(const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
+    Health* createHealth(const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
 
     // Setters
     void setSprites(const char* tileset);

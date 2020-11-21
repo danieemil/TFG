@@ -511,6 +511,12 @@ void Collider::setImpulse(const Vector2d<float>& force)
     impulse = force;
 }
 
+void Collider::setIntersected()
+{
+    if(!shapes.empty())
+        (*shapes.begin())->setIntersected(true);
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =

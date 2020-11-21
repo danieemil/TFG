@@ -52,7 +52,7 @@ Weapon* EntityManager::createWeapon(WeaponType wt, Combat_Character* cc)
     return weapon_manager.createWeapon(wt, cc);
 }
 
-Player* EntityManager::createPlayer(World* w, const Vector2d<float>& pos)
+Player* EntityManager::createPlayer(const Vector2d<float>& pos)
 {
     // Colisiones del jugador
     CollisionFlag player_interests = CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt;
@@ -94,21 +94,20 @@ Player* EntityManager::createPlayer(World* w, const Vector2d<float>& pos)
     float player_stunned_time = 0.5f;
 
     // Creación final del jugador
-    Player* player = new Player(player_life, pos, player_sprite, w, player_shape, player_interests, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
+    Player* player = new Player(player_life, pos, player_sprite, nullptr, player_shape, player_interests, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
     player->getBody()->setRotationCenter(player_center);
-    w->setPlayer(player);
 
     return player;
 }
 
-Enemy* EntityManager::createEnemy(EnemyType et, World* w, const Vector2d<float>& pos)
+Enemy* EntityManager::createEnemy(EnemyType et, const Vector2d<float>& pos)
 {
-    return enemy_manager.createEnemy(et, w, pos);
+    return enemy_manager.createEnemy(et, pos);
 }
 
-Interactable* EntityManager::createInteractable(InteractableType it, World* w, const Vector2d<float>& pos, int value)
+Interactable* EntityManager::createInteractable(InteractableType it, const Vector2d<float>& pos, int value)
 {
-    return interactable_manager.createInteractable(it, w, pos, value);
+    return interactable_manager.createInteractable(it, pos, value);
 }
 
 

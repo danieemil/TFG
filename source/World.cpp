@@ -1,18 +1,33 @@
 #include "World.h"
+#include "EntityManager.h"
 #include "Game.h"
+
+// Gráficos de las entidades en general
+const char* entity_graphics = "romfs:/gfx/sprites.t3x";
+
+// Gráficos de los enemigos
+const char* enemy_graphics = "romfs:/gfx/enemies.t3x";
+
+// Gráficos de las armas
+const char* weapon_graphics = "romfs:/gfx/weapons.t3x";
+
+// Gráficos de los interactuables
+const char* interactable_graphics = "romfs:/gfx/interactables.t3x";
 
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
 World::World(Player* p)
-: player(p), tilemap(nullptr), scroll_vel(4.0f, 4.0f)
+: player(p), tilemap(nullptr), scroll_vel(4.0f, 4.0f),
+    entity_manager(entity_graphics, weapon_graphics, enemy_graphics, interactable_graphics)
 {
 
 }
 
 World::World(const World& w)
-: player(w.player), tilemap(w.tilemap), scroll_vel(w.scroll_vel)
+: player(w.player), tilemap(w.tilemap), scroll_vel(w.scroll_vel),
+    entity_manager(w.entity_manager)
 {
 
 }
@@ -23,6 +38,7 @@ World& World::operator= (const World& w)
     player = nullptr;
     tilemap = nullptr;
     scroll_vel = w.scroll_vel;
+    entity_manager = w.entity_manager;
 
     return *this;
 
@@ -32,6 +48,39 @@ World& World::operator= (const World& w)
 //=========================================
 //=               MÉTODOS   	    	  =
 //=========================================
+
+Weapon* World::createWeapon(WeaponType wt, Combat_Character* cc)
+{
+    Weapon* w = entity_manager.createWeapon(wt, cc);
+    
+    return w;
+}
+
+Player* World::createPlayer(const Vector2d<float>& pos)
+{
+    Player* p = entity_manager.createPlayer(pos);
+    setPlayer(p);
+
+    return p;
+}
+
+Enemy* World::createEnemy(EnemyType et, const Vector2d<float>& pos)
+{
+    Enemy* e = entity_manager.createEnemy(et, pos);
+    addEntity(e);
+
+    return e;
+}
+
+Interactable* World::createInteractable(InteractableType it, const Vector2d<float>& pos, int value)
+{
+    Interactable* i = entity_manager.createInteractable(it, pos, value);
+    addEntity(i);
+
+    return i;
+}
+
+
 
 void World::addEntity(Entity* e)
 {
@@ -206,7 +255,7 @@ void World::render()
     renderTilemap(view_pos);
     renderEntities(view_pos);
     renderPlayer(view_pos);
-    //physics::render(view_pos);
+    physics::render(view_pos);
 }
 
 void World::renderTilemap(const Vector2d<float>& view_pos)

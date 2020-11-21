@@ -104,6 +104,7 @@ public:
     void setMaxAcceleration(const Vector2d<float>& m_accel);
     void setFriction(const Vector2d<float>& frict);
     void setImpulse(const Vector2d<float>& imp);
+    void setIntersected();
 
     // Getters
     const Vector2d<float>& getPosition() const;

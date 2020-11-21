@@ -12,20 +12,18 @@
 Weapon::Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
     Sprite* spr, World* w, Shape* sh, CollisionFlag type_flag, CollisionFlag interests_flag,
     const Vector2d<float>& ori, Combat_Character* cc, Animation* at_anim)
-: Entity(rel_attack, spr, w, new Collider(Vector2d<float>(), sh, type_flag, interests_flag, CollisionType::col_none), ori),
-    character(cc), attack_rel_position(rel_attack), attacking(false), attack_time(t_attack),
-    damage(dam), knockback(knock), attack_animation(at_anim)
+: Entity(rel_attack, spr, w,
+    new Collider(Vector2d<float>(), sh, type_flag, interests_flag, CollisionType::col_none), ori),
+    character(cc), attack_rel_position(rel_attack), center_rel(0.5f, 0.5f), attacking(false),
+    attack_time(t_attack), damage(dam), knockback(knock), attack_animation(at_anim)
 {
     id = EntityType::e_weapon;
 
+    calculateCenter();
+    
     if(character!=nullptr)
     {
-        position += character->getPosition();
         character->addWeapon(this);
-        if(body!=nullptr)
-        {
-            body->setPosition(character->getPosition());
-        }
     }
 
     if(body!=nullptr)
@@ -36,15 +34,14 @@ Weapon::Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_
 }
 
 Weapon::Weapon(const Weapon& w)
-: Entity(w), character(w.character), attack_rel_position(w.attack_rel_position), attacking(false),
-    attack_time(w.attack_time), damage(w.damage), knockback(w.knockback),
-    attack_animation(w.attack_animation)
+: Entity(w), character(w.character), attack_rel_position(w.attack_rel_position),
+    center_rel(w.center_rel), attacking(false), attack_time(w.attack_time), damage(w.damage),
+    knockback(w.knockback), attack_animation(w.attack_animation)
 {
-    position = attack_rel_position;
-
+    calculateCenter();
+    
     if(character!=nullptr)
     {
-        position += character->getPosition();
         character->addWeapon(this);
     }
 }
@@ -54,11 +51,10 @@ Weapon& Weapon::operator= (const Weapon& w)
     this->Entity::operator=(w);
     character = w.character;
 
-    position = attack_rel_position;
-
+    calculateCenter();
+    
     if(character!=nullptr)
     {
-        position += character->getPosition();
         character->addWeapon(this);
     }
 
@@ -83,6 +79,7 @@ void Weapon::render(const Vector2d<float>& view_pos)
 {
     if(attacking)
     {
+        rendering->setCenter(center_rel);
         Entity::render(view_pos);
     
         if(body!=nullptr)
@@ -116,27 +113,6 @@ void Weapon::update()
     {
         position += character->getPosition();
         setOrientation(character->getOrientation());
-
-        // Ponemos el centro del sprite del arma en el centro de su portador
-        // De esta forma puede rotar alrededor de su portador
-
-        if(rendering!=nullptr)
-        {
-            Vector2d<float> spr_size((float)rendering->getSize().x, (float)rendering->getSize().y);
-
-            Sprite* spr = character->getSprite();
-            Vector2d<float> cent(0.5,0.5);
-
-            if(spr!=nullptr)
-            {
-                Vector2d<float> spr_pos = spr->getCenterPosition();
-                Vector2d<float> rel_cent = spr_pos - position;
-
-                cent = rel_cent / spr_size;
-            }
-
-            rendering->setCenter(cent);
-        }
     }
 
     Entity::update();
@@ -171,7 +147,11 @@ void Weapon::manageAnimations()
     {
         if(attack_animation->hasSprites())
         {
-            attack_animation->update();
+            if(!attack_animation->hasEnded())
+            {
+                attack_animation->update();
+                rendering = attack_animation->getActualSprite();
+            }
         }
     }
 }
@@ -190,6 +170,10 @@ void Weapon::attack()
         if(body!=nullptr)
         {
             body->setActive(true);
+        }
+        if(attack_animation!=nullptr && attack_animation->hasSprites())
+        {
+            attack_animation->resetAnimation();
         }
     }
 }
@@ -237,23 +221,17 @@ void Weapon::setOrientation(const Vector2d<float>& ori)
 void Weapon::setCharacter(Combat_Character* cc)
 {
 
-    position = Vector2d<float>();
-
-    if(attacking)
-    {
-        position += attack_rel_position;
-    }
-
     if(character!=nullptr && character!=cc)
     {
         character->removeWeapon(this);
     }
 
-    if(cc!=nullptr && character!=cc)
-    {
-        character = cc;
+    character = cc;
 
-        position += character->getPosition();
+    calculateCenter();
+    
+    if(character!=nullptr)
+    {
         character->addWeapon(this);
     }
 }
@@ -261,6 +239,8 @@ void Weapon::setCharacter(Combat_Character* cc)
 void Weapon::setRelativePosition(const Vector2d<float>& rl_pos)
 {
     attack_rel_position = rl_pos;
+
+    calculateCenter();
 }
 
 void Weapon::setAttackingTime(float at_time)
@@ -370,5 +350,35 @@ float Weapon::getKnockback() const
 
 Weapon::~Weapon()
 {
-    
+    if(attack_animation!=nullptr)
+    {
+        delete attack_animation;
+        attack_animation = nullptr;
+    }
+}
+
+
+//=========================================
+//=               PRIVATE   	    	  =
+//=========================================
+
+// Ponemos el centro del sprite del arma en el centro de su portador
+// De esta forma puede rotar alrededor de su portador
+void Weapon::calculateCenter()
+{
+    position = attack_rel_position;
+    if(character!=nullptr)
+    {
+        position += character->getPosition();
+        Sprite* spr = character->getSprite();
+        if(spr!=nullptr && sprite!=nullptr)
+        {
+            Vector2d<float> spr_size((float)sprite->getSize().x, (float)sprite->getSize().y);
+
+            Vector2d<float> spr_pos = spr->getCenter();
+            Vector2d<float> rel_cent = spr_pos - attack_rel_position;
+
+            center_rel = rel_cent / spr_size;
+        }
+    }
 }

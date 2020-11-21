@@ -15,32 +15,18 @@ int LevelFactory::max_levels = levels_map.size();
 // Archivo de guardado
 const char* save_file = "save.sf";
 
-// Gráficos de las entidades en general
-const char* entity_graphics = "romfs:/gfx/sprites.t3x";
-
-// Gráficos de los enemigos
-const char* enemy_graphics = "romfs:/gfx/enemies.t3x";
-
-// Gráficos de las armas
-const char* weapon_graphics = "romfs:/gfx/weapons.t3x";
-
-// Gráficos de los interactuables
-const char* interactable_graphics = "romfs:/gfx/interactables.t3x";
-
-
 //=========================================
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
 LevelFactory::LevelFactory(World* w)
-: world(w), actual_level(0),
-    entity_manager(entity_graphics, weapon_graphics, enemy_graphics, interactable_graphics)
+: world(w), actual_level(0)
 {
 
 }
 
 LevelFactory::LevelFactory(const LevelFactory& lf)
-: world(lf.world), actual_level(lf.actual_level), entity_manager(lf.entity_manager)
+: world(lf.world), actual_level(lf.actual_level)
 {
 
 }
@@ -49,7 +35,6 @@ LevelFactory& LevelFactory::operator= (const LevelFactory& lf)
 {
     world = lf.world;
     actual_level = lf.actual_level;
-    entity_manager = lf.entity_manager;
 
     return *this;
 }
@@ -308,6 +293,8 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
         t_map->addCollider(new Collider(position, new Convex(vertices), CollisionFlag::none, CollisionFlag::none, CollisionType::col_static));
     }
 
+    world->setTilemap(t_map);
+
     // Entidades
         // Jugador
 	Vector2d<float> player_position = Vector2d<float>(250.5f,150.5f);
@@ -322,13 +309,13 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
 
     if(player==nullptr)
     {
-        player = entity_manager.createPlayer(world, player_position);
+        player = world->createPlayer(player_position);
     }
 
     if(player->getWeapons().empty())
     {
         // Creamos el arma inicial del jugador
-        entity_manager.createWeapon((WeaponType)player_weapon_type, player);
+        world->createWeapon((WeaponType)player_weapon_type, player);
         if(player!=nullptr)
         {
             player->equipWeapon(0);
@@ -365,10 +352,10 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
         file2mem(in, &enemy_type);
 
         // Crear al tipo de enemigo instanciable con su posición inicial
-        Enemy* enemy = entity_manager.createEnemy((EnemyType)enemy_type, world, enemy_position);
+        Enemy* enemy = world->createEnemy((EnemyType)enemy_type, enemy_position);
 
         // Crear su arma y asignársela
-        entity_manager.createWeapon((WeaponType)enemy_weapon_type, enemy);
+        world->createWeapon((WeaponType)enemy_weapon_type, enemy);
 
         if(enemy!=nullptr)
         {
@@ -396,12 +383,9 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
 
         // Crear interactuable con los datos proporcionados
 
-        Interactable* inter = entity_manager.createInteractable((InteractableType)interactable_type, world, interactable_position, interactable_value);
+        Interactable* inter = world->createInteractable((InteractableType)interactable_type, interactable_position, interactable_value);
 
     }
 
-
     in.close();
-
-	world->setTilemap(t_map);
 }

@@ -4,7 +4,7 @@
 #include "Unvisual_Engine.h"
 
 //Mapa que relaciona las armas que se pueden crear junto con su método de creación
-const std::unordered_map<EnemyType, std::function<Enemy* (EnemyManager*, World*, const Vector2d<float>&)>> enemies_map = 
+const std::unordered_map<EnemyType, std::function<Enemy* (EnemyManager*, const Vector2d<float>&)>> enemies_map = 
 {
     {EnemyType::miner, &EnemyManager::createMiner},
 };
@@ -36,24 +36,22 @@ EnemyManager& EnemyManager::operator= (const EnemyManager& em)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-Enemy* EnemyManager::createEnemy(EnemyType et, World* w, const Vector2d<float>& pos)
+Enemy* EnemyManager::createEnemy(EnemyType et, const Vector2d<float>& pos)
 {
-    if(w!=nullptr)
+    auto it = enemies_map.find(et);
+    if(it != enemies_map.end())
     {
-        auto it = enemies_map.find(et);
-        if(it != enemies_map.end())
+        if(it->second!=nullptr)
         {
-            if(it->second!=nullptr)
-            {
-                return it->second(this, w, pos);
-            }
+            return it->second(this, pos);
         }
     }
+
     return nullptr;
 }
 
 
-Enemy* EnemyManager::createMiner(World* w, const Vector2d<float>& pos)
+Enemy* EnemyManager::createMiner(const Vector2d<float>& pos)
 {
     // Gráficos del enemigo minero
     Sprite* enemy_sprite = sprites_manager.createSprite(0);
@@ -83,10 +81,9 @@ Enemy* EnemyManager::createMiner(World* w, const Vector2d<float>& pos)
     BinaryTree* bt = AI::getBehaviour(AI::bt_types::enemy_agressive);
 
     // Creación final del enemigo minero
-    Enemy* enemy = new Enemy(enemy_life, pos, enemy_sprite, w, enemy_shape,
+    Enemy* enemy = new Enemy(enemy_life, pos, enemy_sprite, nullptr, enemy_shape,
     enemy_interests, enemy_init_orientation, enemy_max_vel, enemy_max_accel,
     enemy_friction, nullptr, enemy_stunned_time, bt);
-    w->addEntity(enemy);
 
     return enemy;
 }

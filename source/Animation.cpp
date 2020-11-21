@@ -1,4 +1,5 @@
 #include "Animation.h"
+#include "Unvisual_Engine.h"
 
 
 //=========================================
@@ -9,17 +10,6 @@ Animation::Animation()
 : sprites(), timer(), ended(false), index(0)
 {
 
-}
-
-Animation::Animation(const Animation& a)
-: Animation()
-{
-
-}
-
-Animation& Animation::operator= (const Animation& a)
-{
-    return *this;
 }
 
 
@@ -79,7 +69,7 @@ bool Animation::hasEnded() const
 
 bool Animation::hasSprites() const
 {
-    return !sprites.empty();
+    return !(sprites.empty());
 }
 
 //=========================================

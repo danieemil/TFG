@@ -160,6 +160,11 @@ void Game_MainMenu::renderBottom()
     menu_title.render();
 }
 
+void Game_MainMenu::manageAnimations()
+{
+    
+}
+
 void Game_MainMenu::deInit()
 {
     delete this;

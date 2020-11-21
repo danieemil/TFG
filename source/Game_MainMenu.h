@@ -21,6 +21,7 @@ public:
     void update() override;
     void renderTop() override;
     void renderBottom() override;
+    void manageAnimations() override;
     void deInit() override;
     void processEvents() override;
     void addEvent(Event e) override;

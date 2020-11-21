@@ -75,6 +75,8 @@ protected:
     Combat_Character* character;
     Vector2d<float> attack_rel_position;
 
+    Vector2d<float> center_rel;
+
     // Mecánica de atacar
     bool attacking;
     float attack_time;
@@ -86,6 +88,8 @@ protected:
 
     // Animación
     Animation* attack_animation;
+
+    void calculateCenter();
 
 private:
 

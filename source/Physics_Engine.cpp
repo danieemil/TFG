@@ -280,6 +280,7 @@ namespace physics
                     collision_manager(colliderA, colliderB);
                 }
             }
+            colliderA->setIntersected();
         }
 
         // Los cuerpos dinámicos comprueban con los estáticos si colisionan o no

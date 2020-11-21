@@ -3,7 +3,7 @@
 
 #include "functional"
 #include <unordered_map>
-#include "World.h"
+#include "Enemy.h"
 #include "SpriteManager.h"
 
 
@@ -26,9 +26,9 @@ public:
     EnemyManager& operator= (const EnemyManager& em);
 
     // Métodos
-    Enemy* createEnemy(EnemyType et, World* w, const Vector2d<float>& pos = Vector2d<float>());
+    Enemy* createEnemy(EnemyType et, const Vector2d<float>& pos = Vector2d<float>());
 
-    Enemy* createMiner(World* w, const Vector2d<float>& pos = Vector2d<float>());
+    Enemy* createMiner(const Vector2d<float>& pos = Vector2d<float>());
 
     // Setters
     void setSprites(const char* tileset);

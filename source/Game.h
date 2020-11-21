@@ -20,6 +20,7 @@ public:
     void update();
     void updateCollisions();
     void interpolate();
+    void manageAnimations();
     void loop();
     void processInput();
     void processEvents();

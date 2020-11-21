@@ -136,16 +136,19 @@ void Game::renderTop()
 
 void Game::renderBottom()
 {
-    unvisual::setCurrentScreen(N3DS_screenV::N3DS_BOTTOM);
-    unvisual::prepare2D();
-    unvisual::drawOnCurrentScreen();
-
-    if(state!=nullptr)
+    if(unvisual::debugger==nullptr)
     {
-        state->renderBottom();
+        unvisual::setCurrentScreen(N3DS_screenV::N3DS_BOTTOM);
+        unvisual::prepare2D();
+        unvisual::drawOnCurrentScreen();
+
+        if(state!=nullptr)
+        {
+            state->renderBottom();
+        }
+        
+        unvisual::waitRenderScreen();
     }
-    
-    unvisual::waitRenderScreen();
 }
 
 void Game::update()
@@ -153,6 +156,14 @@ void Game::update()
     if(state!=nullptr)
     {
         state->update();
+    }
+}
+
+void Game::manageAnimations()
+{
+    if(state!=nullptr)
+    {
+        state->manageAnimations();
     }
 }
 
@@ -171,6 +182,8 @@ void Game::loop()
         processInput();
 
         update();
+
+        manageAnimations();
 
         unvisual::drawBegin();
 

@@ -53,10 +53,6 @@ private:
 
     PlayerData player_data;
 
-
-
-    EntityManager entity_manager;
-
     void readBin(const char* tilemap_path, const char* tileset_path);
 
     template<class T>

@@ -103,7 +103,7 @@ void HUD::render()
                     if (w_spr!=nullptr)
                     {
                         float not_attacking = 0.0f;
-                        //u32 white = unvisual::getColor2D(255,255,255,255);
+                        u32 white = unvisual::getColor2D(255,255,255,255);
                         u32 black = unvisual::getColor2D(0,0,0,255);
 
                         auto temp = weapon_selector->getSize();
@@ -115,7 +115,7 @@ void HUD::render()
                         Vector2d<float> w_size = Vector2d<float>(temp.x, temp.y);
                         Vector2d<float> w_pos = w_spr->getPosition();
                         
-                        Vector2d<float> w_hud_pos = weapon_selector->getPosition() + ((container_size - w_size)/2);
+                        Vector2d<float> w_hud_pos = weapon_selector->getPosition() + ((container_size - w_size)/1.98f);
                         w_spr->setPosition(w_hud_pos);
                         float w_rot = w_spr->getRotationRadians();
                         w_spr->setRotationRadians(0.0f);

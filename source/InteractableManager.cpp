@@ -3,7 +3,7 @@
 #include "Unvisual_Engine.h"
 
 //Mapa que relaciona las armas que se pueden crear junto con su método de creación
-const std::unordered_map<InteractableType, std::function<Interactable* (InteractableManager*, World*, const Vector2d<float>&, int)>> interactables_map = 
+const std::unordered_map<InteractableType, std::function<Interactable* (InteractableManager*, const Vector2d<float>&, int)>> interactables_map = 
 {
     {InteractableType::exit, &InteractableManager::createExit},
     {InteractableType::health, &InteractableManager::createHealth},
@@ -36,24 +36,22 @@ InteractableManager& InteractableManager::operator= (const InteractableManager& 
 //=               MÉTODOS   	    	  =
 //=========================================
 
-Interactable* InteractableManager::createInteractable(InteractableType it, World* w, const Vector2d<float>& pos, int value)
+Interactable* InteractableManager::createInteractable(InteractableType it, const Vector2d<float>& pos, int value)
 {
-    if(w!=nullptr)
+    auto iter = interactables_map.find(it);
+    if(iter != interactables_map.end())
     {
-        auto iter = interactables_map.find(it);
-        if(iter != interactables_map.end())
+        if(iter->second!=nullptr)
         {
-            if(iter->second!=nullptr)
-            {
-                return iter->second(this, w, pos, value);
-            }
+            return iter->second(this, pos, value);
         }
     }
+
     return nullptr;
 }
 
 
-Exit* InteractableManager::createExit(World* w, const Vector2d<float>& pos, int value)
+Exit* InteractableManager::createExit(const Vector2d<float>& pos, int value)
 {
     // Gráficos de la salida
     Vector2d<float> ori = Vector2d<float>(0.0f,-1.0f);
@@ -67,13 +65,12 @@ Exit* InteractableManager::createExit(World* w, const Vector2d<float>& pos, int 
     }
 
     // Crear la salida
-    Exit* exit = new Exit(pos, spr, w, exit_shape, ori);
-    w->addEntity(exit);
+    Exit* exit = new Exit(pos, spr, nullptr, exit_shape, ori);
 
     return exit;
 }
 
-Health* InteractableManager::createHealth(World* w, const Vector2d<float>& pos, int value)
+Health* InteractableManager::createHealth(const Vector2d<float>& pos, int value)
 {
     // Gráficos de la salud
     Vector2d<float> ori = Vector2d<float>(0.0f,-1.0f);
@@ -87,8 +84,7 @@ Health* InteractableManager::createHealth(World* w, const Vector2d<float>& pos, 
     }
 
     // Crear la salud
-    Health* health = new Health(value, pos, spr, w, health_shape, ori);
-    w->addEntity(health);
+    Health* health = new Health(value, pos, spr, nullptr, health_shape, ori);
 
     return health;
 }
