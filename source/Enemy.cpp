@@ -10,9 +10,9 @@
 Enemy::Enemy(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     CollisionFlag interests_flag, const Vector2d<float>& ori, const Vector2d<float>& max_vel,
     const Vector2d<float>& max_accel, const Vector2d<float>& frict, Weapon* wp, float st_time,
-    BinaryTree* bt)
+    float inv_time, BinaryTree* bt)
 : Combat_Character(l, pos, spr, w, sh, CollisionFlag::enemy_hit, interests_flag, ori, max_vel,
-    max_accel, frict, wp, st_time), b_tree(bt)
+    max_accel, frict, wp, st_time, inv_time), b_tree(bt)
 {
     id = EntityType::e_enemy;
 }
@@ -374,6 +374,11 @@ bool Enemy::getAttacked() const
 bool Enemy::getStunned() const
 {
     return Combat_Character::getStunned();
+}
+
+bool Enemy::getInvincible() const
+{
+    return Combat_Character::getInvincible();
 }
 
 int Enemy::getLife() const

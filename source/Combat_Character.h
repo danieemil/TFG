@@ -12,12 +12,13 @@ class Combat_Character : public Character
 public:
     // Constructores
     Combat_Character(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
-        World* w = nullptr, Shape* sh = nullptr, CollisionFlag type_flag = CollisionFlag::none, CollisionFlag interests_flag = CollisionFlag::none,
+        World* w = nullptr, Shape* sh = nullptr, CollisionFlag type_flag = CollisionFlag::none,
+        CollisionFlag interests_flag = CollisionFlag::none,
         const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
-        float st_time = 0.0f);
+        float st_time = 0.0f, float inv_time = 0.0f);
     Combat_Character(const Combat_Character& cc);
 
     Combat_Character& operator= (const Combat_Character& cc);
@@ -37,16 +38,16 @@ public:
 
     // Setters
         //Entity
-    virtual void setSprite(Sprite* spr);
-    virtual void setPosition(const Vector2d<float>& pos);
-    virtual void setWorld(World* w);
-    virtual void setBody(Collider* c);
-    virtual void setVelocity(const Vector2d<float>& vel);
-    virtual void setAngle(float angl);
-    virtual void setOrientation(const Vector2d<float>& ori);
+    virtual void setSprite(Sprite* spr) override;
+    virtual void setPosition(const Vector2d<float>& pos) override;
+    virtual void setWorld(World* w) override;
+    virtual void setBody(Collider* c) override;
+    virtual void setVelocity(const Vector2d<float>& vel) override;
+    virtual void setAngle(float angl) override;
+    virtual void setOrientation(const Vector2d<float>& ori) override;
         //Character
-    virtual void setAcceleration(const Vector2d<float>& accel);
-    virtual void setFriction(const Vector2d<float>& frict);
+    virtual void setAcceleration(const Vector2d<float>& accel) override;
+    virtual void setFriction(const Vector2d<float>& frict) override;
         //Combat_Character
     virtual bool addWeapon(Weapon* wp);
     virtual void removeWeapon(Weapon* wp);
@@ -60,25 +61,26 @@ public:
 
     // Getters
         //Entity
-    virtual Sprite* getSprite() const;
-    virtual const Vector2d<float>& getPosition() const;
-    virtual World* getWorld() const;
-    virtual Collider* getBody() const;
-    virtual const Vector2d<float>& getVelocity() const;
-    virtual const Vector2d<float>& getPrePosition() const;
-    virtual const Vector2d<float>& getRenderPosition() const;
-    virtual const EntityType& getEntityType() const;
-    virtual float getAngle() const;
-    virtual Vector2d<float> getCenter() const;
-    virtual const Vector2d<float>& getOrientation() const;
+    virtual Sprite* getSprite() const override;
+    virtual const Vector2d<float>& getPosition() const override;
+    virtual World* getWorld() const override;
+    virtual Collider* getBody() const override;
+    virtual const Vector2d<float>& getVelocity() const override;
+    virtual const Vector2d<float>& getPrePosition() const override;
+    virtual const Vector2d<float>& getRenderPosition() const override;
+    virtual const EntityType& getEntityType() const override;
+    virtual float getAngle() const override;
+    virtual Vector2d<float> getCenter() const override;
+    virtual const Vector2d<float>& getOrientation() const override;
         //Character
-    virtual const Vector2d<float>& getAcceleration() const;
+    virtual const Vector2d<float>& getAcceleration() const override;
         //Combat_Character
     virtual const std::vector<Weapon*>& getWeapons() const;
     virtual Weapon* getWeaponEquipped() const;
     virtual bool getAttacking() const;
     virtual bool getAttacked() const;
     virtual bool getStunned() const;
+    virtual bool getInvincible() const;
     virtual int getLife() const;
     virtual int getMaxLife() const;
     virtual bool hasWeapon(const WeaponType& wt) const;
@@ -97,6 +99,13 @@ protected:
     bool stunned;
     float stun_time;
     Timepoint stun_timing;
+
+    // Mecánica de invencibilidad
+    bool invincible;
+    float invincibility_time;
+    Timepoint invincibility_timing;
+
+
 
     // Atributos de personaje
     int life;

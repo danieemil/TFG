@@ -9,9 +9,10 @@
 Combat_Character::Combat_Character(int l, const Vector2d<float>& pos, Sprite* spr, World* w,
     Shape* sh, CollisionFlag type_flag, CollisionFlag interests_flag,
     const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
-    const Vector2d<float>& frict, Weapon* wp, float st_time)
-: Character(pos, spr, w, sh, type_flag, interests_flag, ori, max_vel, max_accel, frict), equipped(wp), attacked(false),
-    stunned(false), stun_time(st_time), life(l), max_life(l)
+    const Vector2d<float>& frict, Weapon* wp, float st_time, float inv_time)
+: Character(pos, spr, w, sh, type_flag, interests_flag, ori, max_vel, max_accel, frict),
+    equipped(wp), attacked(false), stunned(false), stun_time(st_time), stun_timing(),
+    invincible(false), invincibility_time(inv_time), invincibility_timing(), life(l), max_life(l)
 {
     if(wp!=nullptr)
     {
@@ -58,6 +59,19 @@ void Combat_Character::update()
         die();
         return;
     }
+
+    if(invincible)
+    {
+        if(invincibility_timing.getElapsed()>invincibility_time)
+        {
+            invincible = false;
+            if(body!=nullptr)
+            {
+                body->setActive(true);
+            }
+        }
+    }
+
     // Si está aturdido no puede acelerar (moverse como quiere), tampoco puede aturdirse
     if(stunned)
     {
@@ -66,10 +80,6 @@ void Combat_Character::update()
         {
             stunned = false;
             if(attacked) attacked = false;
-            if(body!=nullptr)
-            {
-                body->setActive(true);
-            }
         }
     }else if((equipped==nullptr || !equipped->getAttacking()))
     {
@@ -131,9 +141,18 @@ void Combat_Character::collision(void* ent)
                 body->setAcceleration(Vector2d<float>(0.0f, 0.0f));
                 body->setActive(false);
             }
-            stun_timing.reset();
-            stunned = true;
+
+            // Se marca como que ha sido atacado
             attacked = true;
+
+            // El ataque lo aturde por un corto periodo de tiempo(stun_time)
+            stunned = true;
+            stun_timing.reset();
+            
+            // Se hace invencible por un corto periodo de tiempo(invincibility_time)
+            invincible = true;
+            invincibility_timing.reset();
+
 
             life = life - w->getDamage();
         }
@@ -439,6 +458,11 @@ bool Combat_Character::getAttacked() const
 bool Combat_Character::getStunned() const
 {
     return stunned;
+}
+
+bool Combat_Character::getInvincible() const
+{
+    return invincible;
 }
 
 int Combat_Character::getLife() const

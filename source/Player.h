@@ -17,7 +17,7 @@ public:
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
-        float st_time = 0.0f);
+        float st_time = 0.0f, float inv_time = 0.0f);
     Player(const Player& p);
 
     Player& operator= (const Player& p);
@@ -82,6 +82,7 @@ public:
     bool getAttacking() const override;
     bool getAttacked() const override;
     bool getStunned() const override;
+    bool getInvincible() const override;
     int getLife() const override;
     int getMaxLife() const override;
     bool hasWeapon(const WeaponType& wt) const override;

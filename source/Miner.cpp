@@ -10,8 +10,9 @@
 Miner::Miner(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     CollisionFlag interests_flag, const Vector2d<float>& ori, const Vector2d<float>& max_vel,
     const Vector2d<float>& max_accel, const Vector2d<float>& frict, Weapon* wp, float st_time,
-    BinaryTree* bt)
-: Enemy(l, pos, spr, w, sh, interests_flag, ori, max_vel, max_accel, frict, wp, st_time, bt)
+    float inv_time, BinaryTree* bt)
+: Enemy(l, pos, spr, w, sh, interests_flag, ori, max_vel, max_accel, frict, wp, st_time, inv_time,
+    bt)
 {
     sub_id = EnemyType::miner;
 }
@@ -293,6 +294,11 @@ bool Miner::getAttacked() const
 bool Miner::getStunned() const
 {
     return Enemy::getStunned();
+}
+
+bool Miner::getInvincible() const
+{
+    return Enemy::getInvincible();
 }
 
 int Miner::getLife() const

@@ -92,9 +92,12 @@ Player* EntityManager::createPlayer(const Vector2d<float>& pos)
     Vector2d<float> player_frict = Vector2d<float>(40.0f,40.0f);
     Vector2d<float> player_init_orientation = Vector2d<float>(0.0f,-1.0f);
     float player_stunned_time = 0.5f;
+    float player_invincibility_time = 0.8f;
 
     // Creación final del jugador
-    Player* player = new Player(player_life, pos, player_sprite, nullptr, player_shape, player_interests, player_init_orientation, player_max_vel, player_max_accel, player_frict, nullptr, player_stunned_time);
+    Player* player = new Player(player_life, pos, player_sprite, nullptr, player_shape,
+        player_interests, player_init_orientation, player_max_vel, player_max_accel, player_frict,
+        nullptr, player_stunned_time, player_invincibility_time);
     player->getBody()->setRotationCenter(player_center);
 
     return player;

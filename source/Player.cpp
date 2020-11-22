@@ -11,8 +11,10 @@ using namespace unvisual;
 
 Player::Player(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     CollisionFlag interests_flag, const Vector2d<float>& ori, const Vector2d<float>& max_vel,
-    const Vector2d<float>& max_accel, const Vector2d<float>& frict, Weapon* wp, float st_time)
-: Combat_Character(l, pos, spr, w, sh, CollisionFlag::player_hit, interests_flag, ori, max_vel, max_accel, frict, wp, st_time)
+    const Vector2d<float>& max_accel, const Vector2d<float>& frict, Weapon* wp, float st_time,
+    float inv_time)
+: Combat_Character(l, pos, spr, w, sh, CollisionFlag::player_hit, interests_flag, ori, max_vel,
+    max_accel, frict, wp, st_time, inv_time)
 {
     id = EntityType::e_player;
 }
@@ -97,9 +99,16 @@ void Player::collision(void* ent)
                 body->setAcceleration(Vector2d<float>(0.0f, 0.0f));
                 body->setActive(false);
             }
-            stun_timing.reset();
-            stunned = true;
+            // Se marca como que ha sido atacado
             attacked = true;
+
+            // El ataque lo aturde por un corto periodo de tiempo(stun_time)
+            stunned = true;
+            stun_timing.reset();
+            
+            // Se hace invencible por un corto periodo de tiempo(invincibility_time)
+            invincible = true;
+            invincibility_timing.reset();
 
             life = life - 1;
         }
@@ -385,6 +394,11 @@ bool Player::getAttacked() const
 bool Player::getStunned() const
 {
     return Combat_Character::getStunned();
+}
+
+bool Player::getInvincible() const
+{
+    return Combat_Character::getInvincible();
 }
 
 int Player::getLife() const

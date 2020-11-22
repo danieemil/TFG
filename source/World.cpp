@@ -2,7 +2,7 @@
 #include "EntityManager.h"
 #include "Game.h"
 
-// Gráficos de las entidades en general
+// Gráficos de las entidades en general(player solo)
 const char* entity_graphics = "romfs:/gfx/sprites.t3x";
 
 // Gráficos de los enemigos

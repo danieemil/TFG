@@ -31,6 +31,8 @@ namespace unvisual
         // Inicializador de Citro2D(Gráficos especializados del 2D)
         C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
 
+        C2D_Prepare();
+
         input::IM_init();
 
         // Inicializar el monitor de estados del APT
@@ -191,7 +193,6 @@ namespace unvisual
         if(current_screen!=nullptr)
         {
             C2D_SceneTarget(current_screen->getRenderer());
-            C2D_Prepare();
         }
     }
 

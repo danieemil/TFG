@@ -12,8 +12,6 @@ Game_MainMenu::Game_MainMenu()
 {
     type = state_type::menu;
 
-    //unvisual::debugger->print("He creado el estado Menú Principal");
-    //unvisual::debugger->nextLine();
 }
 
 Game_MainMenu::Game_MainMenu(const Game_MainMenu& gmm)
@@ -36,6 +34,10 @@ Game_MainMenu& Game_MainMenu::operator= (const Game_MainMenu& gmm)
 //=========================================
 void Game_MainMenu::init()
 {
+
+    top_background = Game::Instance()->createBackgroundSprite(0);
+
+    bottom_background = Game::Instance()->createBackgroundSprite(1);
 
     unvisual::setCurrentScreen(N3DS_screenV::N3DS_BOTTOM);
 
@@ -150,7 +152,7 @@ void Game_MainMenu::update()
 
 void Game_MainMenu::renderTop()
 {
-    Game_State::renderTop();   
+    Game_State::renderTop();
 }
 
 void Game_MainMenu::renderBottom()

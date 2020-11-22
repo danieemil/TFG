@@ -4,6 +4,8 @@
 using namespace std;
 using namespace unvisual::input;
 
+// Gráficos de los sprites de fondo de pantalla
+const char* screen_graphics = "romfs:/gfx/background.t3x";
 
 // Singleton
 Game* Game::p_instance = 0;
@@ -27,7 +29,8 @@ Game* Game::Instance()
 
 Game::Game()
 : running(true), dt(0.0f), delta_time(), prev_state(state_type::none),
-state(new Game_MainMenu()), post_state(state_type::none), saved(false)
+    state(new Game_MainMenu()), post_state(state_type::none), saved(false),
+    background_manager(screen_graphics)
 {
 
 }
@@ -217,6 +220,11 @@ void Game::erasePlayer()
         Game_Playing* gp = static_cast<Game_Playing*>(state);
         gp->erasePlayer();
     }
+}
+
+Sprite* Game::createBackgroundSprite(size_t index)
+{
+    return background_manager.createSprite(index);
 }
 
 void Game::nextLevelEvent()

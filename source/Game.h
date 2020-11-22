@@ -29,6 +29,8 @@ public:
 
     void erasePlayer();
 
+    Sprite* createBackgroundSprite(size_t index);
+
     // Eventos para evitar procesar un elemento después de eliminarse
     void nextLevelEvent();
     void resetLevelEvent();
@@ -90,6 +92,8 @@ private:
     state_type post_state;
 
     bool saved;
+
+    SpriteManager background_manager;
 
 };
 

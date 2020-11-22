@@ -2,6 +2,7 @@
 #define _WEAPON_MANAGER_
 
 #include "Dagger.h"
+#include "Sword.h"
 #include "SpriteManager.h"
 
 
@@ -20,7 +21,7 @@ public:
     Weapon* createWeapon(WeaponType wt, Combat_Character* cc);
 
     Dagger* createDagger(Combat_Character* cc);
-    Weapon* createSword(Combat_Character* cc);
+    Sword* createSword(Combat_Character* cc);
 
     // Setters
     void setSprites(const char* tileset);

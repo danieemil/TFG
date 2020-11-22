@@ -25,7 +25,7 @@ public:
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
-        float st_time = 0.0f, BinaryTree* bt = nullptr);
+        float st_time = 0.0f, float inv_time = 0.0f, BinaryTree* bt = nullptr);
     Enemy(const Enemy& e);
 
     Enemy& operator= (const Enemy& e);
@@ -94,6 +94,7 @@ public:
     virtual bool getAttacking() const override;
     virtual bool getAttacked() const override;
     virtual bool getStunned() const override;
+    virtual bool getInvincible() const override;
     virtual int getLife() const override;
     virtual int getMaxLife() const override;
     virtual bool hasWeapon(const WeaponType& wt) const override;
