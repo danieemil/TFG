@@ -1,4 +1,4 @@
-#include "Health.h"
+#include "I_Weapon.h"
 
 #include "Game.h"
 
@@ -7,22 +7,22 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Health::Health(int val, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
+I_Weapon::I_Weapon(int val, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     const Vector2d<float>& ori)
 : Interactable(val, pos, spr, w, sh, CollisionFlag::player_hit, ori)
 {
-    sub_id = InteractableType::health;
+    sub_id = InteractableType::weapon;
 }
 
-Health::Health(const Health& h)
-: Interactable(h)
+I_Weapon::I_Weapon(const I_Weapon& iw)
+: Interactable(iw)
 {
     
 }
 
-Health& Health::operator= (const Health& h)
+I_Weapon& I_Weapon::operator= (const I_Weapon& iw)
 {
-    this->Interactable::operator=(h);
+    this->Interactable::operator=(iw);
 
     return *this;
 }
@@ -31,32 +31,32 @@ Health& Health::operator= (const Health& h)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Health::render(const Vector2d<float>& view_pos)
+void I_Weapon::render(const Vector2d<float>& view_pos)
 {
     Interactable::render(view_pos);
 }
 
-void Health::update()
+void I_Weapon::update()
 {
     Interactable::update();
 }
 
-void Health::updateFromCollider()
+void I_Weapon::updateFromCollider()
 {
     Interactable::updateFromCollider();
 }
 
-void Health::interpolate(float rp)
+void I_Weapon::interpolate(float rp)
 {
     Interactable::interpolate(rp);
 }
 
-void Health::manageAnimations()
+void I_Weapon::manageAnimations()
 {
     Interactable::manageAnimations();
 }
 
-void Health::collision(void* ent)
+void I_Weapon::collision(void* ent)
 {
     if(ent!=nullptr)
     {
@@ -64,9 +64,13 @@ void Health::collision(void* ent)
         if(e->getEntityType()==EntityType::e_player)
         {
             Player* p = static_cast<Player*>(e);
-            if(p->increaseLife(value))
+            if(world!=nullptr)
             {
-                Game::Instance()->deleteEntityEvent(this);
+                Weapon* w = world->createWeapon((WeaponType)value, p);
+                if(w!=nullptr)
+                {
+                    Game::Instance()->deleteEntityEvent(this);
+                }
             }
         }
     }
@@ -77,42 +81,42 @@ void Health::collision(void* ent)
 //=               SETTERS   	    	  =
 //=========================================
 
-void Health::setSprite(Sprite* spr)
+void I_Weapon::setSprite(Sprite* spr)
 {
     Interactable::setSprite(spr);
 }
 
-void Health::setPosition(const Vector2d<float>& pos)
+void I_Weapon::setPosition(const Vector2d<float>& pos)
 {
     Interactable::setPosition(pos);
 }
 
-void Health::setWorld(World* w)
+void I_Weapon::setWorld(World* w)
 {
     Interactable::setWorld(w);
 }
 
-void Health::setBody(Collider* c)
+void I_Weapon::setBody(Collider* c)
 {
     Interactable::setBody(c);
 }
 
-void Health::setVelocity(const Vector2d<float>& vel)
+void I_Weapon::setVelocity(const Vector2d<float>& vel)
 {
     Interactable::setVelocity(vel);
 }
 
-void Health::setAngle(float angl)
+void I_Weapon::setAngle(float angl)
 {
     Interactable::setAngle(angl);
 }
 
-void Health::setOrientation(const Vector2d<float>& ori)
+void I_Weapon::setOrientation(const Vector2d<float>& ori)
 {
     Interactable::setOrientation(ori);
 }
 
-void Health::setValue(int val)
+void I_Weapon::setValue(int val)
 {
     Interactable::setValue(val);
 }
@@ -122,67 +126,67 @@ void Health::setValue(int val)
 //=               GETTERS   	    	  =
 //=========================================
 
-Sprite* Health::getSprite() const
+Sprite* I_Weapon::getSprite() const
 {
     return Interactable::getSprite();
 }
 
-const Vector2d<float>& Health::getPosition() const
+const Vector2d<float>& I_Weapon::getPosition() const
 {
     return Interactable::getPosition();
 }
 
-World* Health::getWorld() const
+World* I_Weapon::getWorld() const
 {
     return Interactable::getWorld();
 }
 
-Collider* Health::getBody() const
+Collider* I_Weapon::getBody() const
 {
     return Interactable::getBody();
 }
 
-const Vector2d<float>& Health::getVelocity() const
+const Vector2d<float>& I_Weapon::getVelocity() const
 {
     return Interactable::getVelocity();
 }
 
-const Vector2d<float>& Health::getPrePosition() const
+const Vector2d<float>& I_Weapon::getPrePosition() const
 {
     return Interactable::getPrePosition();
 }
 
-const Vector2d<float>& Health::getRenderPosition() const
+const Vector2d<float>& I_Weapon::getRenderPosition() const
 {
     return Interactable::getRenderPosition();
 }
 
-const EntityType& Health::getEntityType() const
+const EntityType& I_Weapon::getEntityType() const
 {
     return Interactable::getEntityType();
 }
 
-float Health::getAngle() const
+float I_Weapon::getAngle() const
 {
     return Interactable::getAngle();
 }
 
-Vector2d<float> Health::getCenter() const
+Vector2d<float> I_Weapon::getCenter() const
 {
     return Interactable::getCenter();
 }
 
-const Vector2d<float>& Health::getOrientation() const
+const Vector2d<float>& I_Weapon::getOrientation() const
 {
     return Interactable::getOrientation();
 }
 
-int Health::getValue() const
+int I_Weapon::getValue() const
 {
     return Interactable::getValue();
 }
 
-const InteractableType& Health::getInteractableType() const
+const InteractableType& I_Weapon::getInteractableType() const
 {
     return Interactable::getInteractableType();
 }
@@ -192,7 +196,7 @@ const InteractableType& Health::getInteractableType() const
 //=              DESTRUCTOR   	    	  =
 //=========================================
 
-Health::~Health()
+I_Weapon::~I_Weapon()
 {
     
 }

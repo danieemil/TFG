@@ -124,6 +124,8 @@ void Game_Playing::renderTop()
 {
     interpolate();
 
+    Game_State::renderTop();
+
     if(world!=nullptr)
     {
         world->render();
@@ -134,7 +136,7 @@ void Game_Playing::renderTop()
 
 void Game_Playing::renderBottom()
 {
-
+    Game_State::renderBottom();
 }
 
 void Game_Playing::manageAnimations()
@@ -195,6 +197,16 @@ void Game_Playing::erasePlayer()
 //=========================================
 //=               SETTERS   	    	  =
 //=========================================
+
+void Game_Playing::setTopBackground(Sprite* spr)
+{
+    Game_State::setTopBackground(spr);
+}
+
+void Game_Playing::setBottomBackground(Sprite* spr)
+{
+    Game_State::setBottomBackground(spr);
+}
 
 
 //=========================================

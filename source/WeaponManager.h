@@ -1,16 +1,8 @@
 #ifndef _WEAPON_MANAGER_
 #define _WEAPON_MANAGER_
 
-#include "Weapon.h"
+#include "Dagger.h"
 #include "SpriteManager.h"
-
-
-// Tipos de armas instanciables
-enum class WeaponType
-{
-    dagger,
-    sword,
-};
 
 
 
@@ -27,7 +19,7 @@ public:
     // Métodos
     Weapon* createWeapon(WeaponType wt, Combat_Character* cc);
 
-    Weapon* createDagger(Combat_Character* cc);
+    Dagger* createDagger(Combat_Character* cc);
     Weapon* createSword(Combat_Character* cc);
 
     // Setters

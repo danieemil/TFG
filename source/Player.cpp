@@ -124,26 +124,34 @@ void Player::processInput()
     heading = Vector2d<float>();
 
     if( input::isPressed(input::N3DS_buttons::Key_DUp)
+        || input::isPressed(input::N3DS_buttons::Key_CPAD_Up)
     ||
-        input::isHeld(input::N3DS_buttons::Key_DUp))
+        input::isHeld(input::N3DS_buttons::Key_DUp)
+        || input::isHeld(input::N3DS_buttons::Key_CPAD_Up))
     {
         heading.y += -1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DRight)
+        || input::isPressed(input::N3DS_buttons::Key_CPAD_Right)
     ||
-        input::isHeld(input::N3DS_buttons::Key_DRight))
+        input::isHeld(input::N3DS_buttons::Key_DRight)
+        || input::isHeld(input::N3DS_buttons::Key_CPAD_Right))
     {
         heading.x += 1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DDown)
+        || input::isPressed(input::N3DS_buttons::Key_CPAD_Down)
     ||
-        input::isHeld(input::N3DS_buttons::Key_DDown))
+        input::isHeld(input::N3DS_buttons::Key_DDown)
+        || input::isHeld(input::N3DS_buttons::Key_CPAD_Down))
     {
         heading.y += 1.0f;
     }
     if( input::isPressed(input::N3DS_buttons::Key_DLeft)
+        || input::isPressed(input::N3DS_buttons::Key_CPAD_Left)
     ||
-        input::isHeld(input::N3DS_buttons::Key_DLeft))
+        input::isHeld(input::N3DS_buttons::Key_DLeft)
+        || input::isHeld(input::N3DS_buttons::Key_CPAD_Left))
     {
         heading.x += -1.0f;
     }
@@ -153,10 +161,15 @@ void Player::processInput()
         attack();
     }
 
+    if( input::isPressed(input::N3DS_buttons::Key_Y))
+    {
+        equipNextWeapon();
+    }
+
     // Si ha girado, no está aturdido y no está atacando, puede cambiar de orientación
     if(heading!=Vector2d<float>() && !stunned && (equipped==nullptr || !equipped->getAttacking()))
     {
-        orientation = heading;
+        setOrientation(heading);
     }
 }
 
@@ -198,14 +211,11 @@ void Player::setAngle(float angl)
 {
     if(angle == angl) return;
 
-    angle = angl;
+    Combat_Character::setAngle(angl);
+
     if(sprite!=nullptr)
     {
         sprite->setRotation(angle);
-    }
-    if(body!=nullptr)
-    {
-        //body->setGlobalRotation(angle);
     }
 }
 
@@ -256,6 +266,11 @@ void Player::removeWeapon(Weapon* wp)
 void Player::equipWeapon(size_t index)
 {
     Combat_Character::equipWeapon(index);
+}
+
+void Player::equipNextWeapon()
+{
+    Combat_Character::equipNextWeapon();
 }
 
 void Player::setAttacked(bool at)
@@ -380,6 +395,11 @@ int Player::getLife() const
 int Player::getMaxLife() const
 {
     return Combat_Character::getMaxLife();
+}
+
+bool Player::hasWeapon(const WeaponType& wt) const
+{
+    return Combat_Character::hasWeapon(wt);
 }
 
 const Vector2d<float>& Player::getHeading() const

@@ -7,6 +7,7 @@ const std::unordered_map<InteractableType, std::function<Interactable* (Interact
 {
     {InteractableType::exit, &InteractableManager::createExit},
     {InteractableType::health, &InteractableManager::createHealth},
+    {InteractableType::weapon, &InteractableManager::createWeapon},
 };
 
 //=========================================
@@ -89,8 +90,24 @@ Health* InteractableManager::createHealth(const Vector2d<float>& pos, int value)
     return health;
 }
 
+I_Weapon* InteractableManager::createWeapon(const Vector2d<float>& pos, int value)
+{
+    // Gráficos de la salud
+    Vector2d<float> ori = Vector2d<float>(0.0f,-1.0f);
+    Sprite* spr = sprites_manager.createSprite(2);
+    AABB* weapon_shape = nullptr;
 
+    // Físicas de la salud
+    if(spr!=nullptr)
+    {
+        weapon_shape = spr->createSpriteCollisionShape();
+    }
 
+    // Crear la salud
+    I_Weapon* weapon = new I_Weapon(value, pos, spr, nullptr, weapon_shape, ori);
+
+    return weapon;
+}
 
 
 //=========================================

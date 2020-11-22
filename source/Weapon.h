@@ -5,6 +5,13 @@
 
 class Combat_Character;
 
+// Tipos de armas instanciables
+enum class WeaponType
+{
+    dagger,
+    sword,
+};
+
 class Weapon : public Entity
 {
 
@@ -33,13 +40,13 @@ public:
 
     // Setters
         //Entity
-    virtual void setSprite(Sprite* spr);
-    virtual void setPosition(const Vector2d<float>& pos);
-    virtual void setWorld(World* w);
-    virtual void setBody(Collider* c);
-    virtual void setVelocity(const Vector2d<float>& vel);
-    virtual void setAngle(float angl);
-    virtual void setOrientation(const Vector2d<float>& ori);
+    virtual void setSprite(Sprite* spr) override;
+    virtual void setPosition(const Vector2d<float>& pos) override;
+    virtual void setWorld(World* w) override;
+    virtual void setBody(Collider* c) override;
+    virtual void setVelocity(const Vector2d<float>& vel) override;
+    virtual void setAngle(float angl) override;
+    virtual void setOrientation(const Vector2d<float>& ori) override;
         //Weapon
     virtual void setCharacter(Combat_Character* cc);
     virtual void setRelativePosition(const Vector2d<float>& rl_pos);
@@ -49,26 +56,27 @@ public:
 
     // Getters
         //Entity
-    virtual Sprite* getSprite() const;
-    virtual const Vector2d<float>& getPosition() const;
-    virtual World* getWorld() const;
-    virtual Collider* getBody() const;
-    virtual const Vector2d<float>& getVelocity() const;
-    virtual const Vector2d<float>& getPrePosition() const;
-    virtual const Vector2d<float>& getRenderPosition() const;
-    virtual const EntityType& getEntityType() const;
-    virtual float getAngle() const;
-    virtual Vector2d<float> getCenter() const;
-    virtual const Vector2d<float>& getOrientation() const;
+    virtual Sprite* getSprite() const override;
+    virtual const Vector2d<float>& getPosition() const override;
+    virtual World* getWorld() const override;
+    virtual Collider* getBody() const override;
+    virtual const Vector2d<float>& getVelocity() const override;
+    virtual const Vector2d<float>& getPrePosition() const override;
+    virtual const Vector2d<float>& getRenderPosition() const override;
+    virtual const EntityType& getEntityType() const override;
+    virtual float getAngle() const override;
+    virtual Vector2d<float> getCenter() const override;
+    virtual const Vector2d<float>& getOrientation() const override;
         //Weapon
     virtual Combat_Character* getCharacter() const;
     virtual const Vector2d<float>& getRelativePosition() const;
     virtual bool getAttacking() const;
     virtual int getDamage() const;
     virtual float getKnockback() const;
+    virtual const WeaponType& getWeaponType() const;
 
     // Destructor
-    ~Weapon();
+    virtual ~Weapon();
 
 protected:
 
@@ -89,7 +97,9 @@ protected:
     // Animación
     Animation* attack_animation;
 
-    void calculateCenter();
+    WeaponType sub_id;
+
+    virtual void calculateCenter();
 
 private:
 

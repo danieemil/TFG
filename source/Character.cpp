@@ -9,7 +9,7 @@
 Character::Character(const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh, CollisionFlag type_flag, CollisionFlag interests_flag,
 const Vector2d<float>& ori, const Vector2d<float>& max_vel, const Vector2d<float>& max_accel,
 const Vector2d<float>& frict)
-: Entity(pos, spr, w, new Collider(pos, sh, type_flag, interests_flag, CollisionType::col_dynamic), ori)
+: Entity(pos, spr, w, new Collider(pos, sh, type_flag, interests_flag, CollisionType::col_dynamic), ori), orientation_index(0)
 {
     if(body!= nullptr)
     {
@@ -114,6 +114,12 @@ void Character::setVelocity(const Vector2d<float>& vel)
 void Character::setAngle(float angl)
 {
     Entity::setAngle(angl);
+
+    orientation_index = angle / 45;
+    if(orientation_index < 0)
+    {
+        orientation_index += 8;
+    }
 }
 
 void Character::setOrientation(const Vector2d<float>& ori)

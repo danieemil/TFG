@@ -6,6 +6,13 @@
 #include "BinaryTree.h"
 
 
+// Tipos de enemigos instanciables
+enum class EnemyType
+{
+    miner,
+};
+
+
 class Enemy : public Combat_Character
 {
 
@@ -19,9 +26,9 @@ public:
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
         float st_time = 0.0f, BinaryTree* bt = nullptr);
-    Enemy(const Enemy& cc);
+    Enemy(const Enemy& e);
 
-    Enemy& operator= (const Enemy& cc);
+    Enemy& operator= (const Enemy& e);
 
     // Métodos
         //Entity
@@ -43,58 +50,63 @@ public:
 
     // Setters
         //Entity
-    virtual void setSprite(Sprite* spr);
-    virtual void setPosition(const Vector2d<float>& pos);
-    virtual void setWorld(World* w);
-    virtual void setBody(Collider* c);
-    virtual void setVelocity(const Vector2d<float>& vel);
-    virtual void setAngle(float angl);
-    virtual void setOrientation(const Vector2d<float>& ori);
+    virtual void setSprite(Sprite* spr) override;
+    virtual void setPosition(const Vector2d<float>& pos) override;
+    virtual void setWorld(World* w) override;
+    virtual void setBody(Collider* c) override;
+    virtual void setVelocity(const Vector2d<float>& vel) override;
+    virtual void setAngle(float angl) override;
+    virtual void setOrientation(const Vector2d<float>& ori) override;
         //Character
-    virtual void setAcceleration(const Vector2d<float>& accel);
-    virtual void setFriction(const Vector2d<float>& frict);
+    virtual void setAcceleration(const Vector2d<float>& accel) override;
+    virtual void setFriction(const Vector2d<float>& frict) override;
         //Combat_Character
-    virtual bool addWeapon(Weapon* wp);
-    virtual void removeWeapon(Weapon* wp);
-    virtual void equipWeapon(size_t index);
-    virtual void setAttacked(bool at);
-    virtual void setStunned(bool st);
-    virtual void setLife(int l);
-    virtual void setMaxLife(int l);
-    virtual bool increaseLife(int l);
+    virtual bool addWeapon(Weapon* wp) override;
+    virtual void removeWeapon(Weapon* wp) override;
+    virtual void equipWeapon(size_t index) override;
+    virtual void equipNextWeapon() override;
+    virtual void setAttacked(bool at) override;
+    virtual void setStunned(bool st) override;
+    virtual void setLife(int l) override;
+    virtual void setMaxLife(int l) override;
+    virtual bool increaseLife(int l) override;
         //Enemy
+    virtual void setBehaviour(BinaryTree* bt);
 
     // Getters
         //Entity
-    virtual Sprite* getSprite() const;
-    virtual const Vector2d<float>& getPosition() const;
-    virtual World* getWorld() const;
-    virtual Collider* getBody() const;
-    virtual const Vector2d<float>& getVelocity() const;
-    virtual const Vector2d<float>& getPrePosition() const;
-    virtual const Vector2d<float>& getRenderPosition() const;
-    virtual const EntityType& getEntityType() const;
-    virtual float getAngle() const;
-    virtual Vector2d<float> getCenter() const;
-    virtual const Vector2d<float>& getOrientation() const;
+    virtual Sprite* getSprite() const override;
+    virtual const Vector2d<float>& getPosition() const override;
+    virtual World* getWorld() const override;
+    virtual Collider* getBody() const override;
+    virtual const Vector2d<float>& getVelocity() const override;
+    virtual const Vector2d<float>& getPrePosition() const override;
+    virtual const Vector2d<float>& getRenderPosition() const override;
+    virtual const EntityType& getEntityType() const override;
+    virtual float getAngle() const override;
+    virtual Vector2d<float> getCenter() const override;
+    virtual const Vector2d<float>& getOrientation() const override;
         //Character
-    virtual const Vector2d<float>& getAcceleration() const;
+    virtual const Vector2d<float>& getAcceleration() const override;
         //Combat_Character
-    virtual const std::vector<Weapon*>& getWeapons() const;
-    virtual Weapon* getWeaponEquipped() const;
-    virtual bool getAttacking() const;
-    virtual bool getAttacked() const;
-    virtual bool getStunned() const;
-    virtual int getLife() const;
-    virtual int getMaxLife() const;
+    virtual const std::vector<Weapon*>& getWeapons() const override;
+    virtual Weapon* getWeaponEquipped() const override;
+    virtual bool getAttacking() const override;
+    virtual bool getAttacked() const override;
+    virtual bool getStunned() const override;
+    virtual int getLife() const override;
+    virtual int getMaxLife() const override;
+    virtual bool hasWeapon(const WeaponType& wt) const override;
         //Enemy
+    virtual const EnemyType& getEnemyType() const;
 
     // Destructor
-    ~Enemy();
+    virtual ~Enemy();
 
 protected:
 
     BinaryTree* b_tree;
+    EnemyType sub_id;
 
 private:
 

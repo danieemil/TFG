@@ -1,26 +1,25 @@
-#ifndef _PLAYER_
-#define _PLAYER_
+#ifndef _MINER_
+#define _MINER_
 
-#include "Combat_Character.h"
-#include "Unvisual_Engine.h"
+#include "Enemy.h"
 
 
-class Player : public Combat_Character
+class Miner : public Enemy
 {
 
 public:
     // Constructores
-    Player(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+    Miner(int l, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
         World* w = nullptr, Shape* sh = nullptr,
-        CollisionFlag interests_flag = (CollisionFlag::enemy_hit | CollisionFlag::enemy_hurt),
+        CollisionFlag interests_flag = CollisionFlag::player_hurt,
         const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
-        float st_time = 0.0f);
-    Player(const Player& p);
+        float st_time = 0.0f, BinaryTree* bt = nullptr);
+    Miner(const Miner& cc);
 
-    Player& operator= (const Player& p);
+    Miner& operator= (const Miner& cc);
 
     // Métodos
         //Entity
@@ -34,8 +33,12 @@ public:
         //Combat_Character
     void attack() override;
     void die() override;
-        //Player
-    void processInput();
+        //Enemy
+    bool checkNearPlayer(float distance) override;
+    bool checkFarPlayer(float distance) override;
+    void actionTowardsPlayer() override;
+    void actionStop() override;
+        //Miner
 
     // Setters
         //Entity
@@ -59,7 +62,9 @@ public:
     void setLife(int l) override;
     void setMaxLife(int l) override;
     bool increaseLife(int l) override;
-        //Player
+        //Enemy
+    void setBehaviour(BinaryTree* bt);
+        //Miner
 
     // Getters
         //Entity
@@ -85,20 +90,17 @@ public:
     int getLife() const override;
     int getMaxLife() const override;
     bool hasWeapon(const WeaponType& wt) const override;
-        //Player
-    const Vector2d<float>& getHeading() const;
+        //Enemy
+    const EnemyType& getEnemyType() const override;
+        //Miner
 
     // Destructor
-    ~Player();
+    ~Miner();
 
 protected:
 
 private:
 
-    // En qué dirección se está apuntando según las teclas pulsadas
-    // X: +1=derecha,   0=No,   -1=izquierda
-    // Y: +1=abajo,     0=No,   -1=arriba
-    Vector2d<float> heading;
 
 };
 

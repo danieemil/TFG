@@ -1,20 +1,23 @@
-#ifndef _EXIT_
-#define _EXIT_
+#ifndef _DAGGER_
+#define _DAGGER_
 
-#include "Interactable.h"
+#include "Weapon.h"
 
 
-class Exit : public Interactable
+class Dagger : public Weapon
 {
 
 public:
     // Constructores
-    Exit(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
-    World* w = nullptr, Shape* sh = nullptr,
-    const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
-    Exit(const Exit& e);
+    Dagger(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
+        Sprite* spr = nullptr, World* w = nullptr, Shape* sh = nullptr,
+        CollisionFlag type_flag = CollisionFlag::none,
+        CollisionFlag interests_flag = CollisionFlag::none,
+        const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
+        Combat_Character* cc = nullptr, Animation* at_anim = nullptr);
+    Dagger(const Dagger& d);
 
-    Exit& operator= (const Exit& e);
+    Dagger& operator= (const Dagger& d);
 
     // Métodos
         //Entity
@@ -24,9 +27,9 @@ public:
     void interpolate(float rp = 0.0f) override;
     void manageAnimations() override;
     void collision(void * ent) override;
-        //Interactable
-        //Exit
-    void nextLevel();
+        //Weapon
+    void attack() override;
+        //Dagger
 
     // Setters
         //Entity
@@ -37,9 +40,13 @@ public:
     void setVelocity(const Vector2d<float>& vel) override;
     void setAngle(float angl) override;
     void setOrientation(const Vector2d<float>& ori) override;
-        //Interactable
-    void setValue(int val) override;
-        //Exit
+        //Weapon
+    void setCharacter(Combat_Character* cc) override;
+    void setRelativePosition(const Vector2d<float>& rl_pos) override;
+    void setAttackingTime(float at_time) override;
+    void setDamage(int dam) override;
+    void setKnockback(float knock) override;
+        //Dagger
 
     // Getters
         //Entity
@@ -54,16 +61,21 @@ public:
     float getAngle() const override;
     Vector2d<float> getCenter() const override;
     const Vector2d<float>& getOrientation() const override;
-        //Interactable
-    int getValue() const override;
-    const InteractableType& getInteractableType() const override;
-        //Exit
+        //Weapon
+    Combat_Character* getCharacter() const override;
+    const Vector2d<float>& getRelativePosition() const override;
+    bool getAttacking() const override;
+    int getDamage() const override;
+    float getKnockback() const override;
+    const WeaponType& getWeaponType() const override;
+        //Dagger
 
     // Destructor
-    ~Exit();
+    ~Dagger();
 
 protected:
 
+    void calculateCenter() override;
 
 private:
 

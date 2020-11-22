@@ -217,14 +217,21 @@ bool Combat_Character::addWeapon(Weapon* wp)
 {
     if(wp!=nullptr)
     {
-        for (auto w_eapon : weapons)
+        for (auto &&w_eapon : weapons)
         {
-            if(w_eapon==wp)
+            if(w_eapon!=nullptr)
             {
-                return false;
+                if(wp->getWeaponType() == w_eapon->getWeaponType())
+                {
+                    return false;
+                }
             }
         }
         weapons.emplace_back(wp);
+        if(equipped==nullptr)
+        {
+            equipped = wp;
+        }
         return true;
     }
     return false;
@@ -267,7 +274,33 @@ void Combat_Character::equipWeapon(size_t index)
     }
 
     equipped = weapons[ind];
+}
+
+void Combat_Character::equipNextWeapon()
+{
+    if(weapons.empty())
+    {
+        return;
+    }
+
+    size_t index = 0;
     
+    size_t i = 0;
+    for (auto &&weap : weapons)
+    {
+        if(weap==equipped)
+        {
+            i++;
+            if(i < weapons.size())
+            {
+                index = i;
+            }
+            break;
+        }
+    }
+
+    equipWeapon(index);
+
 }
 
 void Combat_Character::setAttacked(bool at)
@@ -418,6 +451,22 @@ int Combat_Character::getMaxLife() const
     return max_life;
 }
 
+bool Combat_Character::hasWeapon(const WeaponType& wt) const
+{
+    for (auto &&weapon : weapons)
+    {
+        if(weapon!=nullptr)
+        {
+            if(weapon->getWeaponType()==wt)
+            {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
 
 //=========================================
 //=              DESTRUCTOR   	    	  =
@@ -425,17 +474,14 @@ int Combat_Character::getMaxLife() const
 
 Combat_Character::~Combat_Character()
 {
-
-    auto weapon = weapons.begin();
-
-    while (weapon!=weapons.end())
+    for (auto &&weapon : weapons)
     {
-        Weapon* w = (*weapon);
-        if(w!=nullptr)
+        if(weapon!=nullptr)
         {
-            delete w;
+            delete weapon;
         }
-        weapons.erase(weapon);
     }
-    
+    weapons.clear();
+
+    equipped = nullptr;
 }

@@ -38,6 +38,7 @@ public:
     void setOrientation(const Vector2d<float>& ori) override;
         //Interactable
     void setValue(int val) override;
+    const InteractableType& getInteractableType() const override;
         //Health
 
     // Getters

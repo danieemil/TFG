@@ -9,9 +9,9 @@
 
 Exit::Exit(const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     const Vector2d<float>& ori)
-: Interactable(0, pos, spr, w, sh, CollisionFlag::exit_hit, CollisionFlag::player_hit, ori)
+: Interactable(0, pos, spr, w, sh, CollisionFlag::player_hit, ori)
 {
-    
+    sub_id = InteractableType::exit;
 }
 
 Exit::Exit(const Exit& e)
@@ -182,6 +182,11 @@ const Vector2d<float>& Exit::getOrientation() const
 int Exit::getValue() const
 {
     return Interactable::getValue();
+}
+
+const InteractableType& Exit::getInteractableType() const
+{
+    return Interactable::getInteractableType();
 }
 
 

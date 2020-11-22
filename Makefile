@@ -195,7 +195,7 @@ graphics: make_conversor $(TILESETDIRS) $(T3SFILES) $(MAPSBUILD) $(MPFILES)
 
 
 make_conversor:
-	$(MAKE) -C $(CONVERSOR_FOLDER)
+	@$(MAKE) -C $(CONVERSOR_FOLDER) all
 
 
 $(MAPSBUILD):
@@ -216,12 +216,13 @@ endif
 
 #---------------------------------------------------------------------------------
 clean:
-	@echo clean ...
+	@echo cleaning ...
 	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD)
 
 cleanall:
 	@echo clean ...
 	@rm -fr $(BUILD) $(MAPSBUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD) $(TILESETDIRS) $(T3SFILES)
+	@$(MAKE) -C $(CONVERSOR_FOLDER) clean
 
 citra: all
 

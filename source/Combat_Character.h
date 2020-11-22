@@ -51,6 +51,7 @@ public:
     virtual bool addWeapon(Weapon* wp);
     virtual void removeWeapon(Weapon* wp);
     virtual void equipWeapon(size_t index);
+    virtual void equipNextWeapon();
     virtual void setAttacked(bool at);
     virtual void setStunned(bool st);
     virtual void setLife(int l);
@@ -80,6 +81,7 @@ public:
     virtual bool getStunned() const;
     virtual int getLife() const;
     virtual int getMaxLife() const;
+    virtual bool hasWeapon(const WeaponType& wt) const;
 
     // Destructor
     ~Combat_Character();

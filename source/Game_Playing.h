@@ -3,7 +3,6 @@
 
 #include "Game_State.h"
 #include "World.h"
-#include "SpriteManager.h"
 #include "LevelFactory.h"
 #include "HUD.h"
 
@@ -31,13 +30,14 @@ public:
     void updateCollisions();
     void interpolate();
     
-
     void resetLevel();
     void nextLevel();
 
     void erasePlayer();
 
     // Setters
+    void setTopBackground(Sprite* spr) override;
+    void setBottomBackground(Sprite* spr) override;
 
     // Getters
     state_type getStateType() const override;

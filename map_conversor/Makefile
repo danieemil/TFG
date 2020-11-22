@@ -26,7 +26,7 @@ LINKED_FILE := conversor
 .PHONY: all clean
 
 
-all: clean $(LINKED_FILE)
+all: $(LINKED_FILE)
 
 
 

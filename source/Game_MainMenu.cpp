@@ -150,11 +150,13 @@ void Game_MainMenu::update()
 
 void Game_MainMenu::renderTop()
 {
-    
+    Game_State::renderTop();   
 }
 
 void Game_MainMenu::renderBottom()
 {
+    Game_State::renderBottom();
+
     gui_elements.render();
 
     menu_title.render();
@@ -185,7 +187,15 @@ void Game_MainMenu::addEvent(Event e)
 //=               SETTERS   	    	  =
 //=========================================
 
+void Game_MainMenu::setTopBackground(Sprite* spr)
+{
+    Game_State::setTopBackground(spr);
+}
 
+void Game_MainMenu::setBottomBackground(Sprite* spr)
+{
+    Game_State::setBottomBackground(spr);
+}
 
 
 //=========================================

@@ -2,12 +2,15 @@
 #include "AI_Engine.h"
 
 
+#define DEBUG true
+
+
 int main(int argc, char* argv[])
 {
 
 	//Inicializamos todo
 	unvisual::init();
-	//unvisual::initDebugger(N3DS_screenV::N3DS_BOTTOM);
+	if(DEBUG) unvisual::initDebugger(N3DS_screenV::N3DS_BOTTOM);
 	physics::init();
 	AI::init();
 
@@ -19,7 +22,7 @@ int main(int argc, char* argv[])
 	
 	// Deinicializar todo(si no se hace, habrán memory leaks)
 	unvisual::deInit();
-	//unvisual::deInitDebugger();
+	unvisual::deInitDebugger();
 	physics::deInit();
 	AI::deInit();
 

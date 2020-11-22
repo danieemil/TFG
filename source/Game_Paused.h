@@ -27,6 +27,8 @@ public:
     void addEvent(Event e) override;
 
     // Setters
+    void setTopBackground(Sprite* spr) override;
+    void setBottomBackground(Sprite* spr) override;
 
     // Getters
     state_type getStateType() const override;

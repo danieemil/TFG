@@ -5,16 +5,8 @@
 #include <unordered_map>
 #include "Exit.h"
 #include "Health.h"
+#include "I_Weapon.h"
 #include "SpriteManager.h"
-
-
-// Tipos de armas instanciables
-enum class InteractableType
-{
-    exit,
-    health,
-};
-
 
 
 class InteractableManager
@@ -32,6 +24,7 @@ public:
 
     Exit* createExit(const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
     Health* createHealth(const Vector2d<float>& pos = Vector2d<float>(), int value = 0);
+    I_Weapon* createWeapon(const Vector2d<float>& pos = Vector2d<float>(), int value = -1);
 
     // Setters
     void setSprites(const char* tileset);

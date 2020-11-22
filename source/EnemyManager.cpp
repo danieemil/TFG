@@ -51,7 +51,7 @@ Enemy* EnemyManager::createEnemy(EnemyType et, const Vector2d<float>& pos)
 }
 
 
-Enemy* EnemyManager::createMiner(const Vector2d<float>& pos)
+Miner* EnemyManager::createMiner(const Vector2d<float>& pos)
 {
     // Gráficos del enemigo minero
     Sprite* enemy_sprite = sprites_manager.createSprite(0);
@@ -63,6 +63,7 @@ Enemy* EnemyManager::createMiner(const Vector2d<float>& pos)
     if(enemy_sprite!=nullptr)
     {
         enemy_shape = enemy_sprite->createSpriteCollisionShape();
+        enemy_sprite->setCenter({0.5f,0.5f});
     }
 
     // Animaciones del enemigo minero
@@ -81,7 +82,7 @@ Enemy* EnemyManager::createMiner(const Vector2d<float>& pos)
     BinaryTree* bt = AI::getBehaviour(AI::bt_types::enemy_agressive);
 
     // Creación final del enemigo minero
-    Enemy* enemy = new Enemy(enemy_life, pos, enemy_sprite, nullptr, enemy_shape,
+    Miner* enemy = new Miner(enemy_life, pos, enemy_sprite, nullptr, enemy_shape,
     enemy_interests, enemy_init_orientation, enemy_max_vel, enemy_max_accel,
     enemy_friction, nullptr, enemy_stunned_time, bt);
 

@@ -72,6 +72,18 @@ void LevelFactory::loadSave()
     // Obtener datos del jugador
     file2mem(in, &player_data.max_life);
     file2mem(in, &player_data.life);
+
+    file2mem(in, &player_data.num_weapons);
+
+    player_data.weapons.clear();
+
+    for (int i = 0; i < player_data.num_weapons; i++)
+    {
+        int weapon = -1;
+        file2mem(in, &weapon);
+
+        player_data.weapons.push_back(weapon);
+    }
     
     in.close();
 }
@@ -97,6 +109,17 @@ void LevelFactory::save()
                 player_data.max_life = max_life;
                 player_data.life = life;
             }
+            player_data.weapons.clear();
+
+            auto weapons = player->getWeapons();
+
+            player_data.num_weapons = (int)weapons.size();
+
+            for (auto it = weapons.begin(); it != weapons.end(); it++)
+            {
+                int weapon = (int)((*it)->getWeaponType());
+                player_data.weapons.push_back(weapon);
+            }
         }
     }
 
@@ -105,6 +128,15 @@ void LevelFactory::save()
 
     // Guardar vida actual del jugador
     mem2file(out, player_data.life);
+
+    // Guardar número de armas del jugador
+    mem2file(out, player_data.num_weapons);
+
+    // Guardar los tipos de armas que tiene el jugador
+    for (auto &&w : player_data.weapons)
+    {
+        mem2file(out, w);
+    }
 
     out.close();
 }
@@ -147,6 +179,7 @@ void LevelFactory::resetSave()
     out.open(save_file, std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
 
     int level = 0;
+    int weapons = 0;
     int max_life = 8;
     int life = 8;
 
@@ -158,6 +191,11 @@ void LevelFactory::resetSave()
 
     // Guardar vida inicial del jugador
     mem2file(out, life);
+
+    // Guardar número de armas del jugador
+    mem2file(out, weapons);
+
+    // Guardar valores de cada arma del jugador
 
 
     out.close();
@@ -298,12 +336,9 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
     // Entidades
         // Jugador
 	Vector2d<float> player_position = Vector2d<float>(250.5f,150.5f);
-    int player_weapon_type = -1;
 
     file2mem(in, &player_position.x);
     file2mem(in, &player_position.y);
-
-    file2mem(in, &player_weapon_type);
 
     Player* player = world->getPlayer();
 
@@ -312,26 +347,23 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
         player = world->createPlayer(player_position);
     }
 
-    if(player->getWeapons().empty())
+    if(player!=nullptr)
     {
-        // Creamos el arma inicial del jugador
-        world->createWeapon((WeaponType)player_weapon_type, player);
-        if(player!=nullptr)
+        player->setPosition(player_position);
+
+        player->setMaxLife(player_data.max_life);
+        player->setLife(player_data.life);
+
+        for (auto &&w : player_data.weapons)
         {
-            player->equipWeapon(0);
+            world->createWeapon((WeaponType)w, player);
         }
+
+        // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
+        unvisual::setCurrentScreenTarget(&player->getRenderPosition());
+        unvisual::getCurrentScreen()->setPosition(Vector2d<float>(0,0));
     }
-
-    player->setPosition(player_position);
-
-    player->setMaxLife(player_data.max_life);
-    player->setLife(player_data.life);
-
     
-
-    // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
-    unvisual::setCurrentScreenTarget(&player->getRenderPosition());
-    unvisual::getCurrentScreen()->setPosition(Vector2d<float>(0,0));
 
 
         // Enemigos
@@ -382,8 +414,7 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
         file2mem(in, &interactable_value);
 
         // Crear interactuable con los datos proporcionados
-
-        Interactable* inter = world->createInteractable((InteractableType)interactable_type, interactable_position, interactable_value);
+        world->createInteractable((InteractableType)interactable_type, interactable_position, interactable_value);
 
     }
 

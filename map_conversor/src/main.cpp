@@ -64,7 +64,6 @@ enum entity_type
 struct Player
 {
     point p;
-    int weapon;
 };
 
 struct Enemy
@@ -315,25 +314,6 @@ int readLevelXML(const char* level_path)
                             {
                                 // Datos del jugador
                                 pl.p = posit;
-                                XMLElement* property = properties->FirstChildElement();
-                                while(property!=nullptr)
-                                {
-                                    const XMLAttribute* attr = property->FindAttribute("name");
-                                    if(attr!=nullptr)
-                                    {
-                                        std::string prop_name = attr->Value();
-                                        if(prop_name == std::string("Weapon"))
-                                        {
-                                            t_val = property->FindAttribute("value");
-                                            if(t_val!=nullptr)
-                                            {
-                                                pl.weapon = t_val->IntValue();
-                                            }
-                                        }
-                                    }
-                                    
-                                    property = property->NextSiblingElement();
-                                }
                             }
                             else if(value == entity_type::enemy)
                             {
@@ -494,8 +474,6 @@ void dumpBin(const char* file_path)
     mem2file(out, pl.p.x);
     mem2file(out, pl.p.y);
 
-    mem2file(out, pl.weapon);
-
         // Enemigos
     mem2file(out, (int)enemies.size());
     for (auto &&enemy : enemies)
@@ -648,8 +626,6 @@ void readBin(const char* file_path)
         // Jugador
     file2mem(in, &pl.p.x);
     file2mem(in, &pl.p.y);
-
-    file2mem(in, &pl.weapon);
 
 
         // Enemigos

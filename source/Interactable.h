@@ -4,6 +4,14 @@
 #include "Entity.h"
 
 
+// Tipos de interactuables instanciables
+enum class InteractableType
+{
+    exit,
+    health,
+    weapon,
+};
+
 class Interactable : public Entity
 {
 
@@ -11,7 +19,6 @@ public:
     // Constructores
     Interactable(int val = 0, const Vector2d<float>& pos = Vector2d<float>(),
         Sprite* spr = nullptr, World* w = nullptr, Shape* sh = nullptr,
-        CollisionFlag type_flag = CollisionFlag::none,
         CollisionFlag interests_flag = CollisionFlag::none,
         const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
     Interactable(const Interactable& i);
@@ -55,12 +62,14 @@ public:
     virtual const Vector2d<float>& getOrientation() const override;
         //Interactable
     virtual int getValue() const;
+    virtual const InteractableType& getInteractableType() const;
 
     // Destructor
     virtual ~Interactable();
 
 protected:
     int value;
+    InteractableType sub_id;
 
 private:
 

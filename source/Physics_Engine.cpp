@@ -238,7 +238,6 @@ namespace physics
                 collider->update(dt);
             }
         }
-        
     }
 
     // Modo debug para dibujar las bounding boxes cuando intersectan dos cuerpos entre sí

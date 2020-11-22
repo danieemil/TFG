@@ -130,6 +130,8 @@ void Game_Paused::update()
 
 void Game_Paused::renderTop()
 {
+    Game_State::renderTop();
+
     if(playingState!=nullptr)
     {
         playingState->renderTop();
@@ -138,11 +140,12 @@ void Game_Paused::renderTop()
     unvisual::drawRectangle(background_position, 0.1f, background_size, 0,0,0,200);
 
     menu_title.render();
-
 }
 
 void Game_Paused::renderBottom()
 {
+    Game_State::renderBottom();
+
     gui_elements.render();
 }
 
@@ -176,7 +179,15 @@ void Game_Paused::addEvent(Event e)
 //=               SETTERS   	    	  =
 //=========================================
 
+void Game_Paused::setTopBackground(Sprite* spr)
+{
+    Game_State::setTopBackground(spr);
+}
 
+void Game_Paused::setBottomBackground(Sprite* spr)
+{
+    Game_State::setBottomBackground(spr);
+}
 
 
 //=========================================

@@ -18,13 +18,12 @@ enum class CollisionType
 
 enum class CollisionFlag
 {
-    none        = 0,
-    player_hit  = 1 << 0,
-    player_hurt = 1 << 1,
-    enemy_hit   = 1 << 2,
-    enemy_hurt  = 1 << 3,
-    exit_hit    = 1 << 4,
-    health_hit  = 1 << 5,
+    none                = 0,
+    player_hit          = 1 << 0,
+    player_hurt         = 1 << 1,
+    enemy_hit           = 1 << 2,
+    enemy_hurt          = 1 << 3,
+    interactable_hit    = 1 << 4,
 };
 
 // 0+8+0+1 |16+8+0+0 =16+8+0+1 -> simula el comportamiento de una puerta OR

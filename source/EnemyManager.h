@@ -3,15 +3,8 @@
 
 #include "functional"
 #include <unordered_map>
-#include "Enemy.h"
+#include "Miner.h"
 #include "SpriteManager.h"
-
-
-// Tipos de armas instanciables
-enum class EnemyType
-{
-    miner,
-};
 
 
 
@@ -28,7 +21,7 @@ public:
     // Métodos
     Enemy* createEnemy(EnemyType et, const Vector2d<float>& pos = Vector2d<float>());
 
-    Enemy* createMiner(const Vector2d<float>& pos = Vector2d<float>());
+    Miner* createMiner(const Vector2d<float>& pos = Vector2d<float>());
 
     // Setters
     void setSprites(const char* tileset);

@@ -6,15 +6,15 @@
 //=========================================
 
 Interactable::Interactable(int val, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
-    CollisionFlag type_flag, CollisionFlag interests_flag, const Vector2d<float>& ori)
-: Entity(pos, spr, w, new Collider(pos, sh, type_flag,
+    CollisionFlag interests_flag, const Vector2d<float>& ori)
+: Entity(pos, spr, w, new Collider(pos, sh, CollisionFlag::interactable_hit,
     interests_flag, CollisionType::col_none), ori), value(val)
 {
     id = EntityType::e_interactable;
 }
 
 Interactable::Interactable(const Interactable& i)
-: Entity(i), value(i.value)
+: Entity(i), value(i.value), sub_id(i.sub_id)
 {
     id = EntityType::e_interactable;
 }
@@ -23,6 +23,7 @@ Interactable& Interactable::operator= (const Interactable& i)
 {
     this->Entity::operator=(i);
     value = i.value;
+    sub_id = i.sub_id;
 
     return *this;
 }
@@ -169,6 +170,11 @@ const Vector2d<float>& Interactable::getOrientation() const
 int Interactable::getValue() const
 {
     return value;
+}
+
+const InteractableType& Interactable::getInteractableType() const
+{
+    return sub_id;
 }
 
 

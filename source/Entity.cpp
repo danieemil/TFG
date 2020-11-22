@@ -97,16 +97,6 @@ void Entity::update()
     {
         position = position + velocity;
     }
-    
-    // Obtener el ángulo a partir de la orientación
-    if(orientation.x!=0.0f)
-    {
-        setAngle((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y));
-    }
-    else
-    {
-        setAngle(90.0f + 90.0f*orientation.y);
-    }
 }
 
 void Entity::updateFromCollider()
@@ -212,18 +202,22 @@ void Entity::setVelocity(const Vector2d<float>& vel)
 
 void Entity::setAngle(float angl)
 {
-    if(angle == angl) return;
-
     angle = angl;
-    if(body!=nullptr)
-    {
-        body->setGlobalRotation(angle);
-    }
 }
 
 void Entity::setOrientation(const Vector2d<float>& ori)
 {
     orientation = ori;
+
+    // Obtener el ángulo a partir de la orientación
+    if(orientation.x!=0.0f)
+    {
+        setAngle((90.0f*orientation.x) + (45.0f*orientation.x*orientation.y));
+    }
+    else
+    {
+        setAngle(90.0f + 90.0f*orientation.y);
+    }
 }
 
 

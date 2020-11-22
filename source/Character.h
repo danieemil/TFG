@@ -65,6 +65,7 @@ public:
 protected:
 
     Vector2d<float> acceleration;
+    int orientation_index;
 
 private:
 

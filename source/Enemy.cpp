@@ -17,16 +17,17 @@ Enemy::Enemy(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh
     id = EntityType::e_enemy;
 }
 
-Enemy::Enemy(const Enemy& cc)
-: Combat_Character(cc), b_tree(cc.b_tree)
+Enemy::Enemy(const Enemy& e)
+: Combat_Character(e), b_tree(e.b_tree), sub_id(e.sub_id)
 {
 
 }
 
-Enemy& Enemy::operator= (const Enemy& cc)
+Enemy& Enemy::operator= (const Enemy& e)
 {
-    Combat_Character::operator=(cc);
-    b_tree = cc.b_tree;
+    Combat_Character::operator=(e);
+    b_tree = e.b_tree;
+    sub_id = e.sub_id;
     
     return *this;
 }
@@ -37,7 +38,18 @@ Enemy& Enemy::operator= (const Enemy& cc)
 
 void Enemy::render(const Vector2d<float>& view_pos)
 {
-    Combat_Character::render(view_pos);
+    //Combat_Character::render(view_pos);
+
+    if(rendering!=nullptr)
+    {
+        rendering->setPosition(render_position);
+        rendering->drawSprite(view_pos);
+    }
+
+    if(equipped!=nullptr)
+    {
+        equipped->render(view_pos);
+    }
 }
 
 void Enemy::update()
@@ -140,7 +152,7 @@ void Enemy::actionTowardsPlayer()
         if((dir.y * ori.y) > 0.5f) dir.y = 1.0f * ori.y;
         else dir.y = 0.0f;
 
-        orientation = dir;
+        setOrientation(dir);
 
         float accel = 20.0f;
 
@@ -188,7 +200,7 @@ void Enemy::setVelocity(const Vector2d<float>& vel)
 
 void Enemy::setAngle(float angl)
 {
-    //Combat_Character::setAngle(angl);
+    Combat_Character::setAngle(angl);
 }
 
 void Enemy::setOrientation(const Vector2d<float>& ori)
@@ -239,6 +251,11 @@ void Enemy::equipWeapon(size_t index)
     Combat_Character::equipWeapon(index);
 }
 
+void Enemy::equipNextWeapon()
+{
+    Combat_Character::equipNextWeapon();
+}
+
 void Enemy::setAttacked(bool at)
 {
     Combat_Character::setAttacked(at);
@@ -262,6 +279,11 @@ void Enemy::setMaxLife(int l)
 bool Enemy::increaseLife(int l)
 {
     return Combat_Character::increaseLife(l);
+}
+
+void Enemy::setBehaviour(BinaryTree* bt)
+{
+    b_tree = bt;
 }
 
 
@@ -362,6 +384,16 @@ int Enemy::getLife() const
 int Enemy::getMaxLife() const
 {
     return Combat_Character::getMaxLife();
+}
+
+bool Enemy::hasWeapon(const WeaponType& wt) const
+{
+    return Combat_Character::hasWeapon(wt);
+}
+
+const EnemyType& Enemy::getEnemyType() const
+{
+    return sub_id;
 }
 
 //=========================================

@@ -49,6 +49,8 @@ private:
     {
         int max_life;
         int life;
+        int num_weapons;
+        std::vector<int> weapons;
     };
 
     PlayerData player_data;

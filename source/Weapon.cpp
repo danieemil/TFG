@@ -36,7 +36,7 @@ Weapon::Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_
 Weapon::Weapon(const Weapon& w)
 : Entity(w), character(w.character), attack_rel_position(w.attack_rel_position),
     center_rel(w.center_rel), attacking(false), attack_time(w.attack_time), damage(w.damage),
-    knockback(w.knockback), attack_animation(w.attack_animation)
+    knockback(w.knockback), attack_animation(w.attack_animation), sub_id(w.sub_id)
 {
     calculateCenter();
     
@@ -66,6 +66,7 @@ Weapon& Weapon::operator= (const Weapon& w)
     knockback = w.knockback;
 
     attack_animation = w.attack_animation;
+    sub_id = w.sub_id;
 
     return *this;
 }
@@ -211,6 +212,11 @@ void Weapon::setVelocity(const Vector2d<float>& vel)
 void Weapon::setAngle(float angl)
 {
     Entity::setAngle(angl);
+
+    if(body!=nullptr)
+    {
+        body->setGlobalRotation(angle);
+    }
 }
 
 void Weapon::setOrientation(const Vector2d<float>& ori)
@@ -341,6 +347,11 @@ int Weapon::getDamage() const
 float Weapon::getKnockback() const
 {
     return knockback;
+}
+
+const WeaponType& Weapon::getWeaponType() const
+{
+    return sub_id;
 }
 
 

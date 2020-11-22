@@ -1,3 +1,4 @@
 --atlas -f rgba8888 -z auto
 sprites/Interactables/Exit.png
 sprites/Interactables/Health.png
+sprites/Interactables/Weapon_Dagger.png

@@ -44,12 +44,15 @@ Weapon* WeaponManager::createWeapon(WeaponType wt, Combat_Character* cc)
 {
     if(cc!=nullptr)
     {
-        auto it = weapons_map.find(wt);
-        if(it != weapons_map.end())
+        if (!cc->hasWeapon(wt))
         {
-            if(it->second!=nullptr)
+            auto it = weapons_map.find(wt);
+            if(it != weapons_map.end())
             {
-                return it->second(this, cc);
+                if(it->second!=nullptr)
+                {
+                    return it->second(this, cc);
+                }
             }
         }
     }
@@ -57,9 +60,8 @@ Weapon* WeaponManager::createWeapon(WeaponType wt, Combat_Character* cc)
 }
 
 
-Weapon* WeaponManager::createDagger(Combat_Character* cc)
+Dagger* WeaponManager::createDagger(Combat_Character* cc)
 {
-
     // Gráficos de la daga
     Sprite* weapon_sprite = sprites_manager.createSprite(0);
     if(weapon_sprite!=nullptr)
@@ -90,9 +92,9 @@ Weapon* WeaponManager::createDagger(Combat_Character* cc)
     float weapon_time_attack = 0.3f;
     Vector2d<float> weapon_relative_position_attacking = Vector2d<float>(0.0f,-10.0f);
     Vector2d<float> ori = cc->getOrientation();
-    Weapon* w = new Weapon(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc, weapon_anim);
+    Dagger* d = new Dagger(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc, weapon_anim);
 
-    return w;
+    return d;
 }
 
 Weapon* WeaponManager::createSword(Combat_Character* cc)

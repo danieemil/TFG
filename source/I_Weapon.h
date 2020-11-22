@@ -1,20 +1,20 @@
-#ifndef _EXIT_
-#define _EXIT_
+#ifndef _I_WEAPON_
+#define _I_WEAPON_
 
 #include "Interactable.h"
 
 
-class Exit : public Interactable
+class I_Weapon : public Interactable
 {
 
 public:
     // Constructores
-    Exit(const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
+    I_Weapon(int val, const Vector2d<float>& pos = Vector2d<float>(), Sprite* spr = nullptr,
     World* w = nullptr, Shape* sh = nullptr,
     const Vector2d<float>& ori = Vector2d<float>(0.0f, -1.0f));
-    Exit(const Exit& e);
+    I_Weapon(const I_Weapon& iw);
 
-    Exit& operator= (const Exit& e);
+    I_Weapon& operator= (const I_Weapon& iw);
 
     // Métodos
         //Entity
@@ -25,8 +25,7 @@ public:
     void manageAnimations() override;
     void collision(void * ent) override;
         //Interactable
-        //Exit
-    void nextLevel();
+        //I_Weapon
 
     // Setters
         //Entity
@@ -39,7 +38,8 @@ public:
     void setOrientation(const Vector2d<float>& ori) override;
         //Interactable
     void setValue(int val) override;
-        //Exit
+    const InteractableType& getInteractableType() const override;
+        //I_Weapon
 
     // Getters
         //Entity
@@ -56,11 +56,10 @@ public:
     const Vector2d<float>& getOrientation() const override;
         //Interactable
     int getValue() const override;
-    const InteractableType& getInteractableType() const override;
-        //Exit
+        //I_Weapon
 
     // Destructor
-    ~Exit();
+    ~I_Weapon();
 
 protected:
 
