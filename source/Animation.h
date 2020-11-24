@@ -18,6 +18,7 @@ public:
 
     void addBackSprite(Sprite* spr, float dur);
     void resetAnimation();
+    void endAnimation();
     void nextSprite();
     bool hasEnded() const;
     bool hasSprites() const;
@@ -34,8 +35,6 @@ public:
     ~Animation();
 
 private:
-
-    Vector2d<float> position;
 
     std::vector<std::pair<Sprite*, float>> sprites;
 

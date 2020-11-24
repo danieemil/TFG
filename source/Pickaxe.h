@@ -1,23 +1,23 @@
-#ifndef _SWORD_
-#define _SWORD_
+#ifndef _PICKAXE_
+#define _PICKAXE_
 
 #include "Weapon.h"
 
 
-class Sword : public Weapon
+class Pickaxe : public Weapon
 {
 
 public:
     // Constructores
-    Sword(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
+    Pickaxe(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
         Sprite* spr = nullptr, World* w = nullptr, Shape* sh = nullptr,
         CollisionFlag type_flag = CollisionFlag::none,
         CollisionFlag interests_flag = CollisionFlag::none,
         const Vector2d<float>& ori = Vector2d<float>(0.0f,-1.0f),
         Combat_Character* cc = nullptr, Animation* at_anim = nullptr);
-    Sword(const Sword& s);
+    Pickaxe(const Pickaxe& p);
 
-    Sword& operator= (const Sword& s);
+    Pickaxe& operator= (const Pickaxe& p);
 
     // Métodos
         //Entity
@@ -30,7 +30,7 @@ public:
         //Weapon
     void attack() override;
     void cancelAttack() override;
-        //Sword
+        //Pickaxe
 
     // Setters
         //Entity
@@ -47,7 +47,7 @@ public:
     void setAttackingTime(float at_time) override;
     void setDamage(int dam) override;
     void setKnockback(float knock) override;
-        //Sword
+        //Pickaxe
 
     // Getters
         //Entity
@@ -69,10 +69,10 @@ public:
     int getDamage() const override;
     float getKnockback() const override;
     const WeaponType& getWeaponType() const override;
-        //Sword
+        //Pickaxe
 
     // Destructor
-    ~Sword();
+    ~Pickaxe();
 
 protected:
 

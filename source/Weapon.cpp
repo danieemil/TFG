@@ -19,12 +19,19 @@ Weapon::Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_
 {
     id = EntityType::e_weapon;
 
-    calculateCenter();
-    
-    if(character!=nullptr)
+    rendering = spr;
+
+    if(at_anim!=nullptr)
     {
-        character->addWeapon(this);
+        at_anim->resetAnimation();
+        Sprite* spr_anim = at_anim->getActualSprite();
+        if(spr_anim!=nullptr)
+        {
+            rendering = spr_anim;
+        }
     }
+
+    calculateCenter();
 
     if(body!=nullptr)
     {
@@ -112,7 +119,7 @@ void Weapon::update()
 
     if(character!=nullptr)
     {
-        position += character->getPosition();
+        position += character->getCenter();
         setOrientation(character->getOrientation());
     }
 
@@ -135,7 +142,7 @@ void Weapon::interpolate(float rp)
 
     if(character!=nullptr)
     {
-        render_position += character->getRenderPosition();
+        render_position += character->getCenter();
     }
 }
 
@@ -175,6 +182,22 @@ void Weapon::attack()
         if(attack_animation!=nullptr && attack_animation->hasSprites())
         {
             attack_animation->resetAnimation();
+        }
+    }
+}
+
+void Weapon::cancelAttack()
+{
+    if(attacking)
+    {
+        attacking = false;
+        if(body!=nullptr)
+        {
+            body->setActive(false);
+        }
+        if(attack_animation!=nullptr)
+        {
+            attack_animation->endAnimation();
         }
     }
 }
@@ -380,13 +403,13 @@ void Weapon::calculateCenter()
     position = attack_rel_position;
     if(character!=nullptr)
     {
-        position += character->getPosition();
+        position += character->getCenter();
         Sprite* spr = character->getSprite();
-        if(spr!=nullptr && sprite!=nullptr)
+        if(spr!=nullptr && rendering!=nullptr)
         {
-            Vector2d<float> spr_size((float)sprite->getSize().x, (float)sprite->getSize().y);
+            Vector2d<float> spr_size((float)rendering->getSize().x, (float)rendering->getSize().y);
 
-            Vector2d<float> spr_pos = spr->getCenter();
+            Vector2d<float> spr_pos;// = spr->getCenter();
             Vector2d<float> rel_cent = spr_pos - attack_rel_position;
 
             center_rel = rel_cent / spr_size;

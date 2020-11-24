@@ -66,7 +66,8 @@ void I_Weapon::collision(void* ent)
             Player* p = static_cast<Player*>(e);
             if(world!=nullptr)
             {
-                Weapon* w = world->createWeapon((WeaponType)value, p);
+                WeaponType wt = (WeaponType)value;
+                Weapon* w = world->createWeapon(wt, p);
                 if(w!=nullptr)
                 {
                     Game::Instance()->deleteEntityEvent(this);

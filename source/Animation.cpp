@@ -49,6 +49,16 @@ void Animation::resetAnimation()
     timer.reset();
 }
 
+void Animation::endAnimation()
+{
+    size_t s = sprites.size();
+    if(s>0)
+    {
+        index = s - 1;
+    }
+    ended = true;
+}
+
 void Animation::nextSprite()
 {
     size_t i = index + 1;

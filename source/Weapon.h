@@ -10,6 +10,7 @@ enum class WeaponType
 {
     dagger,
     sword,
+    pickaxe,
 };
 
 class Weapon : public Entity
@@ -37,6 +38,7 @@ public:
     virtual void collision(void * ent) override;
         //Weapon
     virtual void attack();
+    virtual void cancelAttack();
 
     // Setters
         //Entity

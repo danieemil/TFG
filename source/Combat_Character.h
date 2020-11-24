@@ -34,6 +34,7 @@ public:
         //Character
         //Combat_Character
     virtual void attack();
+    virtual void cancelAttack();
     virtual void die();
 
     // Setters

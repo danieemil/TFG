@@ -25,7 +25,7 @@ public:
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
-        float st_time = 0.0f, float inv_time = 0.0f, BinaryTree* bt = nullptr);
+        float st_time = 0.0f, float inv_time = 0.0f, BinaryTree* bt = nullptr, float vr = 10.0f);
     Enemy(const Enemy& e);
 
     Enemy& operator= (const Enemy& e);
@@ -41,12 +41,16 @@ public:
         //Character
         //Combat_Character
     virtual void attack() override;
+    virtual void cancelAttack() override;
     virtual void die() override;
         //Enemy
     virtual bool checkNearPlayer(float distance);
     virtual bool checkFarPlayer(float distance);
-    virtual void actionTowardsPlayer();
+    virtual void actionMoveTowardsPlayer();
     virtual void actionStop();
+    virtual bool checkSeePlayer();
+    virtual bool checkPlayerInWeaponRange();
+    virtual void actionOrientateToPlayer();
 
     // Setters
         //Entity
@@ -72,6 +76,7 @@ public:
     virtual bool increaseLife(int l) override;
         //Enemy
     virtual void setBehaviour(BinaryTree* bt);
+    virtual void setVisionRange(float vr);
 
     // Getters
         //Entity
@@ -100,6 +105,7 @@ public:
     virtual bool hasWeapon(const WeaponType& wt) const override;
         //Enemy
     virtual const EnemyType& getEnemyType() const;
+    virtual float getVisionRange() const;
 
     // Destructor
     virtual ~Enemy();
@@ -108,6 +114,8 @@ protected:
 
     BinaryTree* b_tree;
     EnemyType sub_id;
+
+    float vision_range;
 
 private:
 

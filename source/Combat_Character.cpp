@@ -153,6 +153,7 @@ void Combat_Character::collision(void* ent)
             invincible = true;
             invincibility_timing.reset();
 
+            cancelAttack();
 
             life = life - w->getDamage();
         }
@@ -174,6 +175,14 @@ void Combat_Character::attack()
             }
             equipped->attack();
         }
+    }
+}
+
+void Combat_Character::cancelAttack()
+{
+    if(equipped!=nullptr)
+    {
+        equipped->cancelAttack();
     }
 }
 
@@ -273,26 +282,20 @@ void Combat_Character::removeWeapon(Weapon* wp)
                 return;
             }
         }
-        
     }
 }
 
 void Combat_Character::equipWeapon(size_t index)
 {
-    if(weapons.empty())
+    if(equipped!=nullptr && equipped->getAttacking())
     {
-        equipped = nullptr;
         return;
     }
 
-    size_t ind = index;
-
-    if(ind >= weapons.size())
+    if(index < weapons.size() && index >= (size_t)0)
     {
-        ind = weapons.size() - 1;
+        equipped = weapons[index];
     }
-
-    equipped = weapons[ind];
 }
 
 void Combat_Character::equipNextWeapon()
@@ -303,7 +306,7 @@ void Combat_Character::equipNextWeapon()
     }
 
     size_t index = 0;
-    
+
     size_t i = 0;
     for (auto &&weap : weapons)
     {
@@ -316,6 +319,7 @@ void Combat_Character::equipNextWeapon()
             }
             break;
         }
+        i++;
     }
 
     equipWeapon(index);

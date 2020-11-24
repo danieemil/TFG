@@ -52,6 +52,10 @@ World& World::operator= (const World& w)
 Weapon* World::createWeapon(WeaponType wt, Combat_Character* cc)
 {
     Weapon* w = entity_manager.createWeapon(wt, cc);
+    if(cc!=nullptr)
+    {
+        cc->addWeapon(w);
+    }
     
     return w;
 }

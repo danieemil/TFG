@@ -78,14 +78,15 @@ Miner* EnemyManager::createMiner(const Vector2d<float>& pos)
     Vector2d<float> enemy_init_orientation = Vector2d<float>(0.0f,-1.0f);
     float enemy_stunned_time = 0.5f;
     float enemy_invincibility_time = 0.2f;
+    float enemy_vision_range = 100.0f;
 
     // Comportamiento del enemigo minero
-    BinaryTree* bt = AI::getBehaviour(AI::bt_types::enemy_agressive);
+    BinaryTree* bt = AI::getBehaviour(AI::bt_types::enemy_miner);
 
     // Creación final del enemigo minero
     Miner* enemy = new Miner(enemy_life, pos, enemy_sprite, nullptr, enemy_shape,
     enemy_interests, enemy_init_orientation, enemy_max_vel, enemy_max_accel,
-    enemy_friction, nullptr, enemy_stunned_time, enemy_invincibility_time, bt);
+    enemy_friction, nullptr, enemy_stunned_time, enemy_invincibility_time, bt, enemy_vision_range);
 
     return enemy;
 }

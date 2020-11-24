@@ -16,7 +16,7 @@ public:
         const Vector2d<float>& max_vel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& max_accel = Vector2d<float>(INFINITY,INFINITY),
         const Vector2d<float>& frict = Vector2d<float>(0.0f,0.0f), Weapon* wp = nullptr,
-        float st_time = 0.0f, float inv_time = 0.0f, BinaryTree* bt = nullptr);
+        float st_time = 0.0f, float inv_time = 0.0f, BinaryTree* bt = nullptr, float vr = 10.0f);
     Miner(const Miner& cc);
 
     Miner& operator= (const Miner& cc);
@@ -32,12 +32,16 @@ public:
         //Character
         //Combat_Character
     void attack() override;
+    void cancelAttack() override;
     void die() override;
         //Enemy
     bool checkNearPlayer(float distance) override;
     bool checkFarPlayer(float distance) override;
-    void actionTowardsPlayer() override;
+    void actionMoveTowardsPlayer() override;
     void actionStop() override;
+    bool checkSeePlayer() override;
+    bool checkPlayerInWeaponRange() override;
+    void actionOrientateToPlayer() override;
         //Miner
 
     // Setters
@@ -64,6 +68,7 @@ public:
     bool increaseLife(int l) override;
         //Enemy
     void setBehaviour(BinaryTree* bt) override;
+    void setVisionRange(float vr) override;
         //Miner
 
     // Getters
@@ -93,6 +98,7 @@ public:
     bool hasWeapon(const WeaponType& wt) const override;
         //Enemy
     const EnemyType& getEnemyType() const override;
+    float getVisionRange() const override;
         //Miner
 
     // Destructor

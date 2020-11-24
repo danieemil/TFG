@@ -1,0 +1,34 @@
+Las entidades se categorizan en tipos generales que establecen el tipo de cada entidades.
+
+Este dato se indica en Tiled por medio del atributo añadido Type(int).
+
+Type:
+    1 -> Jugador
+    2 -> Enemigo
+    3 -> Interactuable
+
+
+Estos tipos de entidades generales pueden estar subdivididos en subtipos que son de por sí
+entidades ya instanciables.
+
+Asimismo, se indica en Tiled por medio de otro atributo añadido XType(int).
+
+
+EnemyType:
+    1 -> Minero
+
+En el caso de los enemigos también se almacena weapon(int), que indica el tipo de arma que
+se le asigna al enemigo.
+
+
+InteractableType:
+    1 -> Salida
+    2 -> Salud
+    3 -> Arma interactuable
+
+Para los interactuables se almacena otro dato value(int), tratándose de un valor que se
+interpreta de distintas formas según que tipo de interactuable sea.
+
+
+Finalmente, en Tiled todos los datos de cada entidad se almacenan dentro de un punto creado en la capa
+de "Entidades".

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="71">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="72">
  <tileset firstgid="1" source="../TileSet.tsx"/>
  <layer id="1" name="Capa de patrones" width="40" height="40">
   <data>
@@ -1698,6 +1698,14 @@
     <property name="EnemyType" type="int" value="0"/>
     <property name="Type" type="int" value="2"/>
     <property name="Weapon" type="int" value="-1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="71" type="Interactable" x="134.909" y="328.727">
+   <properties>
+    <property name="InteractableType" type="int" value="2"/>
+    <property name="Type" type="int" value="3"/>
+    <property name="Value" type="int" value="1"/>
    </properties>
    <point/>
   </object>

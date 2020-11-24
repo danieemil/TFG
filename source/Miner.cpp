@@ -10,9 +10,9 @@
 Miner::Miner(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     CollisionFlag interests_flag, const Vector2d<float>& ori, const Vector2d<float>& max_vel,
     const Vector2d<float>& max_accel, const Vector2d<float>& frict, Weapon* wp, float st_time,
-    float inv_time, BinaryTree* bt)
+    float inv_time, BinaryTree* bt, float vr)
 : Enemy(l, pos, spr, w, sh, interests_flag, ori, max_vel, max_accel, frict, wp, st_time, inv_time,
-    bt)
+    bt, vr)
 {
     sub_id = EnemyType::miner;
 }
@@ -78,6 +78,11 @@ void Miner::attack()
     Enemy::attack();
 }
 
+void Miner::cancelAttack()
+{
+    Enemy::cancelAttack();
+}
+
 void Miner::die()
 {
     Enemy::die();
@@ -93,9 +98,9 @@ bool Miner::checkFarPlayer(float distance)
     return Enemy::checkFarPlayer(distance);
 }
 
-void Miner::actionTowardsPlayer()
+void Miner::actionMoveTowardsPlayer()
 {
-    Enemy::actionTowardsPlayer();
+    Enemy::actionMoveTowardsPlayer();
 }
 
 void Miner::actionStop()
@@ -103,6 +108,20 @@ void Miner::actionStop()
     Enemy::actionStop();
 }
 
+bool Miner::checkSeePlayer()
+{
+    return Enemy::checkSeePlayer();
+}
+
+bool Miner::checkPlayerInWeaponRange()
+{
+    return Enemy::checkPlayerInWeaponRange();
+}
+
+void Miner::actionOrientateToPlayer()
+{
+    Enemy::actionOrientateToPlayer();
+}
 
 
 //=========================================
@@ -204,6 +223,11 @@ bool Miner::increaseLife(int l)
 void Miner::setBehaviour(BinaryTree* bt)
 {
     Enemy::setBehaviour(bt);
+}
+
+void Miner::setVisionRange(float vr)
+{
+    Enemy::setVisionRange(vr);
 }
 
 
@@ -319,6 +343,11 @@ bool Miner::hasWeapon(const WeaponType& wt) const
 const EnemyType& Miner::getEnemyType() const
 {
     return Enemy::getEnemyType();
+}
+
+float Miner::getVisionRange() const
+{
+    return Enemy::getVisionRange();
 }
 
 //=========================================

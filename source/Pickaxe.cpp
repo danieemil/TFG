@@ -1,4 +1,4 @@
-#include "Sword.h"
+#include "Pickaxe.h"
 #include "Combat_Character.h"
 #include "World.h"
 #include "Unvisual_Engine.h"
@@ -9,23 +9,23 @@
 //=             CONSTRUCTORES	    	  =
 //=========================================
 
-Sword::Sword(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
+Pickaxe::Pickaxe(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
     Sprite* spr, World* w, Shape* sh, CollisionFlag type_flag, CollisionFlag interests_flag,
     const Vector2d<float>& ori, Combat_Character* cc, Animation* at_anim)
 : Weapon(dam, knock, t_attack, rel_attack, spr, w, sh, type_flag, interests_flag, ori, cc, at_anim)
 {
-    sub_id = WeaponType::sword;
+    sub_id = WeaponType::pickaxe;
 }
 
-Sword::Sword(const Sword& s)
-: Weapon(s)
+Pickaxe::Pickaxe(const Pickaxe& p)
+: Weapon(p)
 {
 
 }
 
-Sword& Sword::operator= (const Sword& s)
+Pickaxe& Pickaxe::operator= (const Pickaxe& p)
 {
-    this->Weapon::operator=(s);
+    this->Weapon::operator=(p);
 
     return *this;
 }
@@ -35,42 +35,42 @@ Sword& Sword::operator= (const Sword& s)
 //=               MÉTODOS   	    	  =
 //=========================================
 
-void Sword::render(const Vector2d<float>& view_pos)
+void Pickaxe::render(const Vector2d<float>& view_pos)
 {
     Weapon::render(view_pos);
 }
 
-void Sword::update()
+void Pickaxe::update()
 {
     Weapon::update();
 }
 
-void Sword::updateFromCollider()
+void Pickaxe::updateFromCollider()
 {
     Weapon::updateFromCollider();
 }
 
-void Sword::interpolate(float rp)
+void Pickaxe::interpolate(float rp)
 {
     Weapon::interpolate(rp);
 }
 
-void Sword::manageAnimations()
+void Pickaxe::manageAnimations()
 {
     Weapon::manageAnimations();
 }
 
-void Sword::collision(void * ent)
+void Pickaxe::collision(void * ent)
 {
     Weapon::collision(ent);
 }
 
-void Sword::attack()
+void Pickaxe::attack()
 {
     Weapon::attack();
 }
 
-void Sword::cancelAttack()
+void Pickaxe::cancelAttack()
 {
     Weapon::cancelAttack();
 }
@@ -80,62 +80,62 @@ void Sword::cancelAttack()
 //=               SETTERS   	    	  =
 //=========================================
 
-void Sword::setSprite(Sprite* spr)
+void Pickaxe::setSprite(Sprite* spr)
 {
     Weapon::setSprite(spr);
 }
 
-void Sword::setPosition(const Vector2d<float>& pos)
+void Pickaxe::setPosition(const Vector2d<float>& pos)
 {
     Weapon::setPosition(pos);
 }
 
-void Sword::setWorld(World* w)
+void Pickaxe::setWorld(World* w)
 {
     Weapon::setWorld(w);
 }
 
-void Sword::setBody(Collider* c)
+void Pickaxe::setBody(Collider* c)
 {
     Weapon::setBody(c);
 }
 
-void Sword::setVelocity(const Vector2d<float>& vel)
+void Pickaxe::setVelocity(const Vector2d<float>& vel)
 {
     Weapon::setVelocity(vel);
 }
 
-void Sword::setAngle(float angl)
+void Pickaxe::setAngle(float angl)
 {
     Weapon::setAngle(angl);
 }
 
-void Sword::setOrientation(const Vector2d<float>& ori)
+void Pickaxe::setOrientation(const Vector2d<float>& ori)
 {
     Weapon::setOrientation(ori);
 }
 
-void Sword::setCharacter(Combat_Character* cc)
+void Pickaxe::setCharacter(Combat_Character* cc)
 {
     Weapon::setCharacter(cc);
 }
 
-void Sword::setRelativePosition(const Vector2d<float>& rl_pos)
+void Pickaxe::setRelativePosition(const Vector2d<float>& rl_pos)
 {
     Weapon::setRelativePosition(rl_pos);
 }
 
-void Sword::setAttackingTime(float at_time)
+void Pickaxe::setAttackingTime(float at_time)
 {
     Weapon::setAttackingTime(at_time);
 }
 
-void Sword::setDamage(int dam)
+void Pickaxe::setDamage(int dam)
 {
     Weapon::setDamage(dam);
 }
 
-void Sword::setKnockback(float knock)
+void Pickaxe::setKnockback(float knock)
 {
     Weapon::setKnockback(knock);
 }
@@ -145,87 +145,87 @@ void Sword::setKnockback(float knock)
 //=               GETTERS   	    	  =
 //=========================================
 
-Sprite* Sword::getSprite() const
+Sprite* Pickaxe::getSprite() const
 {
     return Weapon::getSprite();
 }
 
-const Vector2d<float>& Sword::getPosition() const
+const Vector2d<float>& Pickaxe::getPosition() const
 {
     return Weapon::getPosition();
 }
 
-World* Sword::getWorld() const
+World* Pickaxe::getWorld() const
 {
     return Weapon::getWorld();
 }
 
-Collider* Sword::getBody() const
+Collider* Pickaxe::getBody() const
 {
     return Weapon::getBody();
 }
 
-const Vector2d<float>& Sword::getVelocity() const
+const Vector2d<float>& Pickaxe::getVelocity() const
 {
     return Weapon::getVelocity();
 }
 
-const Vector2d<float>& Sword::getPrePosition() const
+const Vector2d<float>& Pickaxe::getPrePosition() const
 {
     return Weapon::getPrePosition();
 }
 
-const Vector2d<float>& Sword::getRenderPosition() const
+const Vector2d<float>& Pickaxe::getRenderPosition() const
 {
     return Weapon::getRenderPosition();
 }
 
-const EntityType& Sword::getEntityType() const
+const EntityType& Pickaxe::getEntityType() const
 {
     return Weapon::getEntityType();
 }
 
-float Sword::getAngle() const
+float Pickaxe::getAngle() const
 {
     return Weapon::getAngle();
 }
 
-Vector2d<float> Sword::getCenter() const
+Vector2d<float> Pickaxe::getCenter() const
 {
     return Weapon::getCenter();
 }
 
-const Vector2d<float>& Sword::getOrientation() const
+const Vector2d<float>& Pickaxe::getOrientation() const
 {
     return Weapon::getOrientation();
 }
 
-Combat_Character* Sword::getCharacter() const
+Combat_Character* Pickaxe::getCharacter() const
 {
     return Weapon::getCharacter();
 }
 
-const Vector2d<float>& Sword::getRelativePosition() const
+const Vector2d<float>& Pickaxe::getRelativePosition() const
 {
     return Weapon::getRelativePosition();
 }
 
-bool Sword::getAttacking() const
+bool Pickaxe::getAttacking() const
 {
     return Weapon::getAttacking();
 }
 
-int Sword::getDamage() const
+int Pickaxe::getDamage() const
 {
     return Weapon::getDamage();
 }
 
-float Sword::getKnockback() const
+float Pickaxe::getKnockback() const
 {
     return Weapon::getKnockback();
 }
 
-const WeaponType& Sword::getWeaponType() const
+const WeaponType& Pickaxe::getWeaponType() const
 {
     return Weapon::getWeaponType();
 }
@@ -235,7 +235,7 @@ const WeaponType& Sword::getWeaponType() const
 //=              DESTRUCTOR   	    	  =
 //=========================================
 
-Sword::~Sword()
+Pickaxe::~Pickaxe()
 {
 
 }
@@ -245,7 +245,7 @@ Sword::~Sword()
 //=               PROTECTED   	    	  =
 //=========================================
 
-void Sword::calculateCenter()
+void Pickaxe::calculateCenter()
 {
     Weapon::calculateCenter();
 }

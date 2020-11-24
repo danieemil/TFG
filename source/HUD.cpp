@@ -109,7 +109,28 @@ void HUD::render()
                         auto temp = weapon_selector->getSize();
                         Vector2d<float> container_size = Vector2d<float>(temp.x, temp.y);
 
-                        w_spr->setScale(Vector2d<float>(2.0f, 2.0f));
+
+                        // Ajustar el tamaño del arma al tamaño del contenedor
+                        temp = w_spr->getSize();
+                        Vector2d<float> we_size = Vector2d<float>(temp.x, temp.y);
+
+                        float scale_factor = (container_size.y - container_size.y/3)/we_size.y;
+                        if(scale_factor<0.75f)
+                        {
+                            scale_factor = 0.5f;
+                        }
+                        else if(scale_factor>1.5f)
+                        {
+                            scale_factor = 2.0f;
+                        }
+                        else
+                        {
+                            scale_factor = 1.0f;
+                        }
+
+                        Vector2d<float> w_scale = Vector2d<float>(scale_factor, scale_factor);
+                        w_spr->setScale(w_scale);
+
 
                         temp = w_spr->getSize();
                         Vector2d<float> w_size = Vector2d<float>(temp.x, temp.y);

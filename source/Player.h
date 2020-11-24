@@ -33,6 +33,7 @@ public:
         //Character
         //Combat_Character
     void attack() override;
+    void cancelAttack() override;
     void die() override;
         //Player
     void processInput();

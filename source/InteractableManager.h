@@ -8,6 +8,7 @@
 #include "I_Weapon.h"
 #include "SpriteManager.h"
 
+#define WEAPONS_START 2
 
 class InteractableManager
 {

@@ -76,6 +76,11 @@ void Dagger::attack()
     Weapon::attack();
 }
 
+void Dagger::cancelAttack()
+{
+    Weapon::cancelAttack();
+}
+
 
 //=========================================
 //=               SETTERS   	    	  =

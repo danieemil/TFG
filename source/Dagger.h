@@ -29,6 +29,7 @@ public:
     void collision(void * ent) override;
         //Weapon
     void attack() override;
+    void cancelAttack() override;
         //Dagger
 
     // Setters

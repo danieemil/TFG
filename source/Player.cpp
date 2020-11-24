@@ -110,6 +110,8 @@ void Player::collision(void* ent)
             invincible = true;
             invincibility_timing.reset();
 
+            cancelAttack();
+
             life = life - 1;
         }
     }
@@ -120,6 +122,11 @@ void Player::collision(void* ent)
 void Player::attack()
 {
     Combat_Character::attack();
+}
+
+void Player::cancelAttack()
+{
+    Combat_Character::cancelAttack();
 }
 
 void Player::die()

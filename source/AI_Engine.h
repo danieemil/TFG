@@ -2,7 +2,7 @@
 #define _AI_ENGINE_
 
 #include "BinaryTree.h"
-#include "map"
+#include "unordered_map"
 
 namespace AI
 {
@@ -10,7 +10,7 @@ namespace AI
     enum class bt_types
     {
         enemy_agressive,
-        enemy_fearful
+        enemy_miner,
     };
 
     void init();

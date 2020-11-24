@@ -94,7 +94,7 @@ I_Weapon* InteractableManager::createWeapon(const Vector2d<float>& pos, int valu
 {
     // Gráficos de la salud
     Vector2d<float> ori = Vector2d<float>(0.0f,-1.0f);
-    Sprite* spr = sprites_manager.createSprite(2);
+    Sprite* spr = sprites_manager.createSprite(WEAPONS_START + value);
     AABB* weapon_shape = nullptr;
 
     // Físicas de la salud

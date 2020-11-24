@@ -10,15 +10,15 @@
 Enemy::Enemy(int l, const Vector2d<float>& pos, Sprite* spr, World* w, Shape* sh,
     CollisionFlag interests_flag, const Vector2d<float>& ori, const Vector2d<float>& max_vel,
     const Vector2d<float>& max_accel, const Vector2d<float>& frict, Weapon* wp, float st_time,
-    float inv_time, BinaryTree* bt)
+    float inv_time, BinaryTree* bt, float vr)
 : Combat_Character(l, pos, spr, w, sh, CollisionFlag::enemy_hit, interests_flag, ori, max_vel,
-    max_accel, frict, wp, st_time, inv_time), b_tree(bt)
+    max_accel, frict, wp, st_time, inv_time), b_tree(bt), vision_range(vr)
 {
     id = EntityType::e_enemy;
 }
 
 Enemy::Enemy(const Enemy& e)
-: Combat_Character(e), b_tree(e.b_tree), sub_id(e.sub_id)
+: Combat_Character(e), b_tree(e.b_tree), sub_id(e.sub_id), vision_range(e.vision_range)
 {
 
 }
@@ -28,6 +28,7 @@ Enemy& Enemy::operator= (const Enemy& e)
     Combat_Character::operator=(e);
     b_tree = e.b_tree;
     sub_id = e.sub_id;
+    vision_range = e.vision_range;
     
     return *this;
 }
@@ -57,7 +58,7 @@ void Enemy::update()
     if(b_tree!=nullptr)
     {
         b_tree->update(this);
-    }   
+    }
 
     Combat_Character::update();
 }
@@ -96,6 +97,11 @@ void Enemy::attack()
     Combat_Character::attack();
 }
 
+void Enemy::cancelAttack()
+{
+    Combat_Character::cancelAttack();
+}
+
 void Enemy::die()
 {
     Combat_Character::die();
@@ -103,12 +109,11 @@ void Enemy::die()
 
 bool Enemy::checkNearPlayer(float distance)
 {
-
     Player* p = Game::Instance()->getPlayer();
 
     if(p!=nullptr)
     {
-        Vector2d<float> dist = p->getPosition() - position;
+        Vector2d<float> dist = p->getCenter() - getCenter();
         if(dist.Length() < distance)
         {
             return true;
@@ -124,7 +129,7 @@ bool Enemy::checkFarPlayer(float distance)
 
     if(p!=nullptr)
     {
-        Vector2d<float> dist = p->getPosition() - position;
+        Vector2d<float> dist = p->getCenter() - getCenter();
         if(dist.Length() > distance)
             return true;
     }
@@ -132,14 +137,13 @@ bool Enemy::checkFarPlayer(float distance)
     return false;
 }
 
-void Enemy::actionTowardsPlayer()
+void Enemy::actionMoveTowardsPlayer()
 {
-
     Player* p = Game::Instance()->getPlayer();
 
     if(p!=nullptr)
     {
-        Vector2d<float> dist = p->getPosition() - position;
+        Vector2d<float> dist = p->getCenter() - getCenter();
 
         Vector2d<float> dir = dist;
         dir.Normalize();
@@ -158,7 +162,6 @@ void Enemy::actionTowardsPlayer()
 
         dir.Normalize();
         acceleration = dir * accel;
-
     }
 }
 
@@ -167,6 +170,43 @@ void Enemy::actionStop()
     acceleration = Vector2d<float>(0.0f, 0.0f);
 }
 
+bool Enemy::checkSeePlayer()
+{
+    return checkNearPlayer(vision_range);
+}
+
+bool Enemy::checkPlayerInWeaponRange()
+{
+    float dist = 0.0f;
+    if(equipped!=nullptr)
+    {
+        dist = (equipped->getRelativePosition() + (position - getCenter())).Length();
+    }
+    return checkNearPlayer(dist);
+}
+
+void Enemy::actionOrientateToPlayer()
+{
+    Player* p = Game::Instance()->getPlayer();
+
+    if(p!=nullptr)
+    {
+        Vector2d<float> dist = p->getCenter() - getCenter();
+
+        Vector2d<float> dir = dist;
+        dir.Normalize();
+
+        Vector2d<int> ori = Vector2d<int>(sign(dir.x), sign(dir.y));
+
+        if((dir.x * ori.x) > 0.5f) dir.x = 1.0f * ori.x;
+        else dir.x = 0.0f;
+
+        if((dir.y * ori.y) > 0.5f) dir.y = 1.0f * ori.y;
+        else dir.y = 0.0f;
+
+        setOrientation(dir);
+    }
+}
 
 
 //=========================================
@@ -286,6 +326,11 @@ void Enemy::setBehaviour(BinaryTree* bt)
     b_tree = bt;
 }
 
+void Enemy::setVisionRange(float vr)
+{
+    vision_range = vr;
+}
+
 
 //=========================================
 //=               GETTERS   	    	  =
@@ -400,6 +445,13 @@ const EnemyType& Enemy::getEnemyType() const
 {
     return sub_id;
 }
+
+float Enemy::getVisionRange() const
+{
+    return vision_range;
+}
+
+
 
 //=========================================
 //=              DESTRUCTOR   	    	  =

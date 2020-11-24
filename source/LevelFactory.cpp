@@ -345,6 +345,14 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
     if(player==nullptr)
     {
         player = world->createPlayer(player_position);
+        
+        for (auto &&w : player_data.weapons)
+        {
+            world->createWeapon((WeaponType)w, player);
+        }
+
+        // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
+        unvisual::setCurrentScreenTarget(&player->getRenderPosition());
     }
 
     if(player!=nullptr)
@@ -354,13 +362,7 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
         player->setMaxLife(player_data.max_life);
         player->setLife(player_data.life);
 
-        for (auto &&w : player_data.weapons)
-        {
-            world->createWeapon((WeaponType)w, player);
-        }
-
-        // La pantalla se moverá para intentar poner al jugador en el centro de la pantalla
-        unvisual::setCurrentScreenTarget(&player->getRenderPosition());
+        
         unvisual::getCurrentScreen()->setPosition(Vector2d<float>(0,0));
     }
     
