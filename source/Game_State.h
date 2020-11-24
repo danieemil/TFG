@@ -6,6 +6,15 @@
 #include <functional>
 #include "SpriteManager.h"
 
+
+#define BACKGROUND_MAIN_MENU_TOP        0
+#define BACKGROUND_MAIN_MENU_BOTTOM     1
+#define BACKGROUND_PLAYING_TOP         -1
+#define BACKGROUND_PLAYING_BOTTOM       2
+#define BACKGROUND_END_GAME_TOP         3
+#define BACKGROUND_END_GAME_BOTTOM      4
+
+
 using Event = std::function<void()>;
 
 enum class state_type

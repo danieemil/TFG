@@ -4,6 +4,7 @@
 #include "Game_Playing.h"
 #include "Game_MainMenu.h"
 #include "Game_Paused.h"
+#include "Game_EndGame.h"
 
 
 //Clase Singleton para que todos puedan acceder a las variables de Game

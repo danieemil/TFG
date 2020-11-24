@@ -30,6 +30,7 @@ public:
 
     // Getters
     World* getWorld() const;
+    int getActualLevel() const;
 
     // Destructor
     ~LevelFactory();

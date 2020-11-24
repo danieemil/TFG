@@ -20,6 +20,12 @@ EnemyType:
 En el caso de los enemigos también se almacena weapon(int), que indica el tipo de arma que
 se le asigna al enemigo.
 
+    WeaponType:
+    -1 -> No weapon
+    0  -> Daga(Pensada para el jugador)
+    1  -> Espada(Pensada para el jugador)
+    2  -> Pico(Pensada para el enemigo minero)
+
 
 InteractableType:
     1 -> Salida

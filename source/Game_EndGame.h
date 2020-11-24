@@ -1,20 +1,19 @@
-#ifndef _GAME_MAIN_MENU_
-#define _GAME_MAIN_MENU_
+#ifndef _GAME_END_GAME_
+#define _GAME_END_GAME_
+
+#define END_SCREEN_DURATION 3.0f
 
 #include "Game_State.h"
-#include "GUI_Button.h"
-#include "GUI_Element_List.h"
 
-
-class Game_MainMenu : public Game_State
+class Game_EndGame : public Game_State
 {
 
 public:
     // Constructores
-    Game_MainMenu();
-    Game_MainMenu(const Game_MainMenu& gmm);
+    Game_EndGame();
+    Game_EndGame(const Game_EndGame& geg);
 
-    Game_MainMenu& operator= (const Game_MainMenu& gmm);
+    Game_EndGame& operator= (const Game_EndGame& geg);
 
     // Métodos
     void init() override;
@@ -35,13 +34,11 @@ public:
     state_type getStateType() const override;
 
     // Destructor
-    ~Game_MainMenu();
+    ~Game_EndGame();
 
 protected:
-    GUI_Element_List gui_elements;
-    SpriteManager gui_sprite_manager;
 
-    Text menu_title;
+    Timepoint timer;
 
 private:
 

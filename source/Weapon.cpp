@@ -10,12 +10,14 @@
 //=========================================
 
 Weapon::Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
-    Sprite* spr, World* w, Shape* sh, CollisionFlag type_flag, CollisionFlag interests_flag,
-    const Vector2d<float>& ori, Combat_Character* cc, Animation* at_anim)
+    float t_pre_attack, float t_end_attack, Sprite* spr, World* w, Shape* sh,
+    CollisionFlag type_flag, CollisionFlag interests_flag, const Vector2d<float>& ori,
+    Combat_Character* cc, Animation* at_anim)
 : Entity(rel_attack, spr, w,
     new Collider(Vector2d<float>(), sh, type_flag, interests_flag, CollisionType::col_none), ori),
     character(cc), attack_rel_position(rel_attack), center_rel(0.5f, 0.5f), attacking(false),
-    attack_time(t_attack), damage(dam), knockback(knock), attack_animation(at_anim)
+    attack_time(t_attack), pre_attack_time(t_pre_attack), end_attack_time(t_end_attack),
+    damage(dam), knockback(knock), attack_animation(at_anim)
 {
     id = EntityType::e_weapon;
 
@@ -104,16 +106,38 @@ void Weapon::update()
 
     if(attacking)
     {
-        if (time_attacking.getElapsed()>attack_time)
+        float attacking_time = time_attacking.getElapsed();
+        if (attacking_time<attack_time)
+        {
+            position += attack_rel_position;
+            
+            if (attacking_time<pre_attack_time)
+            {
+                if(body!=nullptr)
+                {
+                    body->setActive(false);
+                }
+            }else if (attacking_time<(attack_time - end_attack_time))
+            {
+                // En medio del ataque
+                if(body!=nullptr)
+                {
+                    body->setActive(true);
+                }
+            }else
+            {
+                if(body!=nullptr)
+                {
+                    body->setActive(false);
+                }
+            }
+        }else
         {
             attacking = false;
             if(body!=nullptr)
             {
                 body->setActive(false);
             }
-        }else
-        {
-            position += attack_rel_position;
         }
     }
 

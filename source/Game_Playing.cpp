@@ -41,6 +41,8 @@ void Game_Playing::init()
 {
     unvisual::getCurrentScreen()->setBackgroundColor(255,255,255,255);
 
+    bottom_background = Game::Instance()->createBackgroundSprite(BACKGROUND_PLAYING_BOTTOM);
+
     // Cargar archivo de guardado
     level_factory.loadSave();
 
@@ -66,6 +68,7 @@ void Game_Playing::processInput()
     if(isPressed(N3DS_buttons::Key_R))
     {
         Game::Instance()->stateTransition<Game_Paused>();
+        return;
     }
 
     // Botón para resetear el nivel
@@ -179,6 +182,11 @@ void Game_Playing::resetLevel()
 void Game_Playing::nextLevel()
 {
     level_factory.nextLevel();
+    if(level_factory.getActualLevel()==0)
+    {
+        Game::Instance()->stateTransition<Game_EndGame>();
+        return;
+    }
     level_factory.save();
     resetLevel();
 }

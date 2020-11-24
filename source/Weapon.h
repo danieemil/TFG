@@ -19,6 +19,7 @@ class Weapon : public Entity
 public:
     // Constructores
     Weapon(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
+        float t_pre_attack = 0.0f, float t_end_attack = 0.0f,
         Sprite* spr = nullptr, World* w = nullptr, Shape* sh = nullptr,
         CollisionFlag type_flag = CollisionFlag::none,
         CollisionFlag interests_flag = CollisionFlag::none,
@@ -89,7 +90,7 @@ protected:
 
     // Mecánica de atacar
     bool attacking;
-    float attack_time;
+    float attack_time, pre_attack_time, end_attack_time;
     Timepoint time_attacking;
 
     // Atributos del arma

@@ -35,9 +35,9 @@ Game_MainMenu& Game_MainMenu::operator= (const Game_MainMenu& gmm)
 void Game_MainMenu::init()
 {
 
-    top_background = Game::Instance()->createBackgroundSprite(0);
+    top_background = Game::Instance()->createBackgroundSprite(BACKGROUND_MAIN_MENU_TOP);
 
-    bottom_background = Game::Instance()->createBackgroundSprite(1);
+    bottom_background = Game::Instance()->createBackgroundSprite(BACKGROUND_MAIN_MENU_BOTTOM);
 
     unvisual::setCurrentScreen(N3DS_screenV::N3DS_BOTTOM);
 

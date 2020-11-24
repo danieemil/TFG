@@ -418,8 +418,12 @@ namespace unvisual
             if (!isReleased(N3DS_buttons::Key_Touch))
             {
                 t_prev_position = t_position;
-            }
-            
+            }   
+        }
+
+        bool isAnyKeyPressed()
+        {
+            return hidKeysDown();
         }
 
         bool isPressed(N3DS_buttons key)

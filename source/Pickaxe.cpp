@@ -10,9 +10,11 @@
 //=========================================
 
 Pickaxe::Pickaxe(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
-    Sprite* spr, World* w, Shape* sh, CollisionFlag type_flag, CollisionFlag interests_flag,
-    const Vector2d<float>& ori, Combat_Character* cc, Animation* at_anim)
-: Weapon(dam, knock, t_attack, rel_attack, spr, w, sh, type_flag, interests_flag, ori, cc, at_anim)
+    float t_pre_attack, float t_end_attack, Sprite* spr, World* w, Shape* sh,
+    CollisionFlag type_flag, CollisionFlag interests_flag, const Vector2d<float>& ori,
+    Combat_Character* cc, Animation* at_anim)
+: Weapon(dam, knock, t_attack, rel_attack, t_pre_attack, t_end_attack, spr, w, sh, type_flag,
+    interests_flag, ori, cc, at_anim)
 {
     sub_id = WeaponType::pickaxe;
 }

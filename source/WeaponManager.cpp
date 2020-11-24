@@ -89,7 +89,7 @@ Dagger* WeaponManager::createDagger(Combat_Character* cc)
 
     // Colisiones de la daga
 
-    Vector2d<float> shape_padding = Vector2d<float>(0,0);
+    Vector2d<float> shape_padding = Vector2d<float>(2,0);
 
     Vector2d<float> min_pos_rel = weapon_relative_position_attacking - (shape_padding/2.0f);
     Vector2d<float> max_pos_rel = weapon_relative_position_attacking + dagger_sprite_size + (shape_padding/2.0f);
@@ -127,9 +127,15 @@ Dagger* WeaponManager::createDagger(Combat_Character* cc)
     int weapon_damage = 2;
     float weapon_knockback = 150.0f;
     float weapon_time_attack = 0.3f;
+    float weapon_time_pre_attack = 0.05f;
+    float weapon_time_end_attack = 0.05f;
+
     weapon_relative_position_attacking += Vector2d<float>(0.25f, -0.25f); //Soluciona bugs visuales
     Vector2d<float> ori = cc->getOrientation();
-    Dagger* d = new Dagger(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc, weapon_anim);
+    Dagger* d = new Dagger(weapon_damage, weapon_knockback, weapon_time_attack,
+        weapon_relative_position_attacking, weapon_time_pre_attack, weapon_time_end_attack,
+        weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc,
+        weapon_anim);
 
     return d;
 }
@@ -200,14 +206,19 @@ Sword* WeaponManager::createSword(Combat_Character* cc)
     weapon_anim->addBackSprite(sprites_manager.createSprite(SWORD_ANIM_START + SWORD_ANIM_SIZE - 1),0.1f);
 
     // Crear la espada
-    
+
     int weapon_damage = 1;
     float weapon_knockback = 200.0f;
-    float weapon_time_attack = 0.5f;
+    float weapon_time_attack = 0.6f;
+    float weapon_time_pre_attack = 0.1f;
+    float weapon_time_end_attack = 0.3f;
+
     weapon_relative_position_attacking += Vector2d<float>(0.25f, -0.25f); //Soluciona bugs visuales
     Vector2d<float> ori = cc->getOrientation();
-    Sword* s = new Sword(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc, weapon_anim);
-
+    Sword* s = new Sword(weapon_damage, weapon_knockback, weapon_time_attack,
+        weapon_relative_position_attacking, weapon_time_pre_attack, weapon_time_end_attack,
+        weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc,
+        weapon_anim);
     
 
     return s;
@@ -278,9 +289,15 @@ Pickaxe* WeaponManager::createPickaxe(Combat_Character* cc)
     int weapon_damage = 1;
     float weapon_knockback = 250.0f;
     float weapon_time_attack = 1.0f;
+    float weapon_time_pre_attack = 0.0f;
+    float weapon_time_end_attack = 0.0f;
+
     weapon_relative_position_attacking += Vector2d<float>(0.25f, -0.25f); //Soluciona bugs visuales
     Vector2d<float> ori = cc->getOrientation();
-    Pickaxe* p = new Pickaxe(weapon_damage, weapon_knockback, weapon_time_attack, weapon_relative_position_attacking, weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc, weapon_anim);
+    Pickaxe* p = new Pickaxe(weapon_damage, weapon_knockback, weapon_time_attack,
+        weapon_relative_position_attacking, weapon_time_pre_attack, weapon_time_end_attack,
+        weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc,
+        weapon_anim);
 
     return p;
 }

@@ -221,6 +221,11 @@ World* LevelFactory::getWorld() const
     return world;
 }
 
+int LevelFactory::getActualLevel() const
+{
+    return actual_level;
+}
+
 
 //=========================================
 //=              DESTRUCTOR   	    	  =

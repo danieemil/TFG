@@ -90,6 +90,8 @@ namespace unvisual
 
         void IM_scan();
 
+        bool isAnyKeyPressed();
+
         bool isPressed(N3DS_buttons key);
         bool isHeld(N3DS_buttons key);
         bool isReleased(N3DS_buttons key);

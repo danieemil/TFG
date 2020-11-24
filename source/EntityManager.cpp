@@ -91,8 +91,8 @@ Player* EntityManager::createPlayer(const Vector2d<float>& pos)
     Vector2d<float> player_max_accel = Vector2d<float>(INFINITY, INFINITY); // Máximo de fuerza que se le puede aplicar a un cuerpo
     Vector2d<float> player_frict = Vector2d<float>(40.0f,40.0f);
     Vector2d<float> player_init_orientation = Vector2d<float>(0.0f,-1.0f);
-    float player_stunned_time = 0.5f;
-    float player_invincibility_time = 0.8f;
+    float player_stunned_time = 0.3f;
+    float player_invincibility_time = 0.5f;
 
     // Creación final del jugador
     Player* player = new Player(player_life, pos, player_sprite, nullptr, player_shape,

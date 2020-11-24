@@ -10,6 +10,7 @@ class Sword : public Weapon
 public:
     // Constructores
     Sword(int dam, float knock, float t_attack, const Vector2d<float>& rel_attack,
+        float t_pre_attack = 0.0f, float t_end_attack = 0.0f,
         Sprite* spr = nullptr, World* w = nullptr, Shape* sh = nullptr,
         CollisionFlag type_flag = CollisionFlag::none,
         CollisionFlag interests_flag = CollisionFlag::none,
