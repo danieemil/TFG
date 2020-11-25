@@ -96,6 +96,9 @@ void Game_Playing::update()
             world->updateEntitiesCollisions();
         }
     }
+
+    
+
     if(world!=nullptr)
     {
         world->updatePlayer();
@@ -104,7 +107,6 @@ void Game_Playing::update()
     }
 
     updateCollisions();
-
 
 }
 

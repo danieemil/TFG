@@ -36,6 +36,7 @@ public:
     void nextLevelEvent();
     void resetLevelEvent();
     void deleteEntityEvent(Entity* e);
+    void addEvent(Event e);
 
     template<class S>
     void stateTransition()

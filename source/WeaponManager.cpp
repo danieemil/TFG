@@ -215,18 +215,17 @@ Sword* WeaponManager::createSword(Combat_Character* cc)
 
     weapon_relative_position_attacking += Vector2d<float>(0.25f, -0.25f); //Soluciona bugs visuales
     Vector2d<float> ori = cc->getOrientation();
+
     Sword* s = new Sword(weapon_damage, weapon_knockback, weapon_time_attack,
         weapon_relative_position_attacking, weapon_time_pre_attack, weapon_time_end_attack,
         weapon_sprite, nullptr, weapon_shape, CollisionFlag::none, CollisionFlag::none, ori, cc,
         weapon_anim);
-    
 
     return s;
 }
 
 Pickaxe* WeaponManager::createPickaxe(Combat_Character* cc)
 {
-
     // Gráficos del pico
     Sprite* weapon_sprite = sprites_manager.createSprite(PICKAXE_ICON);
 
@@ -248,15 +247,16 @@ Pickaxe* WeaponManager::createPickaxe(Combat_Character* cc)
     }
 
     Vector2d<float> weapon_relative_position_attacking =
-    (Vector2d<float>(0,0) - Vector2d<float>(pickaxe_sprite_size.x/2, pickaxe_sprite_size.y));
+    (Vector2d<float>(0,cc_center_rel.y*1.5f) - Vector2d<float>(pickaxe_sprite_size.x/2, pickaxe_sprite_size.y));
 
 
     // Colisiones del pico
 
-    Vector2d<float> shape_padding = Vector2d<float>(0,0);
+    Vector2d<float> shape_min_padding = Vector2d<float>(-2,0);
+    Vector2d<float> shape_max_padding = Vector2d<float>(-2,-cc_center_rel.y*1.5);
 
-    Vector2d<float> min_pos_rel = weapon_relative_position_attacking - (shape_padding/2.0f);
-    Vector2d<float> max_pos_rel = weapon_relative_position_attacking + pickaxe_sprite_size + (shape_padding/2.0f);
+    Vector2d<float> min_pos_rel = weapon_relative_position_attacking - shape_min_padding;
+    Vector2d<float> max_pos_rel = weapon_relative_position_attacking + pickaxe_sprite_size + shape_max_padding;
 
     // Caja sin rotaciones (menos precisa / menos costosa de comprobar)
     //Shape* weapon_shape = new AABB(min_pos_rel, max_pos_rel);
@@ -277,20 +277,24 @@ Pickaxe* WeaponManager::createPickaxe(Combat_Character* cc)
     // Animaciones del pico
     Animation* weapon_anim = new Animation();
 
-    weapon_anim->addBackSprite(pickaxe_sprite,0.2f);
+    weapon_anim->addBackSprite(pickaxe_sprite,0.3f);
 
-    for (auto i = 1; i < PICKAXE_ANIM_SIZE; i++)
+    for (auto i = 1; i < PICKAXE_ANIM_SIZE - 2; i++)
     {
-        weapon_anim->addBackSprite(sprites_manager.createSprite(i + PICKAXE_ANIM_START),0.15f);
+        weapon_anim->addBackSprite(sprites_manager.createSprite(i + PICKAXE_ANIM_START),0.033333f);
     }
+
+    weapon_anim->addBackSprite(sprites_manager.createSprite(PICKAXE_ANIM_START + PICKAXE_ANIM_SIZE - 2),0.1f);
+
+    weapon_anim->addBackSprite(sprites_manager.createSprite(PICKAXE_ANIM_START + PICKAXE_ANIM_SIZE - 1),0.001f);
 
 
     // Crear el pico
     int weapon_damage = 1;
     float weapon_knockback = 250.0f;
     float weapon_time_attack = 1.0f;
-    float weapon_time_pre_attack = 0.0f;
-    float weapon_time_end_attack = 0.0f;
+    float weapon_time_pre_attack = 0.3f;
+    float weapon_time_end_attack = 0.6f;
 
     weapon_relative_position_attacking += Vector2d<float>(0.25f, -0.25f); //Soluciona bugs visuales
     Vector2d<float> ori = cc->getOrientation();

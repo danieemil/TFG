@@ -54,8 +54,8 @@ protected:
 
     World* world;
 
-    const float upd = 15.0f/60.0f;
-    //const float upd = 0.0166;
+    //const float upd = 15.0f/60.0f;
+    const float upd = 0.0166;
 
     Timepoint update_time;
 

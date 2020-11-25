@@ -36,7 +36,6 @@ namespace physics
                     // B reaciona al colisionar con A.
                     colliderB->callBack(colliderA->getCreator());
                 }
-
             }
         }
 

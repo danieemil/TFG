@@ -180,7 +180,7 @@ bool Enemy::checkPlayerInWeaponRange()
     float dist = 0.0f;
     if(equipped!=nullptr)
     {
-        dist = (equipped->getRelativePosition() + (position - getCenter())).Length();
+        dist = ((position - getCenter()) - equipped->getRelativePosition()).Length();
     }
     return checkNearPlayer(dist);
 }

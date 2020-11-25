@@ -108,11 +108,10 @@ void World::deleteEntity(Entity* e)
 {
     if(e!=nullptr)
     {
-        for(auto entity = entities.begin(); entity != entities.end(); ++entity)
+        for(auto entity = entities.begin(); entity != entities.end(); entity++)
         {
             if((*entity)==e)
             {
-                entities.erase(entity);
                 delete e;
                 break;
             }

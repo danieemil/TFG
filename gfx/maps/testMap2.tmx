@@ -1689,7 +1689,7 @@
    <properties>
     <property name="EnemyType" type="int" value="0"/>
     <property name="Type" type="int" value="2"/>
-    <property name="Weapon" type="int" value="-1"/>
+    <property name="Weapon" type="int" value="2"/>
    </properties>
    <point/>
   </object>
@@ -1697,7 +1697,7 @@
    <properties>
     <property name="EnemyType" type="int" value="0"/>
     <property name="Type" type="int" value="2"/>
-    <property name="Weapon" type="int" value="-1"/>
+    <property name="Weapon" type="int" value="2"/>
    </properties>
    <point/>
   </object>

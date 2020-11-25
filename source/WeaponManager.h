@@ -16,7 +16,7 @@
 
 #define PICKAXE_ICON 11
 #define PICKAXE_ANIM_START 12
-#define PICKAXE_ANIM_SIZE 0
+#define PICKAXE_ANIM_SIZE 6
 
 
 class WeaponManager

@@ -47,7 +47,7 @@ void Game_State::renderBottom()
 
 void Game_State::processEvents()
 {
-    if(!events.empty())
+    while(!events.empty())
     {
         Event e = events.top();
         if(e!=nullptr)

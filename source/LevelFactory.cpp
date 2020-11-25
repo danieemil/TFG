@@ -395,11 +395,6 @@ void LevelFactory::readBin(const char* tilemap_path, const char* tileset_path)
 
         // Crear su arma y asignársela
         world->createWeapon((WeaponType)enemy_weapon_type, enemy);
-
-        if(enemy!=nullptr)
-        {
-            enemy->equipWeapon(0);
-        }
     }
 
 

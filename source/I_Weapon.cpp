@@ -67,11 +67,11 @@ void I_Weapon::collision(void* ent)
             if(world!=nullptr)
             {
                 WeaponType wt = (WeaponType)value;
-                Weapon* w = world->createWeapon(wt, p);
-                if(w!=nullptr)
-                {
-                    Game::Instance()->deleteEntityEvent(this);
-                }
+                Event e = [this, wt, p](){
+                    this->world->createWeapon(wt, p);
+                    this->world->deleteEntity(this);
+                    };
+                Game::Instance()->addEvent(e);
             }
         }
     }

@@ -266,7 +266,6 @@ bool Player::addWeapon(Weapon* wp)
 
             weapon_collider->setTypeFlags(weapon_type | type);
             weapon_collider->setIntersetedFlags(weapon_interests | interests);
-
         }
 
         return true;

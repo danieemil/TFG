@@ -256,10 +256,12 @@ bool Combat_Character::addWeapon(Weapon* wp)
             }
         }
         weapons.emplace_back(wp);
+
         if(equipped==nullptr)
         {
             equipped = wp;
         }
+
         return true;
     }
     return false;

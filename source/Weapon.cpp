@@ -101,7 +101,6 @@ void Weapon::render(const Vector2d<float>& view_pos)
 
 void Weapon::update()
 {
-
     position = Vector2d<float>();
 
     if(attacking)
