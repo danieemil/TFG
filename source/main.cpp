@@ -2,7 +2,7 @@
 #include "AI_Engine.h"
 
 
-#define DEBUG true
+#define DEBUG false
 
 
 int main(int argc, char* argv[])

@@ -183,7 +183,7 @@ void Player::processInput()
     }
 
     // Si ha girado, no está aturdido y no está atacando, puede cambiar de orientación
-    if(heading!=Vector2d<float>() && !stunned && (equipped==nullptr || !equipped->getAttacking()))
+    if(heading!=Vector2d<float>())
     {
         setOrientation(heading);
     }

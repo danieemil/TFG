@@ -228,7 +228,10 @@ void Combat_Character::setAngle(float angl)
 
 void Combat_Character::setOrientation(const Vector2d<float>& ori)
 {
-    Character::setOrientation(ori);
+    if(!stunned && (equipped==nullptr || !equipped->getAttacking()))
+    {
+        Character::setOrientation(ori);
+    }
 }
 
 void Combat_Character::setAcceleration(const Vector2d<float>& accel)

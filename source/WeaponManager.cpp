@@ -165,7 +165,7 @@ Sword* WeaponManager::createSword(Combat_Character* cc)
     }
 
     Vector2d<float> weapon_relative_position_attacking =
-    (Vector2d<float>(0,0) - Vector2d<float>(sword_sprite_size.x/2, sword_sprite_size.y));
+    (Vector2d<float>(0,cc_center_rel.y*0.5f) - Vector2d<float>(sword_sprite_size.x/2, sword_sprite_size.y));
 
 
     // Colisiones de la espada
