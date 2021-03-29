@@ -1,0 +1,5 @@
+--atlas -f rgba8888 -z auto
+hud/Heart.png
+hud/Half_heart.png
+hud/No_heart.png
+hud/Weapon_container.png

@@ -1,0 +1,6 @@
+--atlas -f rgba8888 -z auto
+sprites/Background/Top_MainMenu.png
+sprites/Background/Bottom_MainMenu.png
+sprites/Background/Bottom_Playing.png
+sprites/Background/Top_EndGame.png
+sprites/Background/Bottom_EndGame.png
